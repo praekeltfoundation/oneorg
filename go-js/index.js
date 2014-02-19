@@ -1,1 +1,1 @@
-module.exports = exports = require('./lib/application');
+module.exports = exports = require('./lib/doagricussd');

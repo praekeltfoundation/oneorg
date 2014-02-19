@@ -17,7 +17,7 @@ var HttpApi = vumigo.http_api.HttpApi;
 var Promise = vumigo.promise.Promise;
 
 
-function Application() {
+function DoAgricUSSD() {
     var self = this;
     StateCreator.call(self, 'start');
 
@@ -41,6 +41,6 @@ function Application() {
 }
 
 // launch app
-var states = new Application();
+var states = new DoAgricUSSD();
 var im = new InteractionMachine(api, states);
 im.attach();

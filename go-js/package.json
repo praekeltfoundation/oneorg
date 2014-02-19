@@ -1,7 +1,7 @@
 {
-  "name": "go-jsbox-skeleton",
+  "name": "oneorg-doagricussd",
   "version": "0.0.1",
-  "description": "A Vumi Go JSBox Skeleton App.",
+  "description": "A Vumi Go JSBox USSD App for doagric.",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/smn/go-jsbox-skeleton"
+    "url": "git://github.com/praekelt/oneorg"
   },
   "keywords": [
     "vumi",
     "ussd",
     "sms"
   ],
-  "author": "Simon de Haan <simon@praekeltfoundation.org>",
+  "author": "Mike Jones <mike@westerncapelabs.com>",
   "license": "BSD",
   "readmeFilename": "README.rst"
 }

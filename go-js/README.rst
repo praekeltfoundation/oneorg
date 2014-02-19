@@ -1,8 +1,7 @@
-Go JSBox Skeleton
+one.org doagric JS Sandbox apps
 =================
 
-Skeleton repository for Vumi Go JSBox applications.
-Use this as a starting point app development.
+Contains JS Sandbox apps for the one.org doagric campaign. Applications are USSD.
 
 ::
 
@@ -15,7 +14,7 @@ the various resources_ available for the application to interact with.
 
 |travis|_
 
-.. |travis| image:: https://travis-ci.org/smn/go-jsbox-skeleton.png?branch=develop
-.. _travis: https://travis-ci.org/smn/go-jsbox-skeleton
+.. |travis| image:: https://travis-ci.org/praekelt/oneorg.png?branch=develop
+.. _travis: https://travis-ci.org/praekelt/oneorg
 .. _state machine: http://vumi-jssandbox-toolkit.readthedocs.org/en/latest/
 .. _resources: https://vumi-go.readthedocs.org/en/latest/sandbox-resources.html

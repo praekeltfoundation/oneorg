@@ -4,10 +4,10 @@ var describe = global.describe,
 
 var fs = require("fs");
 var assert = require("assert");
-var app = require("../lib/application");
+var app = require("../lib/doagricussd");
 var vumigo = require("vumigo_v01");
 
-describe('Application', function () {
+describe('DoAgricUSSD', function () {
 
   var tester;
   var fixtures = [];
