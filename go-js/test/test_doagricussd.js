@@ -11,16 +11,17 @@ describe('DoAgricUSSD', function () {
 
   var tester;
   var fixtures = [];
+  // var config_za = 'test/fixtures/config_ussd.za.dev.json';
 
-  describe('when using the app', function() {
+  describe('when using the app in ZA', function() {
 
     beforeEach(function () {
       tester = new vumigo.test_utils.ImTester(app.api, {
         custom_setup: function (api) {
           api.config_store.config = JSON.stringify({
-              /*
-              config: ["values", "here"]
-              */
+            user_store: "oneorg_ussd_dev",
+            metric_store: "oneorg_ussd_dev",
+            default_lang: "en_za"
           });
 
           fixtures.forEach(function (f) {
@@ -31,12 +32,12 @@ describe('DoAgricUSSD', function () {
       });
     });
 
-    it('should show the opening menu', function (done) {
+    it.only('should show the opening menu', function (done) {
       tester.check_state({
         user: null,
         content: null,
         next_state: 'start',
-        response: /Hi there! What do you want to do\?\n1. Show this menu again.\n2. Exit/
+        response: /Hi there en_za! What do you want to do\?\n1. Show this menu again.\n2. Exit/
       }).then(done, done);
     });
 
@@ -47,7 +48,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'start',
-        response: /Hi there! What do you want to do\?\n1. Show this menu again.\n2. Exit/
+        response: /Hi there en_za! What do you want to do\?\n1. Show this menu again.\n2. Exit/
       }).then(done, done);
     });
 
