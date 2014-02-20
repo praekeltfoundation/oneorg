@@ -109,19 +109,24 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            'Hi there ' + im.config.default_lang + '! What do you want to do?',
+            _.gettext("Output: Welcome text"),
             [
-                new Choice('start', 'Show this menu again.'),
-                new Choice('end', 'Exit.')
+                new Choice('support', _.gettext("Output - option - support")),
+                new Choice('quiz_start', _.gettext("Output - option - quiz")),
+                new Choice('about', _.gettext("Output - option - about")),
+
             ]
         );
     });
 
-    self.add_state(new EndState(
-        'end',
-        'Thanks, cheers!',
-        'start'
-    ));
+    self.add_creator("about", function(state_name, im) {
+        var _ = im.i18n;
+        return new EndState(
+            state_name,
+            _.gettext("Output: About one.org"),
+            'start'
+        );
+    });
 }
 
 // launch app
