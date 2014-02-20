@@ -1,0 +1,5 @@
+{
+    "user_store": "oneorg_ussd_dev",
+    "metric_store": "oneorg_ussd_dev",
+    "default_lang": "en_za"
+}
