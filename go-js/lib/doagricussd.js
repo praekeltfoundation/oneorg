@@ -49,86 +49,73 @@ function DoAgricUSSD() {
 
     // Session handling
 
-    // self.get_user_item = function(user, item, default_value) {
-    //     var custom = user.custom || {};
-    //     var value = custom[item];
-    //     return (typeof value != 'undefined') ? value : default_value;
-    // };
+    self.get_user_item = function(user, item, default_value) {
+        var custom = user.custom || {};
+        var value = custom[item];
+        return (typeof value != 'undefined') ? value : default_value;
+    };
 
-    // self.set_user_item = function(user, item, value) {
-    //     if (typeof user.custom == 'undefined') {
-    //         user.custom = {};
-    //     }
-    //     user.custom[item] = value;
-    // };
+    self.set_user_item = function(user, item, value) {
+        if (typeof user.custom == 'undefined') {
+            user.custom = {};
+        }
+        user.custom[item] = value;
+    };
 
-    // self.inc_user_item = function(user, item) {
-    //     var value = self.get_user_item(user, item, 0) + 1;
-    //     self.set_user_item(user, item, value);
-    //     return value;
-    // };
+    self.inc_user_item = function(user, item) {
+        var value = self.get_user_item(user, item, 0) + 1;
+        self.set_user_item(user, item, value);
+        return value;
+    };
 
-    // // IM event callbacks
+    // IM event callbacks
 
-    // self.on_session_new = function(event) {
-    //     var p = self.incr_metric(event.im, 'ussd_sessions');
-    //     p.add_callback(function () {
-    //         return event.im.metrics.fire_inc('session_new_in.' +
-    //                                          event.im.current_state.name);
-    //     });
-    //     p.add_callback(function () {
-    //         return self.inc_user_item(event.im.user, 'ussd_sessions');
-    //     });
-    //     return p;
-    // };
+    self.on_session_new = function(event) {
+        var p = self.incr_metric(event.im, 'ussd_sessions');
+        p.add_callback(function () {
+            return event.im.metrics.fire_inc('session_new_in.' +
+                                             event.im.current_state.name);
+        });
+        p.add_callback(function () {
+            return self.inc_user_item(event.im.user, 'ussd_sessions');
+        });
+        return p;
+    };
 
-    // self.on_session_close = function(event) {
-    //     var p = event.im.metrics.fire_inc('session_closed_in.' +
-    //                                       event.im.current_state.name);
-    //     if (event.data.possible_timeout) {
-    //         p.add_callback(function () {
-    //             return event.im.metrics.fire_inc('possible_timeout_in.' +
-    //                                              event.im.current_state.name);
-    //         });
-    //         var timeouts = self.inc_user_item(event.im.user,
-    //                                           'possible_timeouts');
-    //         if (timeouts == 1) {
-    //             p.add_callback(function () {
-    //                 self.send_sms_first_possible_timeout(event.im);
-    //             });
-    //         }
-    //     }
-    //     return p;
-    // };
-
-    self.add_state(new ChoiceState(
-        'start',
-        function(choice) {
-            return choice.value;
-        },
-        'Hi there en_za! What do you want to do?',
-        [
-            new Choice('start', 'Show this menu again.'),
-            new Choice('end', 'Exit.')
-        ]
-    ));
+    self.on_session_close = function(event) {
+        var p = event.im.metrics.fire_inc('session_closed_in.' +
+                                          event.im.current_state.name);
+        if (event.data.possible_timeout) {
+            p.add_callback(function () {
+                return event.im.metrics.fire_inc('possible_timeout_in.' +
+                                                 event.im.current_state.name);
+            });
+            var timeouts = self.inc_user_item(event.im.user,
+                                              'possible_timeouts');
+            if (timeouts == 1) {
+                p.add_callback(function () {
+                    self.send_sms_first_possible_timeout(event.im);
+                });
+            }
+        }
+        return p;
+    };
 
 
-    // self.add_creator("start", function(state_name, im) {
-    //     var _ = im.i18n;
-    //     var state = new ChoiceState(
-    //         state_name,
-    //         function(choice) {
-    //             return choice.value;
-    //         },
-    //         'Hi there ' + im.config.default_lang + '! What do you want to do?',
-    //         [
-    //             new Choice('start', 'Show this menu again.'),
-    //             new Choice('end', 'Exit.')
-    //         ]
-    //     );
-    //     return state;
-    // });
+    self.add_creator("start", function(state_name, im) {
+        var _ = im.i18n;
+        return new ChoiceState(
+            state_name,
+            function(choice) {
+                return choice.value;
+            },
+            'Hi there ' + im.config.default_lang + '! What do you want to do?',
+            [
+                new Choice('start', 'Show this menu again.'),
+                new Choice('end', 'Exit.')
+            ]
+        );
+    });
 
     self.add_state(new EndState(
         'end',

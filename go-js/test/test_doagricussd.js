@@ -11,18 +11,15 @@ describe('DoAgricUSSD', function () {
 
   var tester;
   var fixtures = [];
-  // var config_za = 'test/fixtures/config_ussd.za.dev.json';
+  var config_za = 'test/fixtures/config_ussd.za.dev.json';
 
   describe('when using the app in ZA', function() {
 
     beforeEach(function () {
       tester = new vumigo.test_utils.ImTester(app.api, {
         custom_setup: function (api) {
-          api.config_store.config = JSON.stringify({
-            user_store: "oneorg_ussd_dev",
-            metric_store: "oneorg_ussd_dev",
-            default_lang: "en_za"
-          });
+          var config = fs.readFileSync(config_za);
+          api.config_store.config = config;
 
           fixtures.forEach(function (f) {
             api.load_http_fixture(f);
