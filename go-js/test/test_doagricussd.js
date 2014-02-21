@@ -7,6 +7,10 @@ var assert = require("assert");
 var app = require("../lib/doagricussd");
 var vumigo = require("vumigo_v01");
 
+var locale_data = {
+    'en_za': fs.readFileSync('config/translation_ussd.en_za.json')
+};
+
 describe('DoAgricUSSD', function () {
 
   var tester;
@@ -60,9 +64,7 @@ describe('DoAgricUSSD', function () {
         custom_setup: function (api) {
           var config = JSON.parse(fs.readFileSync(config_za));
           api.config_store.config = JSON.stringify(config);
-          var translation_filename = 'test/fixtures/translation_ussd.'+config.default_lang+'.json';
-          var translation = JSON.parse(fs.readFileSync(translation_filename));
-          api.config_store.translation = translation;
+          api.config_store["translation.en_za"] = locale_data.en_za;
           fixtures.forEach(function (f) {
             api.load_http_fixture(f);
           });
@@ -76,7 +78,7 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'start',
-        response: /Output: Welcome text (ZA)\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/
+        response: /Output: Welcome text ZA\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/
       }).then(done, done);
     });
 
