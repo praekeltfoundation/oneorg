@@ -1,0 +1,5 @@
+{
+    "user_store": "oneorg_ussd_prd",
+    "metric_store": "oneorg_ussd_prd",
+    "default_lang": "en_ng"
+}
