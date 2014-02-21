@@ -104,6 +104,7 @@ function DoAgricUSSD() {
 
 
     self.add_creator("start", function(state_name, im) {
+        _ = im.i18n;
         return new ChoiceState(
             state_name,
             function(choice) {
@@ -119,13 +120,11 @@ function DoAgricUSSD() {
         );
     });
 
-    self.add_creator("about", function(state_name, im) {
-        return new EndState(
-            state_name,
-            _.gettext("Output: About one.org"),
-            'start'
-        );
-    });
+    self.add_state(new EndState(
+        'about',
+        _.gettext("Output: About one.org"),
+        'start'
+    ));
 }
 
 // launch app
