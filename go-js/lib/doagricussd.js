@@ -44,6 +44,7 @@ var Promise = vumigo.promise.Promise;
 
 function DoAgricUSSD() {
     var self = this;
+    var _ = new jed({});
 
     StateCreator.call(self, 'start');
 
@@ -103,7 +104,6 @@ function DoAgricUSSD() {
 
 
     self.add_creator("start", function(state_name, im) {
-        var _ = im.i18n;
         return new ChoiceState(
             state_name,
             function(choice) {
@@ -120,7 +120,6 @@ function DoAgricUSSD() {
     });
 
     self.add_creator("about", function(state_name, im) {
-        var _ = im.i18n;
         return new EndState(
             state_name,
             _.gettext("Output: About one.org"),
