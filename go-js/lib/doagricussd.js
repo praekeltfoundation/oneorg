@@ -48,6 +48,28 @@ function DoAgricUSSD() {
 
     StateCreator.call(self, 'start');
 
+    // Session metrics helper
+
+    self.incr_metric = function(im, metric) {
+        var p = new Promise();
+        p.add_callback(function (value) {
+            im.metrics.fire_max(metric, value);
+        });
+        im.api.request(
+            "kv.incr", {key: "metrics." + metric, amount: 1},
+            function(reply) {
+                if (reply.success) {
+                    p.callback(reply.value);
+                }
+                else {
+                    im.log("Failed to increment metric " + metric + ": " +
+                           reply.reason);
+                    p.callback(0);
+                }
+            });
+        return p;
+    };
+
     // Session handling
 
     self.get_user_item = function(user, item, default_value) {

@@ -41,7 +41,12 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'start',
-        response: /Output: Welcome text\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/
+        response: /Output: Welcome text\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/,
+        session_event: 'new'
+      }).then(function() {
+          var config = JSON.parse(tester.api.config_store.config);
+          var updated_metric = tester.api.metrics[config.metric_store].ussd_sessions;
+          assert.equal(updated_metric.values, 1);
       }).then(done, done);
     });
 
