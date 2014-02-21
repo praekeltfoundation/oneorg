@@ -15,8 +15,6 @@
 //
 // * ussd_sessions
 // * unique_users
-// * first_session_completed
-// * second_session_completed
 // * session_new_in.<state-name>
 // * session_closed_in.<state-name>
 // * possible_timeout_in.<state-name>
@@ -117,6 +115,18 @@ function DoAgricUSSD() {
                                               'possible_timeouts');
         }
         return p;
+    };
+
+    self.on_new_user = function(event) {
+        return self.incr_metric(event.im, 'unique_users');
+    };
+
+    self.on_state_enter = function(event) {
+        return event.im.metrics.fire_inc('state_entered.' + event.data.state.name);
+    };
+
+    self.on_state_exit = function(event) {
+        return event.im.metrics.fire_inc('state_exited.' + event.data.state.name);
     };
 
 

@@ -20,6 +20,12 @@ describe('DoAgricUSSD', function () {
   var config_za = 'test/fixtures/config_ussd.za.dev.json';
   var config_ng = 'test/fixtures/config_ussd.ng.dev.json';
 
+  function getMetricValue(metric){
+    var config = JSON.parse(tester.api.config_store.config);
+    var metricobj = tester.api.metrics[config.metric_store][metric];
+    return metricobj.values;
+  }
+
   describe('when using the app in test strings mode', function() {
 
     beforeEach(function () {
@@ -44,9 +50,10 @@ describe('DoAgricUSSD', function () {
         response: /Output: Welcome text\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/,
         session_event: 'new'
       }).then(function() {
-          var config = JSON.parse(tester.api.config_store.config);
-          var updated_metric = tester.api.metrics[config.metric_store].ussd_sessions;
-          assert.equal(updated_metric.values, 1);
+          assert.equal(getMetricValue("unique_users"), 1);
+          assert.equal(getMetricValue("ussd_sessions"), 1);
+          assert.equal(getMetricValue("session_new_in.start"), 1);
+          assert.equal(getMetricValue("state_entered.start"), 1);
       }).then(done, done);
     });
 
@@ -59,6 +66,10 @@ describe('DoAgricUSSD', function () {
         next_state: 'about',
         response: /Output: About one.org/,
         continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(getMetricValue("state_exited.start"), 1);
+          assert.equal(getMetricValue("state_entered.about"), 1);
+          assert.equal(getMetricValue("session_closed_in.about"), 1);
       }).then(done, done);
     });
 
