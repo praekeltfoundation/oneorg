@@ -5,6 +5,34 @@
     },
     "Output: Welcome text": [
         null,
-        "Output: Welcome text ZA"
+        "Investing in agriculture could help lift millions out of extreme poverty\nAdd your support and get a FREE track featuring D'banj and others"
+    ],
+    "Output - option - add your voice": [
+        null,
+        "Add your voice"
+    ],
+    "Output: Main menu intro": [
+        null,
+        "Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:"
+    ],
+    "Output - option - ringback": [
+        null,
+        "Ringback tone"
+    ],
+    "Output - option - MP3": [
+        null,
+        "MP3"
+    ],
+    "Output - option - survey": [
+        null,
+        "Take the survey"
+    ],
+    "Output - option - about": [
+        null,
+        "About one.org"
+    ],
+    "Output: About one.org": [
+        null,
+        "Thanks for adding your voice & supporting farmers across Africa.\nNow ask your friends & family to join you.\nIt’s time to DO AGRIC & transform lives."
     ]
 }
