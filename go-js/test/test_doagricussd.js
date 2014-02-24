@@ -157,7 +157,7 @@ describe('DoAgricUSSD', function () {
         next_state: 'about',
         response: "^Thanks for adding your voice & supporting farmers across Africa.[^]" +
             "Now ask your friends & family to join you.[^]" +
-            "It’s time to DO AGRIC & transform lives.$",
+            "It's time to DO AGRIC & transform lives.$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(getMetricValue("state_exited.main_menu"), 1);
