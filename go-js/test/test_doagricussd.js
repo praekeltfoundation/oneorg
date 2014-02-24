@@ -42,12 +42,12 @@ describe('DoAgricUSSD', function () {
       });
     });
 
-    it('should show the opening menu', function (done) {
+    it('should show the opening welcome', function (done) {
       tester.check_state({
         user: null,
         content: null,
         next_state: 'start',
-        response: /Output: Welcome text\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/,
+        response: /Output: Welcome text\n1. Output - option - add your voice/,
         session_event: 'new'
       }).then(function() {
           assert.equal(getMetricValue("unique_users"), 1);
@@ -57,17 +57,36 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
-    it('should go to the about page and end session', function (done) {
+    it('should go to the main menu', function (done) {
       tester.check_state({
         user: {
           current_state: 'start'
         },
-        content: '3',
+        content: '1',
+        next_state: 'main_menu',
+        response: "^Output: Main menu intro[^]" +
+            "1. Output - option - ringback[^]" +
+            "2. Output - option - MP3[^]" +
+            "3. Output - option - survey[^]" +
+            "4. Output - option - about$"
+      }).then(function() {
+          assert.equal(getMetricValue("state_exited.start"), 1);
+          assert.equal(getMetricValue("state_entered.main_menu"), 1);
+          assert.equal(getMetricValue("supporter.ussd"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the about page and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '4',
         next_state: 'about',
         response: /Output: About one.org/,
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("state_exited.start"), 1);
+          assert.equal(getMetricValue("state_exited.main_menu"), 1);
           assert.equal(getMetricValue("state_entered.about"), 1);
           assert.equal(getMetricValue("session_closed_in.about"), 1);
       }).then(done, done);
@@ -91,64 +110,62 @@ describe('DoAgricUSSD', function () {
       });
     });
 
-    it('should show the opening menu', function (done) {
+    it('should show the opening welcome', function (done) {
       tester.check_state({
         user: null,
         content: null,
         next_state: 'start',
-        response: /Output: Welcome text ZA\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/
+        response: "^Investing in agriculture could help lift millions out of " +
+                  "extreme poverty[^]" +
+                  "Add your support and get a FREE track featuring D'banj and others[^]" +
+                  "1. Add your voice$",
+        session_event: 'new'
+      }).then(function() {
+          assert.equal(getMetricValue("unique_users"), 1);
+          assert.equal(getMetricValue("ussd_sessions"), 1);
+          assert.equal(getMetricValue("session_new_in.start"), 1);
+          assert.equal(getMetricValue("state_entered.start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the main menu', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'start'
+        },
+        content: '1',
+        next_state: 'main_menu',
+        response: "^Thanks for adding your voice & supporting smallholder " +
+            "farmers across Africa. Download the FREE track:[^]" +
+            "1. Ringback tone[^]" +
+            "2. MP3[^]" +
+            "3. Take the survey[^]" +
+            "4. About one.org$"
+      }).then(function() {
+          assert.equal(getMetricValue("state_exited.start"), 1);
+          assert.equal(getMetricValue("state_entered.main_menu"), 1);
+          assert.equal(getMetricValue("supporter.ussd"), 1);
       }).then(done, done);
     });
 
     it('should go to the about page and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'start'
+          current_state: 'main_menu'
         },
-        content: '3',
+        content: '4',
         next_state: 'about',
-        response: /Output: About one.org/,
+        response: "^Thanks for adding your voice & supporting farmers across Africa.[^]" +
+            "Now ask your friends & family to join you.[^]" +
+            "It’s time to DO AGRIC & transform lives.$",
         continue_session: false  // we expect the session to end here
-      }).then(done, done);
-    });
-  });
-
-  describe('when using the app in NG', function() {
-
-    beforeEach(function () {
-      tester = new vumigo.test_utils.ImTester(app.api, {
-        custom_setup: function (api) {
-          var config = JSON.parse(fs.readFileSync(config_ng));
-          api.config_store.config = JSON.stringify(config);
-          api.config_store["translation.en_ng"] = locale_data.en_ng;
-          fixtures.forEach(function (f) {
-            api.load_http_fixture(f);
-          });
-        },
-        async: true
-      });
-    });
-
-    it('should show the opening menu', function (done) {
-      tester.check_state({
-        user: null,
-        content: null,
-        next_state: 'start',
-        response: /Output: Welcome text NG\n1. Output - option - support\n2. Output - option - quiz\n3. Output - option - about/
+      }).then(function() {
+          assert.equal(getMetricValue("state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("state_entered.about"), 1);
+          assert.equal(getMetricValue("session_closed_in.about"), 1);
       }).then(done, done);
     });
 
-    it('should go to the about page and end session', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'start'
-        },
-        content: '3',
-        next_state: 'about',
-        response: /Output: About one.org/,
-        continue_session: false  // we expect the session to end here
-      }).then(done, done);
-    });
 
   });
 });
