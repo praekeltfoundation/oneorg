@@ -26,6 +26,15 @@ describe('DoAgricUSSD', function () {
     return metricobj.values;
   }
 
+  var assert_single_sms = function(content) {
+        var teardown = function(api) {
+            var sms = api.outbound_sends[0];
+            assert.equal(api.outbound_sends.length, 1);
+            assert.equal(sms.content, content);
+        };
+        return teardown;
+    };
+
   describe('when using the app in test strings mode', function() {
 
     beforeEach(function () {
@@ -41,15 +50,6 @@ describe('DoAgricUSSD', function () {
         async: true
       });
     });
-
-    var assert_single_sms = function(content) {
-        var teardown = function(api) {
-            var sms = api.outbound_sends[0];
-            assert.equal(api.outbound_sends.length, 1);
-            assert.equal(sms.content, content);
-        };
-        return teardown;
-    };
 
     it('should show the opening welcome', function (done) {
       tester.check_state({
@@ -174,15 +174,6 @@ describe('DoAgricUSSD', function () {
         async: true
       });
     });
-
-    var assert_single_sms = function(content) {
-        var teardown = function(api) {
-            var sms = api.outbound_sends[0];
-            assert.equal(api.outbound_sends.length, 1);
-            assert.equal(sms.content, content);
-        };
-        return teardown;
-    };
 
     it('should show the opening welcome', function (done) {
       tester.check_state({
