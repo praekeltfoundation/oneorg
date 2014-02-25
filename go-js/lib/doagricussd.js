@@ -93,9 +93,9 @@ function DoAgricUSSD() {
     // IM event callbacks
 
     self.on_session_new = function(event) {
-        var p = self.incr_metric(event.im, 'ussd_sessions');
+        var p = self.incr_metric(event.im, im.config.metric_prefix + 'sessions');
         p.add_callback(function () {
-            return event.im.metrics.fire_inc('session_new_in.' +
+            return event.im.metrics.fire_inc(im.config.metric_prefix + 'session_new_in.' +
                                              event.im.current_state.name);
         });
         p.add_callback(function () {
@@ -105,11 +105,11 @@ function DoAgricUSSD() {
     };
 
     self.on_session_close = function(event) {
-        var p = event.im.metrics.fire_inc('session_closed_in.' +
+        var p = event.im.metrics.fire_inc(im.config.metric_prefix + 'session_closed_in.' +
                                           event.im.current_state.name);
         if (event.data.possible_timeout) {
             p.add_callback(function () {
-                return event.im.metrics.fire_inc('possible_timeout_in.' +
+                return event.im.metrics.fire_inc(im.config.metric_prefix + 'possible_timeout_in.' +
                                                  event.im.current_state.name);
             });
             var timeouts = self.inc_user_item(event.im.user,
@@ -119,16 +119,35 @@ function DoAgricUSSD() {
     };
 
     self.on_new_user = function(event) {
-        return self.incr_metric(event.im, 'unique_users');
+        return self.incr_metric(event.im, im.config.metric_prefix + 'unique_users');
     };
 
     self.on_state_enter = function(event) {
-        return event.im.metrics.fire_inc('state_entered.' + event.data.state.name);
+        return event.im.metrics.fire_inc(im.config.metric_prefix + 'state_entered.' + event.data.state.name);
     };
 
     self.on_state_exit = function(event) {
-        return event.im.metrics.fire_inc('state_exited.' + event.data.state.name);
+        return event.im.metrics.fire_inc(im.config.metric_prefix + 'state_exited.' + event.data.state.name);
     };
+
+    // SMS 
+
+    self.send_sms = function(im, content) {
+        var sms_tag = im.config.sms_tag;
+        if (!sms_tag) return success(true);
+        var p = new Promise();
+        im.api.request("outbound.send_to_tag", {
+            to_addr: im.user_addr,
+            content: content,
+            tagpool: sms_tag[0],
+            tag: sms_tag[1]
+        }, function(reply) {
+            p.callback(reply.success);
+        });
+        return p;
+    };
+
+    // States
 
     self.add_creator("start", function(state_name, im) {
         _ = im.i18n;
@@ -145,7 +164,7 @@ function DoAgricUSSD() {
             null,
             {
                 on_exit: function() {
-                    return self.incr_metric(im, "supporter.ussd");
+                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
                 }
             }
         );
@@ -169,6 +188,38 @@ function DoAgricUSSD() {
             ]
         );
     });
+
+    self.add_state(new EndState(
+        'ringback',
+        _.gettext("Output: Ringback thank you"),
+        'start',
+        {
+            on_enter: function() {
+                var p = new Promise();
+                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: Ringback link"));});
+                p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
+                p.callback();
+                return p;
+            }
+        }
+
+    ));
+
+    self.add_state(new EndState(
+        'mp3',
+        _.gettext("Output: MP3 thank you"),
+        'start',
+        {
+            on_enter: function() {
+                var p = new Promise();
+                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: MP3 link"));});
+                p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
+                p.callback();
+                return p;
+            }
+        }
+
+    ));
 
     self.add_state(new EndState(
         'about',
