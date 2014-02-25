@@ -20,20 +20,20 @@ describe('DoAgricUSSD', function () {
   var config_za = 'test/fixtures/config_ussd.za.dev.json';
   var config_ng = 'test/fixtures/config_ussd.ng.dev.json';
 
-  function getMetricValue(metric){
+  var getMetricValue = function (metric){
     var config = JSON.parse(tester.api.config_store.config);
     var metricobj = tester.api.metrics[config.metric_store][metric];
     return metricobj.values;
-  }
+  };
 
   var assert_single_sms = function(content) {
-        var teardown = function(api) {
-            var sms = api.outbound_sends[0];
-            assert.equal(api.outbound_sends.length, 1);
-            assert.equal(sms.content, content);
-        };
-        return teardown;
-    };
+      var teardown = function(api) {
+          var sms = api.outbound_sends[0];
+          assert.equal(api.outbound_sends.length, 1);
+          assert.equal(sms.content, content);
+      };
+      return teardown;
+  };
 
   describe('when using the app in test strings mode', function() {
 
