@@ -20,7 +20,7 @@ describe('DoAgricUSSD', function () {
   var config_za = 'test/fixtures/config_ussd.za.dev.json';
   var config_ng = 'test/fixtures/config_ussd.ng.dev.json';
 
-  var getMetricValue = function (metric){
+  var get_metric_value = function (metric){
     var config = JSON.parse(tester.api.config_store.config);
     var metricobj = tester.api.metrics[config.metric_store][metric];
     return metricobj.values;
@@ -59,10 +59,10 @@ describe('DoAgricUSSD', function () {
         response: /Output: Welcome text\n1. Output - option - add your voice/,
         session_event: 'new'
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.unique_users"), 1);
-          assert.equal(getMetricValue("test.ussd.sessions"), 1);
-          assert.equal(getMetricValue("test.ussd.session_new_in.start"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.start"), 1);
+          assert.equal(get_metric_value("test.ussd.unique_users"), 1);
+          assert.equal(get_metric_value("test.ussd.sessions"), 1);
+          assert.equal(get_metric_value("test.ussd.session_new_in.start"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.start"), 1);
       }).then(done, done);
     });
 
@@ -79,9 +79,9 @@ describe('DoAgricUSSD', function () {
             "3. Output - option - quiz[^]" +
             "4. Output - option - about$"
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.state_exited.start"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.main_menu"), 1);
-          assert.equal(getMetricValue("test.ussd.supporter"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.start"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.supporter"), 1);
       }).then(done, done);
     });
 
@@ -95,9 +95,9 @@ describe('DoAgricUSSD', function () {
         response: /Output: About one.org/,
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.about"), 1);
-          assert.equal(getMetricValue("test.ussd.session_closed_in.about"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.about"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.about"), 1);
       }).then(done, done);
     });
 
@@ -114,10 +114,10 @@ describe('DoAgricUSSD', function () {
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.ringback"), 1);
-          assert.equal(getMetricValue("test.ussd.session_closed_in.ringback"), 1);
-          assert.equal(getMetricValue("test.ussd.request.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.request.ringback"), 1);
       }).then(done, done);
     });
 
@@ -134,10 +134,10 @@ describe('DoAgricUSSD', function () {
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.mp3"), 1);
-          assert.equal(getMetricValue("test.ussd.session_closed_in.mp3"), 1);
-          assert.equal(getMetricValue("test.ussd.request.mp3"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.mp3"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.mp3"), 1);
+          assert.equal(get_metric_value("test.ussd.request.mp3"), 1);
       }).then(done, done);
     });
 
@@ -152,8 +152,8 @@ describe('DoAgricUSSD', function () {
             "1. Output - option - quiz Q1A1[^]" +
             "2. Output - option - quiz Q1A2$"
       }).then(function() {
-          assert.equal(getMetricValue("test.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("test.ussd.state_entered.quiz_start"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.quiz_start"), 1);
       }).then(done, done);
     });
 
@@ -186,10 +186,10 @@ describe('DoAgricUSSD', function () {
                   "1. Add your voice$",
         session_event: 'new'
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.unique_users"), 1);
-          assert.equal(getMetricValue("za.ussd.sessions"), 1);
-          assert.equal(getMetricValue("za.ussd.session_new_in.start"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.start"), 1);
+          assert.equal(get_metric_value("za.ussd.unique_users"), 1);
+          assert.equal(get_metric_value("za.ussd.sessions"), 1);
+          assert.equal(get_metric_value("za.ussd.session_new_in.start"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.start"), 1);
       }).then(done, done);
     });
 
@@ -207,9 +207,9 @@ describe('DoAgricUSSD', function () {
             "3. Take the quiz[^]" +
             "4. About one.org$"
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.state_exited.start"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.main_menu"), 1);
-          assert.equal(getMetricValue("za.ussd.supporter"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.start"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.supporter"), 1);
       }).then(done, done);
     });
 
@@ -225,9 +225,9 @@ describe('DoAgricUSSD', function () {
             "It's time to DO AGRIC & transform lives.$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.about"), 1);
-          assert.equal(getMetricValue("za.ussd.session_closed_in.about"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.about"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.about"), 1);
       }).then(done, done);
     });
 
@@ -248,10 +248,10 @@ describe('DoAgricUSSD', function () {
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.ringback"), 1);
-          assert.equal(getMetricValue("za.ussd.session_closed_in.ringback"), 1);
-          assert.equal(getMetricValue("za.ussd.request.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.request.ringback"), 1);
       }).then(done, done);
     });
 
@@ -272,10 +272,10 @@ describe('DoAgricUSSD', function () {
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.mp3"), 1);
-          assert.equal(getMetricValue("za.ussd.session_closed_in.mp3"), 1);
-          assert.equal(getMetricValue("za.ussd.request.mp3"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.mp3"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.mp3"), 1);
+          assert.equal(get_metric_value("za.ussd.request.mp3"), 1);
       }).then(done, done);
     });
 
@@ -290,8 +290,8 @@ describe('DoAgricUSSD', function () {
             "1. Yes[^]" +
             "2. No$"
       }).then(function() {
-          assert.equal(getMetricValue("za.ussd.state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("za.ussd.state_entered.quiz_start"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.quiz_start"), 1);
       }).then(done, done);
     });
 
