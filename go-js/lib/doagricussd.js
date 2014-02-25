@@ -20,6 +20,7 @@
 // * possible_timeout_in.<state-name>
 // * state_entered.<state-name>
 // * state_exited.<state-name>
+// * supporter.ussd
 
 var vumigo = require("vumigo_v01");
 var jed = require("jed");
@@ -129,7 +130,6 @@ function DoAgricUSSD() {
         return event.im.metrics.fire_inc('state_exited.' + event.data.state.name);
     };
 
-
     self.add_creator("start", function(state_name, im) {
         _ = im.i18n;
         return new ChoiceState(
@@ -139,8 +139,31 @@ function DoAgricUSSD() {
             },
             _.gettext("Output: Welcome text"),
             [
-                new Choice('support', _.gettext("Output - option - support")),
-                new Choice('quiz_start', _.gettext("Output - option - quiz")),
+                new Choice('main_menu', _.gettext("Output - option - add your voice"))
+
+            ],
+            null,
+            {
+                on_exit: function() {
+                    return self.incr_metric(im, "supporter.ussd");
+                }
+            }
+        );
+    });
+
+
+    self.add_creator("main_menu", function(state_name, im) {
+        _ = im.i18n;
+        return new ChoiceState(
+            state_name,
+            function(choice) {
+                return choice.value;
+            },
+            _.gettext("Output: Main menu intro"),
+            [
+                new Choice('ringback', _.gettext("Output - option - ringback")),
+                new Choice('mp3', _.gettext("Output - option - MP3")),
+                new Choice('quiz_start', _.gettext("Output - option - survey")),
                 new Choice('about', _.gettext("Output - option - about")),
 
             ]
