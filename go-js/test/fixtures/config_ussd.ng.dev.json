@@ -1,4 +1,6 @@
 {
     "metric_store": "oneorg_ussd_dev",
-    "default_lang": "en_ng"
+    "default_lang": "en_ng",
+    "sms_tag": ["apool", "atag"],
+    "metric_prefix": "ng."
 }

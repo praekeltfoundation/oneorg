@@ -42,6 +42,15 @@ describe('DoAgricUSSD', function () {
       });
     });
 
+    var assert_single_sms = function(content) {
+        var teardown = function(api) {
+            var sms = api.outbound_sends[0];
+            assert.equal(api.outbound_sends.length, 1);
+            assert.equal(sms.content, content);
+        };
+        return teardown;
+    };
+
     it('should show the opening welcome', function (done) {
       tester.check_state({
         user: null,
@@ -50,10 +59,10 @@ describe('DoAgricUSSD', function () {
         response: /Output: Welcome text\n1. Output - option - add your voice/,
         session_event: 'new'
       }).then(function() {
-          assert.equal(getMetricValue("unique_users"), 1);
-          assert.equal(getMetricValue("ussd_sessions"), 1);
-          assert.equal(getMetricValue("session_new_in.start"), 1);
-          assert.equal(getMetricValue("state_entered.start"), 1);
+          assert.equal(getMetricValue("test.unique_users"), 1);
+          assert.equal(getMetricValue("test.ussd_sessions"), 1);
+          assert.equal(getMetricValue("test.session_new_in.start"), 1);
+          assert.equal(getMetricValue("test.state_entered.start"), 1);
       }).then(done, done);
     });
 
@@ -70,9 +79,9 @@ describe('DoAgricUSSD', function () {
             "3. Output - option - survey[^]" +
             "4. Output - option - about$"
       }).then(function() {
-          assert.equal(getMetricValue("state_exited.start"), 1);
-          assert.equal(getMetricValue("state_entered.main_menu"), 1);
-          assert.equal(getMetricValue("supporter.ussd"), 1);
+          assert.equal(getMetricValue("test.state_exited.start"), 1);
+          assert.equal(getMetricValue("test.state_entered.main_menu"), 1);
+          assert.equal(getMetricValue("test.supporter.ussd"), 1);
       }).then(done, done);
     });
 
@@ -86,9 +95,49 @@ describe('DoAgricUSSD', function () {
         response: /Output: About one.org/,
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("state_entered.about"), 1);
-          assert.equal(getMetricValue("session_closed_in.about"), 1);
+          assert.equal(getMetricValue("test.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("test.state_entered.about"), 1);
+          assert.equal(getMetricValue("test.session_closed_in.about"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the ringback tone page, send SMS and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '1',
+        next_state: 'ringback',
+        response: /Output: Ringback thank you/,
+        teardown: assert_single_sms(
+                "SMS Output: Ringback link"
+            ),
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(getMetricValue("test.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("test.state_entered.ringback"), 1);
+          assert.equal(getMetricValue("test.session_closed_in.ringback"), 1);
+          assert.equal(getMetricValue("test.request.ringback"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the MP3 page, send SMS and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '2',
+        next_state: 'mp3',
+        response: /Output: MP3 thank you/,
+        teardown: assert_single_sms(
+                "SMS Output: MP3 link"
+            ),
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(getMetricValue("test.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("test.state_entered.mp3"), 1);
+          assert.equal(getMetricValue("test.session_closed_in.mp3"), 1);
+          assert.equal(getMetricValue("test.request.mp3"), 1);
       }).then(done, done);
     });
 
@@ -110,6 +159,15 @@ describe('DoAgricUSSD', function () {
       });
     });
 
+    var assert_single_sms = function(content) {
+        var teardown = function(api) {
+            var sms = api.outbound_sends[0];
+            assert.equal(api.outbound_sends.length, 1);
+            assert.equal(sms.content, content);
+        };
+        return teardown;
+    };
+
     it('should show the opening welcome', function (done) {
       tester.check_state({
         user: null,
@@ -121,10 +179,10 @@ describe('DoAgricUSSD', function () {
                   "1. Add your voice$",
         session_event: 'new'
       }).then(function() {
-          assert.equal(getMetricValue("unique_users"), 1);
-          assert.equal(getMetricValue("ussd_sessions"), 1);
-          assert.equal(getMetricValue("session_new_in.start"), 1);
-          assert.equal(getMetricValue("state_entered.start"), 1);
+          assert.equal(getMetricValue("za.unique_users"), 1);
+          assert.equal(getMetricValue("za.ussd_sessions"), 1);
+          assert.equal(getMetricValue("za.session_new_in.start"), 1);
+          assert.equal(getMetricValue("za.state_entered.start"), 1);
       }).then(done, done);
     });
 
@@ -142,9 +200,9 @@ describe('DoAgricUSSD', function () {
             "3. Take the survey[^]" +
             "4. About one.org$"
       }).then(function() {
-          assert.equal(getMetricValue("state_exited.start"), 1);
-          assert.equal(getMetricValue("state_entered.main_menu"), 1);
-          assert.equal(getMetricValue("supporter.ussd"), 1);
+          assert.equal(getMetricValue("za.state_exited.start"), 1);
+          assert.equal(getMetricValue("za.state_entered.main_menu"), 1);
+          assert.equal(getMetricValue("za.supporter.ussd"), 1);
       }).then(done, done);
     });
 
@@ -160,9 +218,57 @@ describe('DoAgricUSSD', function () {
             "It's time to DO AGRIC & transform lives.$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(getMetricValue("state_exited.main_menu"), 1);
-          assert.equal(getMetricValue("state_entered.about"), 1);
-          assert.equal(getMetricValue("session_closed_in.about"), 1);
+          assert.equal(getMetricValue("za.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("za.state_entered.about"), 1);
+          assert.equal(getMetricValue("za.session_closed_in.about"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the ringback tone page, send SMS and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '1',
+        next_state: 'ringback',
+        response: "^Thanks for your support[^]" +
+            "We just sent you the link via SMS.[^]" +
+            "It's time to DO AGRIC & transform lives.$",
+        teardown: assert_single_sms(
+                "Thanks for adding your voice & supporting farmers across Africa.\n"+
+                "Your ringback tone can be found at http://example.com\n" +
+                "It's time to DO AGRIC & transform lives."
+            ),
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(getMetricValue("za.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("za.state_entered.ringback"), 1);
+          assert.equal(getMetricValue("za.session_closed_in.ringback"), 1);
+          assert.equal(getMetricValue("za.request.ringback"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the MP3 page, send SMS and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '2',
+        next_state: 'mp3',
+        response: "^Thanks for your support[^]" +
+            "We just sent you the link via SMS.[^]" +
+            "It's time to DO AGRIC & transform lives.$",
+        teardown: assert_single_sms(
+                "Thanks for adding your voice & supporting farmers across Africa.\n"+
+                "Your MP3 can be found at http://example.com\n" +
+                "It's time to DO AGRIC & transform lives."
+            ),
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(getMetricValue("za.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("za.state_entered.mp3"), 1);
+          assert.equal(getMetricValue("za.session_closed_in.mp3"), 1);
+          assert.equal(getMetricValue("za.request.mp3"), 1);
       }).then(done, done);
     });
 
