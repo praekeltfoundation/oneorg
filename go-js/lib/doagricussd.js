@@ -182,7 +182,7 @@ function DoAgricUSSD() {
             [
                 new Choice('ringback', _.gettext("Output - option - ringback")),
                 new Choice('mp3', _.gettext("Output - option - MP3")),
-                new Choice('quiz_start', _.gettext("Output - option - survey")),
+                new Choice('quiz_start', _.gettext("Output - option - quiz")),
                 new Choice('about', _.gettext("Output - option - about")),
 
             ]
@@ -226,6 +226,19 @@ function DoAgricUSSD() {
         _.gettext("Output: About one.org"),
         'start'
     ));
+
+    self.add_state(new ChoiceState(
+        'quiz_start',
+        function(choice) {
+            return choice.value;
+        },
+        _.gettext("Output: quiz Q1"),
+        [
+            new Choice('is_farmer', _.gettext("Output - option - quiz Q1A1")),
+            new Choice('not_farmer', _.gettext("Output - option - quiz Q1A2")),
+        ]
+    ));
+
 }
 
 // launch app

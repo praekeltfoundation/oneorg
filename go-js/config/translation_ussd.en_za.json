@@ -23,9 +23,9 @@
         null,
         "MP3"
     ],
-    "Output - option - survey": [
+    "Output - option - quiz": [
         null,
-        "Take the survey"
+        "Take the quiz"
     ],
     "Output - option - about": [
         null,
@@ -50,5 +50,17 @@
     "SMS Output: MP3 link": [
         null,
         "Thanks for adding your voice & supporting farmers across Africa.\nYour MP3 can be found at http://example.com\nIt's time to DO AGRIC & transform lives."
+    ],
+    "Output: quiz Q1": [
+        null,
+        "Are you a farmer?"
+    ],
+    "Output - option - quiz Q1A1": [
+        null,
+        "Yes"
+    ],
+    "Output - option - quiz Q1A2": [
+        null,
+        "No"
     ]
 }

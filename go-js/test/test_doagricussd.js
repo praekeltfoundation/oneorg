@@ -76,7 +76,7 @@ describe('DoAgricUSSD', function () {
         response: "^Output: Main menu intro[^]" +
             "1. Output - option - ringback[^]" +
             "2. Output - option - MP3[^]" +
-            "3. Output - option - survey[^]" +
+            "3. Output - option - quiz[^]" +
             "4. Output - option - about$"
       }).then(function() {
           assert.equal(getMetricValue("test.ussd.state_exited.start"), 1);
@@ -141,6 +141,22 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
+    it('should go to the quiz_start start', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '3',
+        next_state: 'quiz_start',
+        response: "^Output: quiz Q1[^]" +
+            "1. Output - option - quiz Q1A1[^]" +
+            "2. Output - option - quiz Q1A2$"
+      }).then(function() {
+          assert.equal(getMetricValue("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("test.ussd.state_entered.quiz_start"), 1);
+      }).then(done, done);
+    });
+
   });
 
   describe('when using the app in ZA', function() {
@@ -197,7 +213,7 @@ describe('DoAgricUSSD', function () {
             "farmers across Africa. Download the FREE track:[^]" +
             "1. Ringback tone[^]" +
             "2. MP3[^]" +
-            "3. Take the survey[^]" +
+            "3. Take the quiz[^]" +
             "4. About one.org$"
       }).then(function() {
           assert.equal(getMetricValue("za.ussd.state_exited.start"), 1);
@@ -269,6 +285,22 @@ describe('DoAgricUSSD', function () {
           assert.equal(getMetricValue("za.ussd.state_entered.mp3"), 1);
           assert.equal(getMetricValue("za.ussd.session_closed_in.mp3"), 1);
           assert.equal(getMetricValue("za.ussd.request.mp3"), 1);
+      }).then(done, done);
+    });
+
+  it('should go to the quiz start', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '3',
+        next_state: 'quiz_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(getMetricValue("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(getMetricValue("za.ussd.state_entered.quiz_start"), 1);
       }).then(done, done);
     });
 
