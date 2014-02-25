@@ -93,9 +93,9 @@ function DoAgricUSSD() {
     // IM event callbacks
 
     self.on_session_new = function(event) {
-        var p = self.incr_metric(event.im, im.config.metric_prefix + 'sessions');
+        var p = self.incr_metric(event.im, event.im.config.metric_prefix + 'sessions');
         p.add_callback(function () {
-            return event.im.metrics.fire_inc(im.config.metric_prefix + 'session_new_in.' +
+            return event.im.metrics.fire_inc(event.im.config.metric_prefix + 'session_new_in.' +
                                              event.im.current_state.name);
         });
         p.add_callback(function () {
@@ -105,11 +105,11 @@ function DoAgricUSSD() {
     };
 
     self.on_session_close = function(event) {
-        var p = event.im.metrics.fire_inc(im.config.metric_prefix + 'session_closed_in.' +
+        var p = event.im.metrics.fire_inc(event.im.config.metric_prefix + 'session_closed_in.' +
                                           event.im.current_state.name);
         if (event.data.possible_timeout) {
             p.add_callback(function () {
-                return event.im.metrics.fire_inc(im.config.metric_prefix + 'possible_timeout_in.' +
+                return event.im.metrics.fire_inc(event.im.config.metric_prefix + 'possible_timeout_in.' +
                                                  event.im.current_state.name);
             });
             var timeouts = self.inc_user_item(event.im.user,
@@ -119,15 +119,15 @@ function DoAgricUSSD() {
     };
 
     self.on_new_user = function(event) {
-        return self.incr_metric(event.im, im.config.metric_prefix + 'unique_users');
+        return self.incr_metric(event.im, event.im.config.metric_prefix + 'unique_users');
     };
 
     self.on_state_enter = function(event) {
-        return event.im.metrics.fire_inc(im.config.metric_prefix + 'state_entered.' + event.data.state.name);
+        return event.im.metrics.fire_inc(event.im.config.metric_prefix + 'state_entered.' + event.data.state.name);
     };
 
     self.on_state_exit = function(event) {
-        return event.im.metrics.fire_inc(im.config.metric_prefix + 'state_exited.' + event.data.state.name);
+        return event.im.metrics.fire_inc(event.im.config.metric_prefix + 'state_exited.' + event.data.state.name);
     };
 
     // SMS 
