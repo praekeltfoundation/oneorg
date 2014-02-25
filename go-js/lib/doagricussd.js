@@ -13,14 +13,16 @@
 //
 // Metrics produced:
 //
-// * ussd_sessions
-// * unique_users
-// * session_new_in.<state-name>
-// * session_closed_in.<state-name>
-// * possible_timeout_in.<state-name>
-// * state_entered.<state-name>
-// * state_exited.<state-name>
-// * supporter.ussd
+// * <countrycode>.ussd.sessions
+// * <countrycode>.ussd.unique_users
+// * <countrycode>.ussd.session_new_in.<state-name>
+// * <countrycode>.ussd.session_closed_in.<state-name>
+// * <countrycode>.ussd.possible_timeout_in.<state-name>
+// * <countrycode>.ussd.state_entered.<state-name>
+// * <countrycode>.ussd.state_exited.<state-name>
+// * <countrycode>.ussd.supporter
+// * <countrycode>.ussd.request.ringback
+// * <countrycode>.ussd.request.mp3
 
 var vumigo = require("vumigo_v01");
 var jed = require("jed");
