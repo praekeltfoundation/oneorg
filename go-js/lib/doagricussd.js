@@ -93,7 +93,7 @@ function DoAgricUSSD() {
     // IM event callbacks
 
     self.on_session_new = function(event) {
-        var p = self.incr_metric(event.im, im.config.metric_prefix + 'ussd_sessions');
+        var p = self.incr_metric(event.im, im.config.metric_prefix + 'sessions');
         p.add_callback(function () {
             return event.im.metrics.fire_inc(im.config.metric_prefix + 'session_new_in.' +
                                              event.im.current_state.name);
@@ -164,7 +164,7 @@ function DoAgricUSSD() {
             null,
             {
                 on_exit: function() {
-                    return self.incr_metric(im, im.config.metric_prefix + "supporter.ussd");
+                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
                 }
             }
         );
