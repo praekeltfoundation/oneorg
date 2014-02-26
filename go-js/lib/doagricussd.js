@@ -159,7 +159,7 @@ function DoAgricUSSD() {
         return p;
     };
 
-    self.build_quiz_results = function(){
+    self.build_quiz_results = function(im){
         var farmer = im.get_user_answer('quiz_start');
         var results;
         if (farmer == 'quiz_isfarmer_2'){
@@ -184,11 +184,11 @@ function DoAgricUSSD() {
         return results;
     };
 
-    self.save_quiz_results = function(){
+    self.save_quiz_results = function(im){
         var p_c = self.get_contact(im);
         p_c.add_callback(function(result) {
             var contact = result.contact;
-            var fields = self.build_quiz_results();
+            var fields = self.build_quiz_results(im);
 
             var p_extra = im.api_request('contacts.update_extras', {
                     key: contact.key,
@@ -430,7 +430,7 @@ function DoAgricUSSD() {
         'start',
         {
             on_enter: function() {
-                return self.save_quiz_results();
+                return self.save_quiz_results(im);
             }
         }
     ));
