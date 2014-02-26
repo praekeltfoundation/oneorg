@@ -152,7 +152,7 @@ function DoAgricUSSD() {
     // Contact stuff
 
     self.get_contact = function(im){
-        var p = im.api_request('contacts.get_or_create', {
+         var p = im.api_request('contacts.get_or_create', {
             delivery_class: 'ussd',
             addr: im.user_addr
         });
@@ -185,8 +185,6 @@ function DoAgricUSSD() {
     };
 
     self.save_quiz_results = function(){
-        var emis = im.get_user_answer(state_name);
-        // store in config if EMIS is valid
         var p_c = self.get_contact(im);
         p_c.add_callback(function(result) {
             var contact = result.contact;
@@ -196,9 +194,9 @@ function DoAgricUSSD() {
                     key: contact.key,
                     fields: fields
                 });
-
             p_extra.add_callback(function(result){
                 if (result.success === true) {
+                    
                     return true;
                 } else {
                     var p_log = im.log(result);
@@ -432,10 +430,7 @@ function DoAgricUSSD() {
         'start',
         {
             on_enter: function() {
-                var p = new Promise();
-                p.add_callback(self.save_quiz_results);
-                p.callback();
-                return p;
+                return self.save_quiz_results();
             }
         }
     ));
