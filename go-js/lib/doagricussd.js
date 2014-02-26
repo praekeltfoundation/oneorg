@@ -196,11 +196,9 @@ function DoAgricUSSD() {
                 });
             p_extra.add_callback(function(result){
                 if (result.success === true) {
-                    
                     return true;
                 } else {
-                    var p_log = im.log(result);
-                    return false;
+                    return im.log(result);
                 }
             });
             return p_extra;
