@@ -432,7 +432,10 @@ function DoAgricUSSD() {
         'start',
         {
             on_enter: function() {
-                return self.save_quiz_results;
+                var p = new Promise();
+                p.add_callback(self.save_quiz_results);
+                p.callback();
+                return p;
             }
         }
     ));
