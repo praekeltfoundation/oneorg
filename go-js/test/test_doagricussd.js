@@ -278,6 +278,127 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
+    it('should go to the quiz question 2 - for not farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_start',
+          answers: {
+              start: 'quiz_start'
+          }
+        },
+        content: '2',
+        next_state: 'quiz_notfarmer_2',
+        response: "^Output: quiz notfarm Q2[^]" +
+            "1. quiz notfarm Q2A1[^]" +
+            "2. quiz notfarm Q2A2[^]" +
+            "3. quiz notfarm Q2A3[^]" +
+            "4. quiz notfarm Q2A4$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 3 - for not farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_notfarmer_2',
+          answers: {
+              start: 'quiz_start'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_notfarmer_3',
+        response: "^Output: quiz notfarm Q3[^]" +
+            "1. quiz notfarm Q3A1[^]" +
+            "2. quiz notfarm Q3A2[^]" +
+            "3. quiz notfarm Q3A3[^]" +
+            "4. quiz notfarm Q3A4$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 4 - for not farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_notfarmer_3',
+          answers: {
+              start: 'quiz_start',
+              quiz_notfarmer_2: '1-5'
+          }
+        },
+        content: '2',
+        next_state: 'quiz_notfarmer_4',
+        response: "^Output: quiz notfarm Q4[^]" +
+            "1. quiz notfarm Q4A1[^]" +
+            "2. quiz notfarm Q4A2[^]" +
+            "3. quiz notfarm Q4A3[^]" +
+            "4. quiz notfarm Q4A4[^]" +
+            "5. quiz notfarm Q4A5[^]" +
+            "6. quiz notfarm Q4A6$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 5 - for not farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_notfarmer_4',
+          answers: {
+              start: 'quiz_start',
+              quiz_notfarmer_2: '1-5',
+              quiz_notfarmer_3: '5-10'
+          }
+        },
+        content: '2',
+        next_state: 'quiz_notfarmer_5',
+        response: "^Output: quiz notfarm Q5[^]" +
+            "1. quiz notfarm Q5A1[^]" +
+            "2. quiz notfarm Q5A2$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 6 - for not farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_notfarmer_5',
+          answers: {
+              start: 'quiz_start',
+              quiz_notfarmer_2: '1-5',
+              quiz_notfarmer_3: '5-10',
+              quiz_notfarmer_4: 'jobs'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_notfarmer_6',
+        response: "^Output: quiz notfarm Q6[^]" +
+            "1. quiz notfarm Q6A1[^]" +
+            "2. quiz notfarm Q6A2[^]" +
+            "3. quiz notfarm Q6A3[^]" +
+            "4. quiz notfarm Q6A4[^]" +
+            "5. quiz notfarm Q6A5[^]" +
+            "6. quiz notfarm Q6A6$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz thanks page for not farmer and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_notfarmer_6',
+          answers: {
+              start: 'quiz_start',
+              quiz_notfarmer_2: '1-5',
+              quiz_notfarmer_3: '5-10',
+              quiz_notfarmer_4: 'jobs',
+              quiz_notfarmer_5: 'male'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_end',
+        response: /Output: quiz end/,
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.quiz_notfarmer_6"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.quiz_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.quiz_end"), 1);
+      }).then(done, done);
+    });
+
   });
 
   describe('when using the app in ZA', function() {
