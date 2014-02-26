@@ -23,9 +23,9 @@
         null,
         "MP3"
     ],
-    "Output - option - survey": [
+    "Output - option - quiz": [
         null,
-        "Take the survey"
+        "Take the quiz"
     ],
     "Output - option - about": [
         null,
@@ -34,5 +34,33 @@
     "Output: About one.org": [
         null,
         "Thanks for adding your voice & supporting farmers across Africa.\nNow ask your friends & family to join you.\nIt's time to DO AGRIC & transform lives."
+    ],
+    "Output: Ringback thank you": [
+        null,
+        "Thanks for your support\nWe just sent you the link via SMS.\nIt's time to DO AGRIC & transform lives."
+    ],
+    "SMS Output: Ringback link": [
+        null,
+        "Thanks for adding your voice & supporting farmers across Africa.\nYour ringback tone can be found at http://example.com\nIt's time to DO AGRIC & transform lives."
+    ],
+    "Output: MP3 thank you": [
+        null,
+        "Thanks for your support\nWe just sent you the link via SMS.\nIt's time to DO AGRIC & transform lives."
+    ],
+    "SMS Output: MP3 link": [
+        null,
+        "Thanks for adding your voice & supporting farmers across Africa.\nYour MP3 can be found at http://example.com\nIt's time to DO AGRIC & transform lives."
+    ],
+    "Output: quiz Q1": [
+        null,
+        "Are you a farmer?"
+    ],
+    "quiz Q1A1": [
+        null,
+        "Yes"
+    ],
+    "quiz Q1A2": [
+        null,
+        "No"
     ]
 }
