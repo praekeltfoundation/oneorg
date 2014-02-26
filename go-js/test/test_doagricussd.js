@@ -141,7 +141,7 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
-    it('should go to the quiz_start start', function (done) {
+    it('should go to the quiz start', function (done) {
       tester.check_state({
         user: {
           current_state: 'main_menu'
@@ -149,11 +149,132 @@ describe('DoAgricUSSD', function () {
         content: '3',
         next_state: 'quiz_start',
         response: "^Output: quiz Q1[^]" +
-            "1. Output - option - quiz Q1A1[^]" +
-            "2. Output - option - quiz Q1A2$"
+            "1. quiz Q1A1[^]" +
+            "2. quiz Q1A2$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.quiz_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 2 - for farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_start',
+          answers: {
+              start: 'quiz_start'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_isfarmer_2',
+        response: "^Output: quiz farmer Q2[^]" +
+            "1. quiz farmer Q2A1[^]" +
+            "2. quiz farmer Q2A2[^]" +
+            "3. quiz farmer Q2A3[^]" +
+            "4. quiz farmer Q2A4$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 3 - for farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_isfarmer_2',
+          answers: {
+              start: 'quiz_start'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_isfarmer_3',
+        response: "^Output: quiz farmer Q3[^]" +
+            "1. quiz farmer Q3A1[^]" +
+            "2. quiz farmer Q3A2[^]" +
+            "3. quiz farmer Q3A3[^]" +
+            "4. quiz farmer Q3A4$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 4 - for farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_isfarmer_3',
+          answers: {
+              start: 'quiz_start',
+              quiz_isfarmer_2: '1-5'
+          }
+        },
+        content: '2',
+        next_state: 'quiz_isfarmer_4',
+        response: "^Output: quiz farmer Q4[^]" +
+            "1. quiz farmer Q4A1[^]" +
+            "2. quiz farmer Q4A2[^]" +
+            "3. quiz farmer Q4A3[^]" +
+            "4. quiz farmer Q4A4[^]" +
+            "5. quiz farmer Q4A5[^]" +
+            "6. quiz farmer Q4A6$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 5 - for farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_isfarmer_4',
+          answers: {
+              start: 'quiz_start',
+              quiz_isfarmer_2: '1-5',
+              quiz_isfarmer_3: '5-10'
+          }
+        },
+        content: '2',
+        next_state: 'quiz_isfarmer_5',
+        response: "^Output: quiz farmer Q5[^]" +
+            "1. quiz farmer Q5A1[^]" +
+            "2. quiz farmer Q5A2$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz question 6 - for farmer', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_isfarmer_5',
+          answers: {
+              start: 'quiz_start',
+              quiz_isfarmer_2: '1-5',
+              quiz_isfarmer_3: '5-10',
+              quiz_isfarmer_4: 'jobs'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_isfarmer_6',
+        response: "^Output: quiz farmer Q6[^]" +
+            "1. quiz farmer Q6A1[^]" +
+            "2. quiz farmer Q6A2[^]" +
+            "3. quiz farmer Q6A3[^]" +
+            "4. quiz farmer Q6A4[^]" +
+            "5. quiz farmer Q6A5[^]" +
+            "6. quiz farmer Q6A6$"
+      }).then(done, done);
+    });
+
+    it('should go to the quiz thanks page for farmer and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'quiz_isfarmer_6',
+          answers: {
+              start: 'quiz_start',
+              quiz_isfarmer_2: '1-5',
+              quiz_isfarmer_3: '5-10',
+              quiz_isfarmer_4: 'jobs',
+              quiz_isfarmer_5: 'male'
+          }
+        },
+        content: '1',
+        next_state: 'quiz_end',
+        response: /Output: quiz end/,
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.quiz_isfarmer_6"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.quiz_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.quiz_end"), 1);
       }).then(done, done);
     });
 

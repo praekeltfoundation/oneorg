@@ -55,11 +55,11 @@
         null,
         "Are you a farmer?"
     ],
-    "Output - option - quiz Q1A1": [
+    "quiz Q1A1": [
         null,
         "Yes"
     ],
-    "Output - option - quiz Q1A2": [
+    "quiz Q1A2": [
         null,
         "No"
     ]

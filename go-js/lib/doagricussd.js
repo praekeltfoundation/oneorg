@@ -236,9 +236,84 @@ function DoAgricUSSD() {
         },
         _.gettext("Output: quiz Q1"),
         [
-            new Choice('is_farmer', _.gettext("Output - option - quiz Q1A1")),
-            new Choice('not_farmer', _.gettext("Output - option - quiz Q1A2")),
+            new Choice('quiz_isfarmer_2', _.gettext("quiz Q1A1")),
+            new Choice('quiz_notfarmer_2', _.gettext("quiz Q1A2")),
         ]
+    ));
+
+    self.add_state(new ChoiceState(
+        'quiz_isfarmer_2',
+        'quiz_isfarmer_3',
+        _.gettext("Output: quiz farmer Q2"),
+        [
+            new Choice('1-5', _.gettext("quiz farmer Q2A1")),
+            new Choice('5-10', _.gettext("quiz farmer Q2A2")),
+            new Choice('10-20', _.gettext("quiz farmer Q2A3")),
+            new Choice('20+', _.gettext("quiz farmer Q2A4")),
+        ]
+    ));
+
+    self.add_state(new ChoiceState(
+        'quiz_isfarmer_3',
+        'quiz_isfarmer_4',
+        _.gettext("Output: quiz farmer Q3"),
+        [
+            new Choice('1-5', _.gettext("quiz farmer Q3A1")),
+            new Choice('5-10', _.gettext("quiz farmer Q3A2")),
+            new Choice('10-20', _.gettext("quiz farmer Q3A3")),
+            new Choice('20+', _.gettext("quiz farmer Q3A4")),
+        ]
+    ));
+
+    self.add_state(new ChoiceState(
+        'quiz_isfarmer_4',
+        'quiz_isfarmer_5',
+        _.gettext("Output: quiz farmer Q4"),
+        [
+            new Choice('food', _.gettext("quiz farmer Q4A1")),
+            new Choice('jobs', _.gettext("quiz farmer Q4A2")),
+            new Choice('farmers', _.gettext("quiz farmer Q4A3")),
+            new Choice('poverty', _.gettext("quiz farmer Q4A4")),
+            new Choice('land', _.gettext("quiz farmer Q4A5")),
+            new Choice('other', _.gettext("quiz farmer Q4A6")),
+        ]
+    ));
+
+    self.add_state(new ChoiceState(
+        'quiz_isfarmer_5',
+        'quiz_isfarmer_6',
+        _.gettext("Output: quiz farmer Q5"),
+        [
+            new Choice('male', _.gettext("quiz farmer Q5A1")),
+            new Choice('female', _.gettext("quiz farmer Q5A2")),
+        ]
+    ));
+
+    self.add_state(new ChoiceState(
+        'quiz_isfarmer_6',
+        'quiz_end',
+        _.gettext("Output: quiz farmer Q6"),
+        [
+            new Choice('0-15', _.gettext("quiz farmer Q6A1")),
+            new Choice('16-20', _.gettext("quiz farmer Q6A2")),
+            new Choice('21-30', _.gettext("quiz farmer Q6A3")),
+            new Choice('31-40', _.gettext("quiz farmer Q6A4")),
+            new Choice('41-50', _.gettext("quiz farmer Q6A5")),
+            new Choice('51+', _.gettext("quiz farmer Q6A6")),
+        ]
+    ));
+
+    self.add_state(new EndState(
+        'quiz_end',
+        _.gettext("Output: quiz end"),
+        'start',
+        {
+            on_enter: function() {
+                // var p = new Promise();
+                // p.callback();
+                // return p;
+            }
+        }
     ));
 
 }
