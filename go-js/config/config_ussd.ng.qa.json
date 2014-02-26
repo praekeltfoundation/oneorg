@@ -1,5 +1,7 @@
 {
     "user_store": "oneorg_ussd_qa",
     "metric_store": "oneorg_ussd_qa",
-    "default_lang": "en_ng"
+    "default_lang": "en_ng",
+    "sms_tag": ["oneorg", "qangsms"],
+    "metric_prefix": "ng.ussd."
 }

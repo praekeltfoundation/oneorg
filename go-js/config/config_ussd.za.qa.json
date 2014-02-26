@@ -1,5 +1,7 @@
 {
     "user_store": "oneorg_ussd_qa",
     "metric_store": "oneorg_ussd_qa",
-    "default_lang": "en_za"
+    "default_lang": "en_za",
+    "sms_tag": ["oneorg", "qazasms"],
+    "metric_prefix": "za.ussd."
 }
