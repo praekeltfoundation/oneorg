@@ -370,15 +370,6 @@ function DoAgricUSSD() {
         }
     ));
 
-    // self.add_creator("survey_end", function(state_name, im) {
-    //     console.log(im);
-    //     return new EndState(
-    //     'survey_end',
-    //     _.gettext("Output: survey end"),
-    //     'start'
-    //     );
-    // });
-
     self.add_state(new EndState(
         'survey_end',
         _.gettext("Output: survey end"),
