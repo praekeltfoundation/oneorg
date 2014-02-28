@@ -159,40 +159,15 @@ function DoAgricUSSD() {
         return p;
     };
 
-    self.build_survey_results = function(im){
-        var farmer = im.get_user_answer('survey_start');
-        var results;
-        if (farmer == 'survey_isfarmer_2'){
-            results = {
-                "farmer": "1",
-                "budget_think": im.get_user_answer('survey_isfarmer_2'),
-                "budget_should": im.get_user_answer('survey_isfarmer_3'),
-                "agri_means": im.get_user_answer('survey_isfarmer_4'),
-                "sex": im.get_user_answer('survey_isfarmer_5'),
-                "age": im.get_user_answer('survey_isfarmer_6')
-            };
-        } else {
-            results = {
-                "farmer": "0",
-                "budget_think": im.get_user_answer('survey_notfarmer_2'),
-                "budget_should": im.get_user_answer('survey_notfarmer_3'),
-                "agri_means": im.get_user_answer('survey_notfarmer_4'),
-                "sex": im.get_user_answer('survey_notfarmer_5'),
-                "age": im.get_user_answer('survey_notfarmer_6')
-            };
-        }
-        return results;
-    };
-
     self.save_survey_results = function(im, answer_state, extra_key){
         var p_c = self.get_contact(im);
         p_c.add_callback(function(result) {
             var contact = result.contact;
+            var to_save = {};
+            to_save[extra_key] = im.get_user_answer(answer_state);
             var p_extra = im.api_request('contacts.update_extras', {
                     key: contact.key,
-                    fields: {
-                        extra_key: im.get_user_answer(answer_state)
-                    }
+                    fields: to_save
                 });
             p_extra.add_callback(function(result){
                 if (result.success === true) {
@@ -280,10 +255,15 @@ function DoAgricUSSD() {
 
     ));
 
-    self.add_state(new EndState(
+    self.add_state(new ChoiceState(
         'about',
+        function(choice) {
+            return choice.value;
+        },
         _.gettext("Output: About one.org"),
-        'start'
+        [
+           new Choice('main_menu', _.gettext("Output - option - main menu"))
+        ]
     ));
 
     self.add_state(new ChoiceState(
@@ -389,6 +369,15 @@ function DoAgricUSSD() {
             }
         }
     ));
+
+    // self.add_creator("survey_end", function(state_name, im) {
+    //     console.log(im);
+    //     return new EndState(
+    //     'survey_end',
+    //     _.gettext("Output: survey end"),
+    //     'start'
+    //     );
+    // });
 
     self.add_state(new EndState(
         'survey_end',

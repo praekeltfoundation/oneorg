@@ -3,15 +3,23 @@
         "lang": "en_za",
         "plural-forms": "nplurals=2; plural=(n != 1);"
     },
-    "Output: Welcome text": [
+    "Output: main menu intro": [
         null,
-        "Investing in agriculture could help lift millions out of extreme poverty\nAdd your support and get a FREE track featuring D'banj and others"
+        "Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj"
     ],
     "Output - option - add your voice": [
         null,
-        "Add your voice"
+        "Support & FREE track"
     ],
-    "Output: Main menu intro": [
+    "Output - option - survey": [
+        null,
+        "Take survey"
+    ],
+    "Output - option - about": [
+        null,
+        "About ONE"
+    ],
+    "Output: support menu intro": [
         null,
         "Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:"
     ],
@@ -23,44 +31,136 @@
         null,
         "MP3"
     ],
-    "Output - option - quiz": [
+    "Output - option - main menu": [
         null,
-        "Take the quiz"
-    ],
-    "Output - option - about": [
-        null,
-        "About one.org"
-    ],
-    "Output: About one.org": [
-        null,
-        "Thanks for adding your voice & supporting farmers across Africa.\nNow ask your friends & family to join you.\nIt's time to DO AGRIC & transform lives."
+        "Main Menu"
     ],
     "Output: Ringback thank you": [
         null,
-        "Thanks for your support\nWe just sent you the link via SMS.\nIt's time to DO AGRIC & transform lives."
-    ],
-    "SMS Output: Ringback link": [
-        null,
-        "Thanks for adding your voice & supporting farmers across Africa.\nYour ringback tone can be found at http://example.com\nIt's time to DO AGRIC & transform lives."
+        "A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
     ],
     "Output: MP3 thank you": [
         null,
-        "Thanks for your support\nWe just sent you the link via SMS.\nIt's time to DO AGRIC & transform lives."
+        "A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
     ],
     "SMS Output: MP3 link": [
         null,
-        "Thanks for adding your voice & supporting farmers across Africa.\nYour MP3 can be found at http://example.com\nIt's time to DO AGRIC & transform lives."
+        "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
     ],
-    "Output: quiz Q1": [
+    "SMS Output: Ringback link": [
+        null,
+        "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
+    ],
+    "Output: About one.org": [
+        null,
+        "ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org"
+    ],
+    "Output: survey Q1": [
         null,
         "Are you a farmer?"
     ],
-    "quiz Q1A1": [
+    "survey Q1A1": [
         null,
         "Yes"
     ],
-    "quiz Q1A2": [
+    "survey Q1A2": [
         null,
         "No"
+    ],
+    "Output: survey Q2": [
+        null,
+        "Do you think your government invests enough in agriculture?"
+    ],
+    "survey Q2A1": [
+        null,
+        "Yes"
+    ],
+    "survey Q2A2": [
+        null,
+        "No"
+    ],
+    "Output: survey Q3": [
+        null,
+        "How much of the national budget do you think your government spends on agriculture?"
+    ],
+    "survey Q3A1": [
+        null,
+        "1-5%"
+    ],
+    "survey Q3A2": [
+        null,
+        "5-10%"
+    ],
+    "survey Q3A3": [
+        null,
+        "10-20%"
+    ],
+    "survey Q3A4": [
+        null,
+        "More than 20%"
+    ],
+    "Output: survey Q4": [
+        null,
+        "How much do you think your government should spend?"
+    ],
+    "survey Q4A1": [
+        null,
+        "1-5%"
+    ],
+    "survey Q4A2": [
+        null,
+        "5-10%"
+    ],
+    "survey Q4A3": [
+        null,
+        "10-20%"
+    ],
+    "survey Q4A4": [
+        null,
+        "More than 20%"
+    ],
+    "Output: survey Q5": [
+        null,
+        "Are you male or female?"
+    ],
+    "survey Q5A1": [
+        null,
+        "Male"
+    ],
+    "survey Q5A2": [
+        null,
+        "Female"
+    ],
+    "Output: survey Q6": [
+        null,
+        "How old are you?"
+    ],
+    "survey Q6A1": [
+        null,
+        "0-15 years"
+    ],
+    "survey Q6A2": [
+        null,
+        "16-20 years"
+    ],
+    "survey Q6A3": [
+        null,
+        "21-30 years"
+    ],
+    "survey Q6A4": [
+        null,
+        "31-40 years"
+    ],
+    "survey Q6A5": [
+        null,
+        "41-50 years"
+    ],
+    "survey Q6A6": [
+        null,
+        "Older than 50 years"
+    ],
+    "Output: survey end": [
+        null,
+        "Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."
     ]
 }
