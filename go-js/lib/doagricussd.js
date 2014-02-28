@@ -47,7 +47,7 @@ function DoAgricUSSD() {
     var self = this;
     var _ = new jed({});
 
-    StateCreator.call(self, 'start');
+    StateCreator.call(self, 'main_menu');
 
     // Session metrics helper
 
@@ -159,40 +159,40 @@ function DoAgricUSSD() {
         return p;
     };
 
-    self.build_quiz_results = function(im){
-        var farmer = im.get_user_answer('quiz_start');
+    self.build_survey_results = function(im){
+        var farmer = im.get_user_answer('survey_start');
         var results;
-        if (farmer == 'quiz_isfarmer_2'){
+        if (farmer == 'survey_isfarmer_2'){
             results = {
                 "farmer": "1",
-                "budget_think": im.get_user_answer('quiz_isfarmer_2'),
-                "budget_should": im.get_user_answer('quiz_isfarmer_3'),
-                "agri_means": im.get_user_answer('quiz_isfarmer_4'),
-                "sex": im.get_user_answer('quiz_isfarmer_5'),
-                "age": im.get_user_answer('quiz_isfarmer_6')
+                "budget_think": im.get_user_answer('survey_isfarmer_2'),
+                "budget_should": im.get_user_answer('survey_isfarmer_3'),
+                "agri_means": im.get_user_answer('survey_isfarmer_4'),
+                "sex": im.get_user_answer('survey_isfarmer_5'),
+                "age": im.get_user_answer('survey_isfarmer_6')
             };
         } else {
             results = {
                 "farmer": "0",
-                "budget_think": im.get_user_answer('quiz_notfarmer_2'),
-                "budget_should": im.get_user_answer('quiz_notfarmer_3'),
-                "agri_means": im.get_user_answer('quiz_notfarmer_4'),
-                "sex": im.get_user_answer('quiz_notfarmer_5'),
-                "age": im.get_user_answer('quiz_notfarmer_6')
+                "budget_think": im.get_user_answer('survey_notfarmer_2'),
+                "budget_should": im.get_user_answer('survey_notfarmer_3'),
+                "agri_means": im.get_user_answer('survey_notfarmer_4'),
+                "sex": im.get_user_answer('survey_notfarmer_5'),
+                "age": im.get_user_answer('survey_notfarmer_6')
             };
         }
         return results;
     };
 
-    self.save_quiz_results = function(im){
+    self.save_survey_results = function(im, answer_state, extra_key){
         var p_c = self.get_contact(im);
         p_c.add_callback(function(result) {
             var contact = result.contact;
-            var fields = self.build_quiz_results(im);
-
             var p_extra = im.api_request('contacts.update_extras', {
                     key: contact.key,
-                    fields: fields
+                    fields: {
+                        extra_key: im.get_user_answer(answer_state)
+                    }
                 });
             p_extra.add_callback(function(result){
                 if (result.success === true) {
@@ -208,28 +208,6 @@ function DoAgricUSSD() {
 
     // States
 
-    self.add_creator("start", function(state_name, im) {
-        _ = im.i18n;
-        return new ChoiceState(
-            state_name,
-            function(choice) {
-                return choice.value;
-            },
-            _.gettext("Output: Welcome text"),
-            [
-                new Choice('main_menu', _.gettext("Output - option - add your voice"))
-
-            ],
-            null,
-            {
-                on_exit: function() {
-                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
-                }
-            }
-        );
-    });
-
-
     self.add_creator("main_menu", function(state_name, im) {
         _ = im.i18n;
         return new ChoiceState(
@@ -237,14 +215,36 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Output: Main menu intro"),
+            _.gettext("Output: main menu intro"),
+            [
+                new Choice('support_menu', _.gettext("Output - option - add your voice")),
+                new Choice('survey_start', _.gettext("Output - option - survey")),
+                new Choice('about', _.gettext("Output - option - about"))
+            ]
+        );
+    });
+
+
+    self.add_creator("support_menu", function(state_name, im) {
+        _ = im.i18n;
+        return new ChoiceState(
+            state_name,
+            function(choice) {
+                return choice.value;
+            },
+            _.gettext("Output: support menu intro"),
             [
                 new Choice('ringback', _.gettext("Output - option - ringback")),
                 new Choice('mp3', _.gettext("Output - option - MP3")),
-                new Choice('quiz_start', _.gettext("Output - option - quiz")),
-                new Choice('about', _.gettext("Output - option - about")),
-
-            ]
+                new Choice('survey_start', _.gettext("Output - option - survey")),
+                new Choice('main_menu', _.gettext("Output - option - main menu")),
+            ],
+            null,
+            {
+                on_enter: function() {
+                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
+                }
+            }
         );
     });
 
@@ -287,150 +287,113 @@ function DoAgricUSSD() {
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_start',
-        function(choice) {
-            return choice.value;
-        },
-        _.gettext("Output: quiz Q1"),
+        'survey_start',
+        'survey_2',
+        _.gettext("Output: survey Q1"),
         [
-            new Choice('quiz_isfarmer_2', _.gettext("quiz Q1A1")),
-            new Choice('quiz_notfarmer_2', _.gettext("quiz Q1A2")),
-        ]
+            new Choice('1', _.gettext("survey Q1A1")),
+            new Choice('0', _.gettext("survey Q1A2")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_start", "farmer");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_2',
-        'quiz_isfarmer_3',
-        _.gettext("Output: quiz farmer Q2"),
+        'survey_2',
+        'survey_3',
+        _.gettext("Output: survey Q2"),
         [
-            new Choice('1-5', _.gettext("quiz farmer Q2A1")),
-            new Choice('5-10', _.gettext("quiz farmer Q2A2")),
-            new Choice('10-20', _.gettext("quiz farmer Q2A3")),
-            new Choice('20+', _.gettext("quiz farmer Q2A4")),
-        ]
+            new Choice('1', _.gettext("survey Q2A1")),
+            new Choice('0', _.gettext("survey Q2A2")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_2", "budget_enough");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_3',
-        'quiz_isfarmer_4',
-        _.gettext("Output: quiz farmer Q3"),
+        'survey_3',
+        'survey_4',
+        _.gettext("Output: survey Q3"),
         [
-            new Choice('1-5', _.gettext("quiz farmer Q3A1")),
-            new Choice('5-10', _.gettext("quiz farmer Q3A2")),
-            new Choice('10-20', _.gettext("quiz farmer Q3A3")),
-            new Choice('20+', _.gettext("quiz farmer Q3A4")),
-        ]
+            new Choice('1-5', _.gettext("survey Q3A1")),
+            new Choice('5-10', _.gettext("survey Q3A2")),
+            new Choice('10-20', _.gettext("survey Q3A3")),
+            new Choice('20+', _.gettext("survey Q3A4")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_3", "budget_think");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_4',
-        'quiz_isfarmer_5',
-        _.gettext("Output: quiz farmer Q4"),
+        'survey_4',
+        'survey_5',
+        _.gettext("Output: survey Q4"),
         [
-            new Choice('food', _.gettext("quiz farmer Q4A1")),
-            new Choice('jobs', _.gettext("quiz farmer Q4A2")),
-            new Choice('farmers', _.gettext("quiz farmer Q4A3")),
-            new Choice('poverty', _.gettext("quiz farmer Q4A4")),
-            new Choice('land', _.gettext("quiz farmer Q4A5")),
-            new Choice('other', _.gettext("quiz farmer Q4A6")),
-        ]
+            new Choice('1-5', _.gettext("survey Q4A1")),
+            new Choice('5-10', _.gettext("survey Q4A2")),
+            new Choice('10-20', _.gettext("survey Q4A3")),
+            new Choice('20+', _.gettext("survey Q4A4")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_4", "budget_should");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_5',
-        'quiz_isfarmer_6',
-        _.gettext("Output: quiz farmer Q5"),
+        'survey_5',
+        'survey_6',
+        _.gettext("Output: survey Q5"),
         [
-            new Choice('male', _.gettext("quiz farmer Q5A1")),
-            new Choice('female', _.gettext("quiz farmer Q5A2")),
-        ]
+            new Choice('male', _.gettext("survey Q5A1")),
+            new Choice('female', _.gettext("survey Q5A2")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_5", "sex");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_6',
-        'quiz_end',
-        _.gettext("Output: quiz farmer Q6"),
+        'survey_6',
+        'survey_end',
+        _.gettext("Output: survey Q6"),
         [
-            new Choice('0-15', _.gettext("quiz farmer Q6A1")),
-            new Choice('16-20', _.gettext("quiz farmer Q6A2")),
-            new Choice('21-30', _.gettext("quiz farmer Q6A3")),
-            new Choice('31-40', _.gettext("quiz farmer Q6A4")),
-            new Choice('41-50', _.gettext("quiz farmer Q6A5")),
-            new Choice('51+', _.gettext("quiz farmer Q6A6")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_2',
-        'quiz_notfarmer_3',
-        _.gettext("Output: quiz notfarm Q2"),
-        [
-            new Choice('1-5', _.gettext("quiz notfarm Q2A1")),
-            new Choice('5-10', _.gettext("quiz notfarm Q2A2")),
-            new Choice('10-20', _.gettext("quiz notfarm Q2A3")),
-            new Choice('20+', _.gettext("quiz notfarm Q2A4")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_3',
-        'quiz_notfarmer_4',
-        _.gettext("Output: quiz notfarm Q3"),
-        [
-            new Choice('1-5', _.gettext("quiz notfarm Q3A1")),
-            new Choice('5-10', _.gettext("quiz notfarm Q3A2")),
-            new Choice('10-20', _.gettext("quiz notfarm Q3A3")),
-            new Choice('20+', _.gettext("quiz notfarm Q3A4")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_4',
-        'quiz_notfarmer_5',
-        _.gettext("Output: quiz notfarm Q4"),
-        [
-            new Choice('food', _.gettext("quiz notfarm Q4A1")),
-            new Choice('jobs', _.gettext("quiz notfarm Q4A2")),
-            new Choice('farmers', _.gettext("quiz notfarm Q4A3")),
-            new Choice('poverty', _.gettext("quiz notfarm Q4A4")),
-            new Choice('land', _.gettext("quiz notfarm Q4A5")),
-            new Choice('other', _.gettext("quiz notfarm Q4A6")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_5',
-        'quiz_notfarmer_6',
-        _.gettext("Output: quiz notfarm Q5"),
-        [
-            new Choice('male', _.gettext("quiz notfarm Q5A1")),
-            new Choice('female', _.gettext("quiz notfarm Q5A2")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_6',
-        'quiz_end',
-        _.gettext("Output: quiz notfarm Q6"),
-        [
-            new Choice('0-15', _.gettext("quiz notfarm Q6A1")),
-            new Choice('16-20', _.gettext("quiz notfarm Q6A2")),
-            new Choice('21-30', _.gettext("quiz notfarm Q6A3")),
-            new Choice('31-40', _.gettext("quiz notfarm Q6A4")),
-            new Choice('41-50', _.gettext("quiz notfarm Q6A5")),
-            new Choice('51+', _.gettext("quiz notfarm Q6A6")),
-        ]
+            new Choice('0-15', _.gettext("survey Q6A1")),
+            new Choice('16-20', _.gettext("survey Q6A2")),
+            new Choice('21-30', _.gettext("survey Q6A3")),
+            new Choice('31-40', _.gettext("survey Q6A4")),
+            new Choice('41-50', _.gettext("survey Q6A5")),
+            new Choice('51+', _.gettext("survey Q6A6")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_6", "age");
+            }
+        }
     ));
 
     self.add_state(new EndState(
-        'quiz_end',
-        _.gettext("Output: quiz end"),
-        'start',
-        {
-            on_enter: function() {
-                return self.save_quiz_results(im);
-            }
-        }
+        'survey_end',
+        _.gettext("Output: survey end"),
+        'start'
     ));
 
 }
