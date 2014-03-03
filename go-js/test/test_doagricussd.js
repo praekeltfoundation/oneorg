@@ -9,7 +9,6 @@ var vumigo = require("vumigo_v01");
 
 var locale_data = {
     'en_za': fs.readFileSync('config/translation_ussd.en_za.json'),
-    'en_ng': fs.readFileSync('config/translation_ussd.en_ng.json'),
 };
 
 describe('DoAgricUSSD', function () {
@@ -18,7 +17,6 @@ describe('DoAgricUSSD', function () {
   var fixtures = [];
   var config_global = 'test/fixtures/config_ussd.global.dev.json';
   var config_za = 'test/fixtures/config_ussd.za.dev.json';
-  var config_ng = 'test/fixtures/config_ussd.ng.dev.json';
 
   var get_metric_value = function (metric){
     var config = JSON.parse(tester.api.config_store.config);
@@ -186,7 +184,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_start',
-        response: "^Are you a farmer?[^]" +
+        response: "^Are you a farmer\\?[^]" +
             "1. Yes[^]" +
             "2. No$"
       }).then(function() {
@@ -205,7 +203,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'survey_start',
-        response: "^Are you a farmer?[^]" +
+        response: "^Are you a farmer\\?[^]" +
             "1. Yes[^]" +
             "2. No$"
       }).then(function() {
@@ -224,7 +222,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_2',
-        response: "^Do you think your government invests enough in agriculture?[^]" +
+        response: "^Do you think your government invests enough in agriculture\\?[^]" +
             "1. Yes[^]" +
             "2. No$"
       }).then(function() {
@@ -243,7 +241,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_3',
-        response: "^How much of the national budget do you think your government spends on agriculture?[^]" +
+        response: "^How much of the national budget do you think your government spends on agriculture\\?[^]" +
             "1. 1-5%[^]" +
             "2. 5-10%[^]" +
             "3. 10-20%[^]" +
@@ -265,7 +263,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_4',
-        response: "^How much do you think your government should spend?[^]" +
+        response: "^How much do you think your government should spend\\?[^]" +
             "1. 1-5%[^]" +
             "2. 5-10%[^]" +
             "3. 10-20%[^]" +
@@ -288,7 +286,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'survey_5',
-        response: "^Are you male or female?[^]" +
+        response: "^Are you male or female\\?[^]" +
             "1. Male[^]" +
             "2. Female$"
       }).then(function() {
@@ -310,7 +308,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_6',
-        response: "^How old are you?[^]" +
+        response: "^How old are you\\?[^]" +
             "1. 0-15 years[^]" +
             "2. 16-20 years[^]" +
             "3. 21-30 years[^]" +
