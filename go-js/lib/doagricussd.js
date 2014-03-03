@@ -190,7 +190,8 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj"),
+            _.gettext("Investing in agriculture can lift millions of ppl out of poverty." +
+                      "Add ur support & get FREE track feat D'banj"),
             [
                 new Choice('support_menu', _.gettext("Support & FREE track")),
                 new Choice('survey_start', _.gettext("Take survey")),
@@ -225,12 +226,17 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'ringback',
-        _.gettext("A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
+        _.gettext("A download link has been sent to you via SMS. " +
+                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"));});
+                p.add_callback(function(){
+                    return self.send_sms(im, _.gettext(
+                        "Find your sound file at XXXXXX. " +
+                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
                 p.callback();
                 return p;
@@ -241,12 +247,17 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'mp3',
-        _.gettext("A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
+        _.gettext("A download link has been sent to you via SMS. " +
+                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"));});
+                p.add_callback(function(){
+                    return self.send_sms(im, _.gettext(
+                        "Find your sound file at XXXXXX. " +
+                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
                 p.callback();
                 return p;
@@ -260,7 +271,8 @@ function DoAgricUSSD() {
         function(choice) {
             return choice.value;
         },
-        _.gettext("ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org"),
+        _.gettext("ONE is a campaigning & advocacy organisation of 3.5m people taking action to end " +
+                  "extreme poverty & preventable disease. Find out more at www.one.org"),
         [
            new Choice('main_menu', _.gettext("Main Menu"))
         ]
@@ -372,7 +384,8 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'survey_end',
-        _.gettext("Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."),
+        _.gettext("Thanks for adding your voice & supporting farmers across Africa. " +
+                  "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."),
         'start'
     ));
 
