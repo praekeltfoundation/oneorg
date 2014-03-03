@@ -66,10 +66,10 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Output: main menu intro[^]" +
-            "1. Output - option - add your voice[^]" +
-            "2. Output - option - survey[^]" +
-            "3. Output - option - about$",
+        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$",
         session_event: 'new'
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.unique_users"), 1);
@@ -86,11 +86,11 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'support_menu',
-        response: "^Output: support menu intro[^]" +
-            "1. Output - option - ringback[^]" +
-            "2. Output - option - MP3[^]" +
-            "3. Output - option - survey[^]" +
-            "4. Output - option - main menu$"
+        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:[^]" +
+            "1. Ringback tone[^]" +
+            "2. MP3[^]" +
+            "3. Take survey[^]" +
+            "4. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.support_menu"), 1);
@@ -105,8 +105,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'about',
-        response: "^Output: About one.org[^]" +
-            "1. Output - option - main menu$"
+        response: "^ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org[^]" +
+            "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.about"), 1);
@@ -123,10 +123,10 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Output: main menu intro[^]" +
-            "1. Output - option - add your voice[^]" +
-            "2. Output - option - survey[^]" +
-            "3. Output - option - about$"
+        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.main_menu"), 1);
@@ -143,9 +143,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'ringback',
-        response: /Output: Ringback thank you/,
+        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "SMS Output: Ringback link"
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
@@ -166,9 +166,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'mp3',
-        response: /Output: MP3 thank you/,
+        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "SMS Output: MP3 link"
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
@@ -186,9 +186,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_start',
-        response: "^Output: survey Q1[^]" +
-            "1. survey Q1A1[^]" +
-            "2. survey Q1A2$"
+        response: "^Are you a farmer?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
@@ -205,9 +205,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'survey_start',
-        response: "^Output: survey Q1[^]" +
-            "1. survey Q1A1[^]" +
-            "2. survey Q1A2$"
+        response: "^Are you a farmer?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
@@ -224,9 +224,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_2',
-        response: "^Output: survey Q2[^]" +
-            "1. survey Q2A1[^]" +
-            "2. survey Q2A2$"
+        response: "^Do you think your government invests enough in agriculture?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
       }).then(function() {
           assert.equal(get_contact_value("extras-farmer"), "1");
       }).then(done, done);
@@ -243,11 +243,11 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_3',
-        response: "^Output: survey Q3[^]" +
-            "1. survey Q3A1[^]" +
-            "2. survey Q3A2[^]" +
-            "3. survey Q3A3[^]" +
-            "4. survey Q3A4$"
+        response: "^How much of the national budget do you think your government spends on agriculture?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
       }).then(function() {
           assert.equal(get_contact_value("extras-budget_enough"), "1");
       }).then(done, done);
@@ -265,11 +265,11 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_4',
-        response: "^Output: survey Q4[^]" +
-            "1. survey Q4A1[^]" +
-            "2. survey Q4A2[^]" +
-            "3. survey Q4A3[^]" +
-            "4. survey Q4A4$"
+        response: "^How much do you think your government should spend?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
       }).then(function() {
           assert.equal(get_contact_value("extras-budget_think"), "5-10");
       }).then(done, done);
@@ -288,9 +288,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'survey_5',
-        response: "^Output: survey Q5[^]" +
-            "1. survey Q5A1[^]" +
-            "2. survey Q5A2$"
+        response: "^Are you male or female?[^]" +
+            "1. Male[^]" +
+            "2. Female$"
       }).then(function() {
           assert.equal(get_contact_value("extras-budget_should"), "10-20");
       }).then(done, done);
@@ -310,13 +310,13 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'survey_6',
-        response: "^Output: survey Q6[^]" +
-            "1. survey Q6A1[^]" +
-            "2. survey Q6A2[^]" +
-            "3. survey Q6A3[^]" +
-            "4. survey Q6A4[^]" +
-            "5. survey Q6A5[^]" +
-            "6. survey Q6A6$"
+        response: "^How old are you?[^]" +
+            "1. 0-15 years[^]" +
+            "2. 16-20 years[^]" +
+            "3. 21-30 years[^]" +
+            "4. 31-40 years[^]" +
+            "5. 41-50 years[^]" +
+            "6. Older than 50 years$"
       }).then(function() {
           assert.equal(get_contact_value("extras-sex"), "female");
       }).then(done, done);
@@ -337,7 +337,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Output: survey end/,
+        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
@@ -362,7 +362,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Output: survey end/,
+        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);

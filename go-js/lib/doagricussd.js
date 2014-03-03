@@ -190,11 +190,11 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Output: main menu intro"),
+            _.gettext("Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj"),
             [
-                new Choice('support_menu', _.gettext("Output - option - add your voice")),
-                new Choice('survey_start', _.gettext("Output - option - survey")),
-                new Choice('about', _.gettext("Output - option - about"))
+                new Choice('support_menu', _.gettext("Support & FREE track")),
+                new Choice('survey_start', _.gettext("Take survey")),
+                new Choice('about', _.gettext("About ONE"))
             ]
         );
     });
@@ -207,12 +207,12 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Output: support menu intro"),
+            _.gettext("Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:"),
             [
-                new Choice('ringback', _.gettext("Output - option - ringback")),
-                new Choice('mp3', _.gettext("Output - option - MP3")),
-                new Choice('survey_start', _.gettext("Output - option - survey")),
-                new Choice('main_menu', _.gettext("Output - option - main menu")),
+                new Choice('ringback', _.gettext("Ringback tone")),
+                new Choice('mp3', _.gettext("MP3")),
+                new Choice('survey_start', _.gettext("Take survey")),
+                new Choice('main_menu', _.gettext("Main Menu")),
             ],
             null,
             {
@@ -225,12 +225,12 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'ringback',
-        _.gettext("Output: Ringback thank you"),
+        _.gettext("A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: Ringback link"));});
+                p.add_callback(function(){ return self.send_sms(im, _.gettext("Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"));});
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
                 p.callback();
                 return p;
@@ -241,12 +241,12 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'mp3',
-        _.gettext("Output: MP3 thank you"),
+        _.gettext("A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: MP3 link"));});
+                p.add_callback(function(){ return self.send_sms(im, _.gettext("Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"));});
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
                 p.callback();
                 return p;
@@ -260,19 +260,19 @@ function DoAgricUSSD() {
         function(choice) {
             return choice.value;
         },
-        _.gettext("Output: About one.org"),
+        _.gettext("ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org"),
         [
-           new Choice('main_menu', _.gettext("Output - option - main menu"))
+           new Choice('main_menu', _.gettext("Main Menu"))
         ]
     ));
 
     self.add_state(new ChoiceState(
         'survey_start',
         'survey_2',
-        _.gettext("Output: survey Q1"),
+        _.gettext("Are you a farmer?"),
         [
-            new Choice('1', _.gettext("survey Q1A1")),
-            new Choice('0', _.gettext("survey Q1A2")),
+            new Choice('1', _.gettext("Yes")),
+            new Choice('0', _.gettext("No")),
         ],
         null,
         {
@@ -285,10 +285,10 @@ function DoAgricUSSD() {
     self.add_state(new ChoiceState(
         'survey_2',
         'survey_3',
-        _.gettext("Output: survey Q2"),
+        _.gettext("Do you think your government invests enough in agriculture?"),
         [
-            new Choice('1', _.gettext("survey Q2A1")),
-            new Choice('0', _.gettext("survey Q2A2")),
+            new Choice('1', _.gettext("Yes")),
+            new Choice('0', _.gettext("No")),
         ],
         null,
         {
@@ -301,12 +301,12 @@ function DoAgricUSSD() {
     self.add_state(new ChoiceState(
         'survey_3',
         'survey_4',
-        _.gettext("Output: survey Q3"),
+        _.gettext("How much of the national budget do you think your government spends on agriculture?"),
         [
-            new Choice('1-5', _.gettext("survey Q3A1")),
-            new Choice('5-10', _.gettext("survey Q3A2")),
-            new Choice('10-20', _.gettext("survey Q3A3")),
-            new Choice('20+', _.gettext("survey Q3A4")),
+            new Choice('1-5', _.gettext("1-5%")),
+            new Choice('5-10', _.gettext("5-10%")),
+            new Choice('10-20', _.gettext("10-20%")),
+            new Choice('20+', _.gettext("More than 20%")),
         ],
         null,
         {
@@ -319,12 +319,12 @@ function DoAgricUSSD() {
     self.add_state(new ChoiceState(
         'survey_4',
         'survey_5',
-        _.gettext("Output: survey Q4"),
+        _.gettext("How much do you think your government should spend?"),
         [
-            new Choice('1-5', _.gettext("survey Q4A1")),
-            new Choice('5-10', _.gettext("survey Q4A2")),
-            new Choice('10-20', _.gettext("survey Q4A3")),
-            new Choice('20+', _.gettext("survey Q4A4")),
+            new Choice('1-5', _.gettext("1-5%")),
+            new Choice('5-10', _.gettext("5-10%")),
+            new Choice('10-20', _.gettext("10-20%")),
+            new Choice('20+', _.gettext("More than 20%")),
         ],
         null,
         {
@@ -337,10 +337,10 @@ function DoAgricUSSD() {
     self.add_state(new ChoiceState(
         'survey_5',
         'survey_6',
-        _.gettext("Output: survey Q5"),
+        _.gettext("Are you male or female?"),
         [
-            new Choice('male', _.gettext("survey Q5A1")),
-            new Choice('female', _.gettext("survey Q5A2")),
+            new Choice('male', _.gettext("Male")),
+            new Choice('female', _.gettext("Female")),
         ],
         null,
         {
@@ -353,14 +353,14 @@ function DoAgricUSSD() {
     self.add_state(new ChoiceState(
         'survey_6',
         'survey_end',
-        _.gettext("Output: survey Q6"),
+        _.gettext("How old are you?"),
         [
-            new Choice('0-15', _.gettext("survey Q6A1")),
-            new Choice('16-20', _.gettext("survey Q6A2")),
-            new Choice('21-30', _.gettext("survey Q6A3")),
-            new Choice('31-40', _.gettext("survey Q6A4")),
-            new Choice('41-50', _.gettext("survey Q6A5")),
-            new Choice('51+', _.gettext("survey Q6A6")),
+            new Choice('0-15', _.gettext("0-15 years")),
+            new Choice('16-20', _.gettext("16-20 years")),
+            new Choice('21-30', _.gettext("21-30 years")),
+            new Choice('31-40', _.gettext("31-40 years")),
+            new Choice('41-50', _.gettext("41-50 years")),
+            new Choice('51+', _.gettext("Older than 50 years")),
         ],
         null,
         {
@@ -372,7 +372,7 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'survey_end',
-        _.gettext("Output: survey end"),
+        _.gettext("Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."),
         'start'
     ));
 
