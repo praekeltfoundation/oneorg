@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2014-03-03 02:35:+0200\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+#: doagricussd.js:193
+msgid ""
+"Investing in agriculture can lift millions of ppl out of poverty.Add ur "
+"support & get FREE track feat D'banj"
+msgstr ""
+
+#: doagricussd.js:195
+msgid "Support & FREE track"
+msgstr ""
+
+#: doagricussd.js:196 doagricussd.js:214
+msgid "Take survey"
+msgstr ""
+
+#: doagricussd.js:197
+msgid "About ONE"
+msgstr ""
+
+#: doagricussd.js:210
+msgid ""
+"Thanks for adding your voice & supporting smallholder farmers across "
+"Africa. Download the FREE track:"
+msgstr ""
+
+#: doagricussd.js:212
+msgid "Ringback tone"
+msgstr ""
+
+#: doagricussd.js:213
+msgid "MP3"
+msgstr ""
+
+#: doagricussd.js:215 doagricussd.js:265
+msgid "Main Menu"
+msgstr ""
+
+#: doagricussd.js:228 doagricussd.js:244
+msgid ""
+"A download link has been sent to you via SMS. Thanks again for adding your "
+"voice & supporting smallholder farmers across Africa!"
+msgstr ""
+
+#: doagricussd.js:233 doagricussd.js:249
+msgid ""
+"Find your sound file at XXXXXX. Thanks again for adding your voice & "
+"supporting smallholder farmers across Africa!"
+msgstr ""
+
+#: doagricussd.js:263
+msgid ""
+"ONE is a campaigning & advocacy organisation of 3.5m people taking action "
+"to end extreme poverty & preventable disease. Find out more at www.one.org"
+msgstr ""
+
+#: doagricussd.js:272
+msgid "Are you a farmer?"
+msgstr ""
+
+#: doagricussd.js:274 doagricussd.js:290
+msgid "Yes"
+msgstr ""
+
+#: doagricussd.js:275 doagricussd.js:291
+msgid "No"
+msgstr ""
+
+#: doagricussd.js:288
+msgid "Do you think your government invests enough in agriculture?"
+msgstr ""
+
+#: doagricussd.js:304
+msgid ""
+"How much of the national budget do you think your government spends on "
+"agriculture?"
+msgstr ""
+
+#: doagricussd.js:306 doagricussd.js:324
+msgid "1-5%"
+msgstr ""
+
+#: doagricussd.js:307 doagricussd.js:325
+msgid "5-10%"
+msgstr ""
+
+#: doagricussd.js:308 doagricussd.js:326
+msgid "10-20%"
+msgstr ""
+
+#: doagricussd.js:309 doagricussd.js:327
+msgid "More than 20%"
+msgstr ""
+
+#: doagricussd.js:322
+msgid "How much do you think your government should spend?"
+msgstr ""
+
+#: doagricussd.js:340
+msgid "Are you male or female?"
+msgstr ""
+
+#: doagricussd.js:342
+msgid "Male"
+msgstr ""
+
+#: doagricussd.js:343
+msgid "Female"
+msgstr ""
+
+#: doagricussd.js:356
+msgid "How old are you?"
+msgstr ""
+
+#: doagricussd.js:358
+msgid "0-15 years"
+msgstr ""
+
+#: doagricussd.js:359
+msgid "16-20 years"
+msgstr ""
+
+#: doagricussd.js:360
+msgid "21-30 years"
+msgstr ""
+
+#: doagricussd.js:361
+msgid "31-40 years"
+msgstr ""
+
+#: doagricussd.js:362
+msgid "41-50 years"
+msgstr ""
+
+#: doagricussd.js:363
+msgid "Older than 50 years"
+msgstr ""
+
+#: doagricussd.js:375
+msgid ""
+"Thanks for adding your voice & supporting farmers across Africa. Ask ur "
+"friends & family to join u by dialing XXXXX. It's time to Do Agric & "
+"transform lives."
+msgstr ""

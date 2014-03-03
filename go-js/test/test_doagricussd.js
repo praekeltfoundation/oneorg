@@ -9,7 +9,6 @@ var vumigo = require("vumigo_v01");
 
 var locale_data = {
     'en_za': fs.readFileSync('config/translation_ussd.en_za.json'),
-    'en_ng': fs.readFileSync('config/translation_ussd.en_ng.json'),
 };
 
 describe('DoAgricUSSD', function () {
@@ -18,13 +17,22 @@ describe('DoAgricUSSD', function () {
   var fixtures = [];
   var config_global = 'test/fixtures/config_ussd.global.dev.json';
   var config_za = 'test/fixtures/config_ussd.za.dev.json';
-  var config_ng = 'test/fixtures/config_ussd.ng.dev.json';
 
   var get_metric_value = function (metric){
     var config = JSON.parse(tester.api.config_store.config);
     var metricobj = tester.api.metrics[config.metric_store][metric];
     return metricobj.values;
   };
+
+  var get_contact_value = function (key){
+    var contacts = [];
+    for (var k in tester.api.contact_store) {
+      contacts.push(tester.api.contact_store[k]);
+    }
+    return contacts[0][key];
+  };
+
+  
 
   var assert_single_sms = function(content) {
       var teardown = function(api) {
@@ -51,70 +59,95 @@ describe('DoAgricUSSD', function () {
       });
     });
 
-    it('should show the opening welcome', function (done) {
+    it('should show the main menu', function (done) {
       tester.check_state({
         user: null,
         content: null,
-        next_state: 'start',
-        response: /Output: Welcome text\n1. Output - option - add your voice/,
+        next_state: 'main_menu',
+        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$",
         session_event: 'new'
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.unique_users"), 1);
           assert.equal(get_metric_value("test.ussd.sessions"), 1);
-          assert.equal(get_metric_value("test.ussd.session_new_in.start"), 1);
-          assert.equal(get_metric_value("test.ussd.state_entered.start"), 1);
-      }).then(done, done);
-    });
-
-    it('should go to the main menu', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'start'
-        },
-        content: '1',
-        next_state: 'main_menu',
-        response: "^Output: Main menu intro[^]" +
-            "1. Output - option - ringback[^]" +
-            "2. Output - option - MP3[^]" +
-            "3. Output - option - quiz[^]" +
-            "4. Output - option - about$"
-      }).then(function() {
-          assert.equal(get_metric_value("test.ussd.state_exited.start"), 1);
+          assert.equal(get_metric_value("test.ussd.session_new_in.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.main_menu"), 1);
-          assert.equal(get_metric_value("test.ussd.supporter"), 1);
       }).then(done, done);
     });
 
-    it('should go to the about page and end session', function (done) {
+    it('should go to the support menu', function (done) {
       tester.check_state({
         user: {
           current_state: 'main_menu'
         },
-        content: '4',
+        content: '1',
+        next_state: 'support_menu',
+        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:[^]" +
+            "1. Ringback tone[^]" +
+            "2. MP3[^]" +
+            "3. Take survey[^]" +
+            "4. Main Menu$"
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.support_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.supporter"), 1);
+      }).then(done, done);
+    });
+
+    it('from main menu should go to the about page', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '3',
         next_state: 'about',
-        response: /Output: About one.org/,
-        continue_session: false  // we expect the session to end here
+        response: "^ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org[^]" +
+            "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.about"), 1);
-          assert.equal(get_metric_value("test.ussd.session_closed_in.about"), 1);
+      }).then(done, done);
+    });
+
+    it('from support menu should go to the main menu', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
+        },
+        content: '4',
+        next_state: 'main_menu',
+        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$"
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.main_menu"), 1);
       }).then(done, done);
     });
 
     it('should go to the ringback tone page, send SMS and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'main_menu'
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
         },
         content: '1',
         next_state: 'ringback',
-        response: /Output: Ringback thank you/,
+        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "SMS Output: Ringback link"
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.ringback"), 1);
           assert.equal(get_metric_value("test.ussd.session_closed_in.ringback"), 1);
           assert.equal(get_metric_value("test.ussd.request.ringback"), 1);
@@ -124,278 +157,216 @@ describe('DoAgricUSSD', function () {
     it('should go to the MP3 page, send SMS and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'main_menu'
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
         },
         content: '2',
         next_state: 'mp3',
-        response: /Output: MP3 thank you/,
+        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "SMS Output: MP3 link"
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.mp3"), 1);
           assert.equal(get_metric_value("test.ussd.session_closed_in.mp3"), 1);
           assert.equal(get_metric_value("test.ussd.request.mp3"), 1);
       }).then(done, done);
     });
 
-    it('should go to the quiz start', function (done) {
+    it('should go to the survey start from main menu', function (done) {
       tester.check_state({
         user: {
           current_state: 'main_menu'
         },
-        content: '3',
-        next_state: 'quiz_start',
-        response: "^Output: quiz Q1[^]" +
-            "1. quiz Q1A1[^]" +
-            "2. quiz Q1A2$"
+        content: '2',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
-          assert.equal(get_metric_value("test.ussd.state_entered.quiz_start"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
       }).then(done, done);
     });
 
-    it('should go to the quiz question 2 - for farmer', function (done) {
+    it('should go to the survey start from support menu', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_start',
+          current_state: 'support_menu',
           answers: {
-              start: 'quiz_start'
+              main_menu: 'support_menu'
+          }
+        },
+        content: '3',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 2', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_start',
+          answers: {
+              main_menu: 'survey_start'
           }
         },
         content: '1',
-        next_state: 'quiz_isfarmer_2',
-        response: "^Output: quiz farmer Q2[^]" +
-            "1. quiz farmer Q2A1[^]" +
-            "2. quiz farmer Q2A2[^]" +
-            "3. quiz farmer Q2A3[^]" +
-            "4. quiz farmer Q2A4$"
+        next_state: 'survey_2',
+        response: "^Do you think your government invests enough in agriculture\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_contact_value("extras-farmer"), "1");
       }).then(done, done);
     });
 
-    it('should go to the quiz question 3 - for farmer', function (done) {
+    it('should go to the survey question 3', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_isfarmer_2',
+          current_state: 'survey_2',
           answers: {
-              start: 'quiz_start'
+              main_menu: 'survey_start',
+              survey_start: '1'
           }
         },
         content: '1',
-        next_state: 'quiz_isfarmer_3',
-        response: "^Output: quiz farmer Q3[^]" +
-            "1. quiz farmer Q3A1[^]" +
-            "2. quiz farmer Q3A2[^]" +
-            "3. quiz farmer Q3A3[^]" +
-            "4. quiz farmer Q3A4$"
+        next_state: 'survey_3',
+        response: "^How much of the national budget do you think your government spends on agriculture\\?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
+      }).then(function() {
+          assert.equal(get_contact_value("extras-budget_enough"), "1");
       }).then(done, done);
     });
 
-    it('should go to the quiz question 4 - for farmer', function (done) {
+    it('should go to the survey question 4', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_isfarmer_3',
+          current_state: 'survey_3',
           answers: {
-              start: 'quiz_start',
-              quiz_isfarmer_2: '1-5'
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1'
           }
         },
         content: '2',
-        next_state: 'quiz_isfarmer_4',
-        response: "^Output: quiz farmer Q4[^]" +
-            "1. quiz farmer Q4A1[^]" +
-            "2. quiz farmer Q4A2[^]" +
-            "3. quiz farmer Q4A3[^]" +
-            "4. quiz farmer Q4A4[^]" +
-            "5. quiz farmer Q4A5[^]" +
-            "6. quiz farmer Q4A6$"
+        next_state: 'survey_4',
+        response: "^How much do you think your government should spend\\?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
+      }).then(function() {
+          assert.equal(get_contact_value("extras-budget_think"), "5-10");
       }).then(done, done);
     });
 
-    it('should go to the quiz question 5 - for farmer', function (done) {
+    it('should go to the survey question 5', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_isfarmer_4',
+          current_state: 'survey_4',
           answers: {
-              start: 'quiz_start',
-              quiz_isfarmer_2: '1-5',
-              quiz_isfarmer_3: '5-10'
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10'
+          }
+        },
+        content: '3',
+        next_state: 'survey_5',
+        response: "^Are you male or female\\?[^]" +
+            "1. Male[^]" +
+            "2. Female$"
+      }).then(function() {
+          assert.equal(get_contact_value("extras-budget_should"), "10-20");
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 6', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_5',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20'
           }
         },
         content: '2',
-        next_state: 'quiz_isfarmer_5',
-        response: "^Output: quiz farmer Q5[^]" +
-            "1. quiz farmer Q5A1[^]" +
-            "2. quiz farmer Q5A2$"
+        next_state: 'survey_6',
+        response: "^How old are you\\?[^]" +
+            "1. 0-15 years[^]" +
+            "2. 16-20 years[^]" +
+            "3. 21-30 years[^]" +
+            "4. 31-40 years[^]" +
+            "5. 41-50 years[^]" +
+            "6. Older than 50 years$"
+      }).then(function() {
+          assert.equal(get_contact_value("extras-sex"), "female");
       }).then(done, done);
     });
 
-    it('should go to the quiz question 6 - for farmer', function (done) {
+    it('should go to the survey thanks page for farmer and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_isfarmer_5',
+          current_state: 'survey_6',
           answers: {
-              start: 'quiz_start',
-              quiz_isfarmer_2: '1-5',
-              quiz_isfarmer_3: '5-10',
-              quiz_isfarmer_4: 'jobs'
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20',
+              survey_5: 'male'
           }
         },
         content: '1',
-        next_state: 'quiz_isfarmer_6',
-        response: "^Output: quiz farmer Q6[^]" +
-            "1. quiz farmer Q6A1[^]" +
-            "2. quiz farmer Q6A2[^]" +
-            "3. quiz farmer Q6A3[^]" +
-            "4. quiz farmer Q6A4[^]" +
-            "5. quiz farmer Q6A5[^]" +
-            "6. quiz farmer Q6A6$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz thanks page for farmer and end session', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_isfarmer_6',
-          answers: {
-              start: 'quiz_start',
-              quiz_isfarmer_2: '1-5',
-              quiz_isfarmer_3: '5-10',
-              quiz_isfarmer_4: 'jobs',
-              quiz_isfarmer_5: 'male'
-          }
-        },
-        content: '1',
-        next_state: 'quiz_end',
-        response: /Output: quiz end/,
+        next_state: 'survey_end',
+        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("test.ussd.state_exited.quiz_isfarmer_6"), 1);
-          assert.equal(get_metric_value("test.ussd.state_entered.quiz_end"), 1);
-          assert.equal(get_metric_value("test.ussd.session_closed_in.quiz_end"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.survey_end"), 1);
+          assert.equal(get_contact_value("extras-age"), "0-15");
       }).then(done, done);
     });
 
-    it('should go to the quiz question 2 - for not farmer', function (done) {
+    it('should go to the survey thanks page for not farmer and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'quiz_start',
+          current_state: 'survey_6',
           answers: {
-              start: 'quiz_start'
-          }
-        },
-        content: '2',
-        next_state: 'quiz_notfarmer_2',
-        response: "^Output: quiz notfarm Q2[^]" +
-            "1. quiz notfarm Q2A1[^]" +
-            "2. quiz notfarm Q2A2[^]" +
-            "3. quiz notfarm Q2A3[^]" +
-            "4. quiz notfarm Q2A4$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz question 3 - for not farmer', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_notfarmer_2',
-          answers: {
-              start: 'quiz_start'
+              main_menu: 'survey_start',
+              survey_start: '0',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20',
+              survey_5: 'male'
           }
         },
         content: '1',
-        next_state: 'quiz_notfarmer_3',
-        response: "^Output: quiz notfarm Q3[^]" +
-            "1. quiz notfarm Q3A1[^]" +
-            "2. quiz notfarm Q3A2[^]" +
-            "3. quiz notfarm Q3A3[^]" +
-            "4. quiz notfarm Q3A4$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz question 4 - for not farmer', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_notfarmer_3',
-          answers: {
-              start: 'quiz_start',
-              quiz_notfarmer_2: '1-5'
-          }
-        },
-        content: '2',
-        next_state: 'quiz_notfarmer_4',
-        response: "^Output: quiz notfarm Q4[^]" +
-            "1. quiz notfarm Q4A1[^]" +
-            "2. quiz notfarm Q4A2[^]" +
-            "3. quiz notfarm Q4A3[^]" +
-            "4. quiz notfarm Q4A4[^]" +
-            "5. quiz notfarm Q4A5[^]" +
-            "6. quiz notfarm Q4A6$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz question 5 - for not farmer', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_notfarmer_4',
-          answers: {
-              start: 'quiz_start',
-              quiz_notfarmer_2: '1-5',
-              quiz_notfarmer_3: '5-10'
-          }
-        },
-        content: '2',
-        next_state: 'quiz_notfarmer_5',
-        response: "^Output: quiz notfarm Q5[^]" +
-            "1. quiz notfarm Q5A1[^]" +
-            "2. quiz notfarm Q5A2$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz question 6 - for not farmer', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_notfarmer_5',
-          answers: {
-              start: 'quiz_start',
-              quiz_notfarmer_2: '1-5',
-              quiz_notfarmer_3: '5-10',
-              quiz_notfarmer_4: 'jobs'
-          }
-        },
-        content: '1',
-        next_state: 'quiz_notfarmer_6',
-        response: "^Output: quiz notfarm Q6[^]" +
-            "1. quiz notfarm Q6A1[^]" +
-            "2. quiz notfarm Q6A2[^]" +
-            "3. quiz notfarm Q6A3[^]" +
-            "4. quiz notfarm Q6A4[^]" +
-            "5. quiz notfarm Q6A5[^]" +
-            "6. quiz notfarm Q6A6$"
-      }).then(done, done);
-    });
-
-    it('should go to the quiz thanks page for not farmer and end session', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'quiz_notfarmer_6',
-          answers: {
-              start: 'quiz_start',
-              quiz_notfarmer_2: '1-5',
-              quiz_notfarmer_3: '5-10',
-              quiz_notfarmer_4: 'jobs',
-              quiz_notfarmer_5: 'male'
-          }
-        },
-        content: '1',
-        next_state: 'quiz_end',
-        response: /Output: quiz end/,
+        next_state: 'survey_end',
+        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("test.ussd.state_exited.quiz_notfarmer_6"), 1);
-          assert.equal(get_metric_value("test.ussd.state_entered.quiz_end"), 1);
-          assert.equal(get_metric_value("test.ussd.session_closed_in.quiz_end"), 1);
+          assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.survey_end"), 1);
+          assert.equal(get_contact_value("extras-age"), "0-15");
       }).then(done, done);
     });
 
@@ -417,80 +388,102 @@ describe('DoAgricUSSD', function () {
       });
     });
 
-    it('should show the opening welcome', function (done) {
+    it('should show the main menu', function (done) {
       tester.check_state({
         user: null,
         content: null,
-        next_state: 'start',
-        response: "^Investing in agriculture could help lift millions out of " +
-                  "extreme poverty[^]" +
-                  "Add your support and get a FREE track featuring D'banj and others[^]" +
-                  "1. Add your voice$",
+        next_state: 'main_menu',
+        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
+            "Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$",
         session_event: 'new'
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.unique_users"), 1);
           assert.equal(get_metric_value("za.ussd.sessions"), 1);
-          assert.equal(get_metric_value("za.ussd.session_new_in.start"), 1);
-          assert.equal(get_metric_value("za.ussd.state_entered.start"), 1);
-      }).then(done, done);
-    });
-
-    it('should go to the main menu', function (done) {
-      tester.check_state({
-        user: {
-          current_state: 'start'
-        },
-        content: '1',
-        next_state: 'main_menu',
-        response: "^Thanks for adding your voice & supporting smallholder " +
-            "farmers across Africa. Download the FREE track:[^]" +
-            "1. Ringback tone[^]" +
-            "2. MP3[^]" +
-            "3. Take the quiz[^]" +
-            "4. About one.org$"
-      }).then(function() {
-          assert.equal(get_metric_value("za.ussd.state_exited.start"), 1);
+          assert.equal(get_metric_value("za.ussd.session_new_in.main_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.main_menu"), 1);
-          assert.equal(get_metric_value("za.ussd.supporter"), 1);
       }).then(done, done);
     });
 
-    it('should go to the about page and end session', function (done) {
+    it('should go to the support menu', function (done) {
       tester.check_state({
         user: {
           current_state: 'main_menu'
         },
-        content: '4',
+        content: '1',
+        next_state: 'support_menu',
+        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. " +
+            "Download the FREE track:[^]" +
+            "1. Ringback tone[^]" +
+            "2. MP3[^]" +
+            "3. Take survey[^]" +
+            "4. Main Menu$"
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.support_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.supporter"), 1);
+      }).then(done, done);
+    });
+
+    it('from main menu should go to the about page and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'main_menu'
+        },
+        content: '3',
         next_state: 'about',
-        response: "^Thanks for adding your voice & supporting farmers across Africa.[^]" +
-            "Now ask your friends & family to join you.[^]" +
-            "It's time to DO AGRIC & transform lives.$",
-        continue_session: false  // we expect the session to end here
+        response: "^ONE is a campaigning & advocacy organisation of 3.5m people " +
+            "taking action to end extreme poverty & preventable disease. Find out more " +
+            "at www.one.org[^]" +
+            "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.about"), 1);
-          assert.equal(get_metric_value("za.ussd.session_closed_in.about"), 1);
+      }).then(done, done);
+    });
+
+    it('from support menu should go to the main menu', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
+        },
+        content: '4',
+        next_state: 'main_menu',
+        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
+            "Add ur support & get FREE track feat D'banj[^]" +
+            "1. Support & FREE track[^]" +
+            "2. Take survey[^]" +
+            "3. About ONE$"
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.main_menu"), 1);
       }).then(done, done);
     });
 
     it('should go to the ringback tone page, send SMS and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'main_menu'
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
         },
         content: '1',
         next_state: 'ringback',
-        response: "^Thanks for your support[^]" +
-            "We just sent you the link via SMS.[^]" +
-            "It's time to DO AGRIC & transform lives.$",
+        response: "^A download link has been sent to you via SMS. Thanks again for adding " +
+            "your voice & supporting smallholder farmers across Africa!$",
         teardown: assert_single_sms(
-                "Thanks for adding your voice & supporting farmers across Africa.\n"+
-                "Your ringback tone can be found at http://example.com\n" +
-                "It's time to DO AGRIC & transform lives."
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
+                "smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.ringback"), 1);
           assert.equal(get_metric_value("za.ussd.session_closed_in.ringback"), 1);
           assert.equal(get_metric_value("za.ussd.request.ringback"), 1);
@@ -500,40 +493,211 @@ describe('DoAgricUSSD', function () {
     it('should go to the MP3 page, send SMS and end session', function (done) {
       tester.check_state({
         user: {
-          current_state: 'main_menu'
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
         },
         content: '2',
         next_state: 'mp3',
-        response: "^Thanks for your support[^]" +
-            "We just sent you the link via SMS.[^]" +
-            "It's time to DO AGRIC & transform lives.$",
+        response: "^A download link has been sent to you via SMS. Thanks again for adding " +
+            "your voice & supporting smallholder farmers across Africa!$",
         teardown: assert_single_sms(
-                "Thanks for adding your voice & supporting farmers across Africa.\n"+
-                "Your MP3 can be found at http://example.com\n" +
-                "It's time to DO AGRIC & transform lives."
+                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
+                "smallholder farmers across Africa!"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
-          assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.mp3"), 1);
           assert.equal(get_metric_value("za.ussd.session_closed_in.mp3"), 1);
           assert.equal(get_metric_value("za.ussd.request.mp3"), 1);
       }).then(done, done);
     });
 
-  it('should go to the quiz start', function (done) {
+    it('should go to the survey start from main menu', function (done) {
       tester.check_state({
         user: {
           current_state: 'main_menu'
         },
-        content: '3',
-        next_state: 'quiz_start',
+        content: '2',
+        next_state: 'survey_start',
         response: "^Are you a farmer\\?[^]" +
             "1. Yes[^]" +
             "2. No$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
-          assert.equal(get_metric_value("za.ussd.state_entered.quiz_start"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey start from support menu', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'support_menu',
+          answers: {
+              main_menu: 'support_menu'
+          }
+        },
+        content: '3',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 2', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_start',
+          answers: {
+              main_menu: 'survey_start'
+          }
+        },
+        content: '1',
+        next_state: 'survey_2',
+        response: "^Do you think your government invests enough in agriculture\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 3', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_2',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1'
+          }
+        },
+        content: '1',
+        next_state: 'survey_3',
+        response: "^How much of the national budget do you think your government " +
+            "spends on agriculture\\?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 4', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_3',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1'
+          }
+        },
+        content: '2',
+        next_state: 'survey_4',
+        response: "^How much do you think your government should spend\\?[^]" +
+            "1. 1-5%[^]" +
+            "2. 5-10%[^]" +
+            "3. 10-20%[^]" +
+            "4. More than 20%$"
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 5', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_4',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10'
+          }
+        },
+        content: '3',
+        next_state: 'survey_5',
+        response: "^Are you male or female\\?[^]" +
+            "1. Male[^]" +
+            "2. Female$"
+      }).then(done, done);
+    });
+
+    it('should go to the survey question 6', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_5',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20'
+          }
+        },
+        content: '2',
+        next_state: 'survey_6',
+        response: "^How old are you\\?[^]" +
+            "1. 0-15 years[^]" +
+            "2. 16-20 years[^]" +
+            "3. 21-30 years[^]" +
+            "4. 31-40 years[^]" +
+            "5. 41-50 years[^]" +
+            "6. Older than 50 years$"
+      }).then(done, done);
+    });
+
+    it('should go to the survey thanks page for farmer and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_6',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '1',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20',
+              survey_5: 'male'
+          }
+        },
+        content: '1',
+        next_state: 'survey_end',
+        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
+            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
+            "& transform lives.$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_end"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.survey_end"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey thanks page for not farmer and end session', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'survey_6',
+          answers: {
+              main_menu: 'survey_start',
+              survey_start: '0',
+              survey_2: '1',
+              survey_3: '5-10',
+              survey_4: '10-20',
+              survey_5: 'male'
+          }
+        },
+        content: '1',
+        next_state: 'survey_end',
+        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
+            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
+            "& transform lives.$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_end"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.survey_end"), 1);
       }).then(done, done);
     });
 

@@ -47,7 +47,7 @@ function DoAgricUSSD() {
     var self = this;
     var _ = new jed({});
 
-    StateCreator.call(self, 'start');
+    StateCreator.call(self, 'main_menu');
 
     // Session metrics helper
 
@@ -159,40 +159,15 @@ function DoAgricUSSD() {
         return p;
     };
 
-    self.build_quiz_results = function(im){
-        var farmer = im.get_user_answer('quiz_start');
-        var results;
-        if (farmer == 'quiz_isfarmer_2'){
-            results = {
-                "farmer": "1",
-                "budget_think": im.get_user_answer('quiz_isfarmer_2'),
-                "budget_should": im.get_user_answer('quiz_isfarmer_3'),
-                "agri_means": im.get_user_answer('quiz_isfarmer_4'),
-                "sex": im.get_user_answer('quiz_isfarmer_5'),
-                "age": im.get_user_answer('quiz_isfarmer_6')
-            };
-        } else {
-            results = {
-                "farmer": "0",
-                "budget_think": im.get_user_answer('quiz_notfarmer_2'),
-                "budget_should": im.get_user_answer('quiz_notfarmer_3'),
-                "agri_means": im.get_user_answer('quiz_notfarmer_4'),
-                "sex": im.get_user_answer('quiz_notfarmer_5'),
-                "age": im.get_user_answer('quiz_notfarmer_6')
-            };
-        }
-        return results;
-    };
-
-    self.save_quiz_results = function(im){
+    self.save_survey_results = function(im, answer_state, extra_key){
         var p_c = self.get_contact(im);
         p_c.add_callback(function(result) {
             var contact = result.contact;
-            var fields = self.build_quiz_results(im);
-
+            var to_save = {};
+            to_save[extra_key] = im.get_user_answer(answer_state);
             var p_extra = im.api_request('contacts.update_extras', {
                     key: contact.key,
-                    fields: fields
+                    fields: to_save
                 });
             p_extra.add_callback(function(result){
                 if (result.success === true) {
@@ -208,28 +183,6 @@ function DoAgricUSSD() {
 
     // States
 
-    self.add_creator("start", function(state_name, im) {
-        _ = im.i18n;
-        return new ChoiceState(
-            state_name,
-            function(choice) {
-                return choice.value;
-            },
-            _.gettext("Output: Welcome text"),
-            [
-                new Choice('main_menu', _.gettext("Output - option - add your voice"))
-
-            ],
-            null,
-            {
-                on_exit: function() {
-                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
-                }
-            }
-        );
-    });
-
-
     self.add_creator("main_menu", function(state_name, im) {
         _ = im.i18n;
         return new ChoiceState(
@@ -237,25 +190,53 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Output: Main menu intro"),
+            _.gettext("Investing in agriculture can lift millions of ppl out of poverty." +
+                      "Add ur support & get FREE track feat D'banj"),
             [
-                new Choice('ringback', _.gettext("Output - option - ringback")),
-                new Choice('mp3', _.gettext("Output - option - MP3")),
-                new Choice('quiz_start', _.gettext("Output - option - quiz")),
-                new Choice('about', _.gettext("Output - option - about")),
-
+                new Choice('support_menu', _.gettext("Support & FREE track")),
+                new Choice('survey_start', _.gettext("Take survey")),
+                new Choice('about', _.gettext("About ONE"))
             ]
+        );
+    });
+
+
+    self.add_creator("support_menu", function(state_name, im) {
+        _ = im.i18n;
+        return new ChoiceState(
+            state_name,
+            function(choice) {
+                return choice.value;
+            },
+            _.gettext("Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:"),
+            [
+                new Choice('ringback', _.gettext("Ringback tone")),
+                new Choice('mp3', _.gettext("MP3")),
+                new Choice('survey_start', _.gettext("Take survey")),
+                new Choice('main_menu', _.gettext("Main Menu")),
+            ],
+            null,
+            {
+                on_enter: function() {
+                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
+                }
+            }
         );
     });
 
     self.add_state(new EndState(
         'ringback',
-        _.gettext("Output: Ringback thank you"),
+        _.gettext("A download link has been sent to you via SMS. " +
+                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: Ringback link"));});
+                p.add_callback(function(){
+                    return self.send_sms(im, _.gettext(
+                        "Find your sound file at XXXXXX. " +
+                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
                 p.callback();
                 return p;
@@ -266,12 +247,17 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'mp3',
-        _.gettext("Output: MP3 thank you"),
+        _.gettext("A download link has been sent to you via SMS. " +
+                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
         'start',
         {
             on_enter: function() {
                 var p = new Promise();
-                p.add_callback(function(){ return self.send_sms(im, _.gettext("SMS Output: MP3 link"));});
+                p.add_callback(function(){
+                    return self.send_sms(im, _.gettext(
+                        "Find your sound file at XXXXXX. " +
+                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
                 p.callback();
                 return p;
@@ -280,157 +266,127 @@ function DoAgricUSSD() {
 
     ));
 
-    self.add_state(new EndState(
-        'about',
-        _.gettext("Output: About one.org"),
-        'start'
-    ));
-
     self.add_state(new ChoiceState(
-        'quiz_start',
+        'about',
         function(choice) {
             return choice.value;
         },
-        _.gettext("Output: quiz Q1"),
+        _.gettext("ONE is a campaigning & advocacy organisation of 3.5m people taking action to end " +
+                  "extreme poverty & preventable disease. Find out more at www.one.org"),
         [
-            new Choice('quiz_isfarmer_2', _.gettext("quiz Q1A1")),
-            new Choice('quiz_notfarmer_2', _.gettext("quiz Q1A2")),
+           new Choice('main_menu', _.gettext("Main Menu"))
         ]
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_2',
-        'quiz_isfarmer_3',
-        _.gettext("Output: quiz farmer Q2"),
+        'survey_start',
+        'survey_2',
+        _.gettext("Are you a farmer?"),
         [
-            new Choice('1-5', _.gettext("quiz farmer Q2A1")),
-            new Choice('5-10', _.gettext("quiz farmer Q2A2")),
-            new Choice('10-20', _.gettext("quiz farmer Q2A3")),
-            new Choice('20+', _.gettext("quiz farmer Q2A4")),
-        ]
+            new Choice('1', _.gettext("Yes")),
+            new Choice('0', _.gettext("No")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_start", "farmer");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_3',
-        'quiz_isfarmer_4',
-        _.gettext("Output: quiz farmer Q3"),
+        'survey_2',
+        'survey_3',
+        _.gettext("Do you think your government invests enough in agriculture?"),
         [
-            new Choice('1-5', _.gettext("quiz farmer Q3A1")),
-            new Choice('5-10', _.gettext("quiz farmer Q3A2")),
-            new Choice('10-20', _.gettext("quiz farmer Q3A3")),
-            new Choice('20+', _.gettext("quiz farmer Q3A4")),
-        ]
+            new Choice('1', _.gettext("Yes")),
+            new Choice('0', _.gettext("No")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_2", "budget_enough");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_4',
-        'quiz_isfarmer_5',
-        _.gettext("Output: quiz farmer Q4"),
+        'survey_3',
+        'survey_4',
+        _.gettext("How much of the national budget do you think your government spends on agriculture?"),
         [
-            new Choice('food', _.gettext("quiz farmer Q4A1")),
-            new Choice('jobs', _.gettext("quiz farmer Q4A2")),
-            new Choice('farmers', _.gettext("quiz farmer Q4A3")),
-            new Choice('poverty', _.gettext("quiz farmer Q4A4")),
-            new Choice('land', _.gettext("quiz farmer Q4A5")),
-            new Choice('other', _.gettext("quiz farmer Q4A6")),
-        ]
+            new Choice('1-5', _.gettext("1-5%")),
+            new Choice('5-10', _.gettext("5-10%")),
+            new Choice('10-20', _.gettext("10-20%")),
+            new Choice('20+', _.gettext("More than 20%")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_3", "budget_think");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_5',
-        'quiz_isfarmer_6',
-        _.gettext("Output: quiz farmer Q5"),
+        'survey_4',
+        'survey_5',
+        _.gettext("How much do you think your government should spend?"),
         [
-            new Choice('male', _.gettext("quiz farmer Q5A1")),
-            new Choice('female', _.gettext("quiz farmer Q5A2")),
-        ]
+            new Choice('1-5', _.gettext("1-5%")),
+            new Choice('5-10', _.gettext("5-10%")),
+            new Choice('10-20', _.gettext("10-20%")),
+            new Choice('20+', _.gettext("More than 20%")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_4", "budget_should");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_isfarmer_6',
-        'quiz_end',
-        _.gettext("Output: quiz farmer Q6"),
+        'survey_5',
+        'survey_6',
+        _.gettext("Are you male or female?"),
         [
-            new Choice('0-15', _.gettext("quiz farmer Q6A1")),
-            new Choice('16-20', _.gettext("quiz farmer Q6A2")),
-            new Choice('21-30', _.gettext("quiz farmer Q6A3")),
-            new Choice('31-40', _.gettext("quiz farmer Q6A4")),
-            new Choice('41-50', _.gettext("quiz farmer Q6A5")),
-            new Choice('51+', _.gettext("quiz farmer Q6A6")),
-        ]
+            new Choice('male', _.gettext("Male")),
+            new Choice('female', _.gettext("Female")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_5", "sex");
+            }
+        }
     ));
 
     self.add_state(new ChoiceState(
-        'quiz_notfarmer_2',
-        'quiz_notfarmer_3',
-        _.gettext("Output: quiz notfarm Q2"),
+        'survey_6',
+        'survey_end',
+        _.gettext("How old are you?"),
         [
-            new Choice('1-5', _.gettext("quiz notfarm Q2A1")),
-            new Choice('5-10', _.gettext("quiz notfarm Q2A2")),
-            new Choice('10-20', _.gettext("quiz notfarm Q2A3")),
-            new Choice('20+', _.gettext("quiz notfarm Q2A4")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_3',
-        'quiz_notfarmer_4',
-        _.gettext("Output: quiz notfarm Q3"),
-        [
-            new Choice('1-5', _.gettext("quiz notfarm Q3A1")),
-            new Choice('5-10', _.gettext("quiz notfarm Q3A2")),
-            new Choice('10-20', _.gettext("quiz notfarm Q3A3")),
-            new Choice('20+', _.gettext("quiz notfarm Q3A4")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_4',
-        'quiz_notfarmer_5',
-        _.gettext("Output: quiz notfarm Q4"),
-        [
-            new Choice('food', _.gettext("quiz notfarm Q4A1")),
-            new Choice('jobs', _.gettext("quiz notfarm Q4A2")),
-            new Choice('farmers', _.gettext("quiz notfarm Q4A3")),
-            new Choice('poverty', _.gettext("quiz notfarm Q4A4")),
-            new Choice('land', _.gettext("quiz notfarm Q4A5")),
-            new Choice('other', _.gettext("quiz notfarm Q4A6")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_5',
-        'quiz_notfarmer_6',
-        _.gettext("Output: quiz notfarm Q5"),
-        [
-            new Choice('male', _.gettext("quiz notfarm Q5A1")),
-            new Choice('female', _.gettext("quiz notfarm Q5A2")),
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'quiz_notfarmer_6',
-        'quiz_end',
-        _.gettext("Output: quiz notfarm Q6"),
-        [
-            new Choice('0-15', _.gettext("quiz notfarm Q6A1")),
-            new Choice('16-20', _.gettext("quiz notfarm Q6A2")),
-            new Choice('21-30', _.gettext("quiz notfarm Q6A3")),
-            new Choice('31-40', _.gettext("quiz notfarm Q6A4")),
-            new Choice('41-50', _.gettext("quiz notfarm Q6A5")),
-            new Choice('51+', _.gettext("quiz notfarm Q6A6")),
-        ]
+            new Choice('0-15', _.gettext("0-15 years")),
+            new Choice('16-20', _.gettext("16-20 years")),
+            new Choice('21-30', _.gettext("21-30 years")),
+            new Choice('31-40', _.gettext("31-40 years")),
+            new Choice('41-50', _.gettext("41-50 years")),
+            new Choice('51+', _.gettext("Older than 50 years")),
+        ],
+        null,
+        {
+            on_exit: function() {
+                return self.save_survey_results(im, "survey_6", "age");
+            }
+        }
     ));
 
     self.add_state(new EndState(
-        'quiz_end',
-        _.gettext("Output: quiz end"),
-        'start',
-        {
-            on_enter: function() {
-                return self.save_quiz_results(im);
-            }
-        }
+        'survey_end',
+        _.gettext("Thanks for adding your voice & supporting farmers across Africa. " +
+                  "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."),
+        'start'
     ));
 
 }
