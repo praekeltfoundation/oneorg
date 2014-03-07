@@ -336,7 +336,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
@@ -361,7 +363,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
@@ -663,9 +667,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
-            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
-            "& transform lives.$",
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);
@@ -689,9 +693,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
-            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
-            "& transform lives.$",
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);

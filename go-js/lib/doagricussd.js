@@ -384,8 +384,9 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'survey_end',
-        _.gettext("Thanks for adding your voice & supporting farmers across Africa. " +
-                  "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives."),
+        _.gettext("Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing *120*646#. It's " +
+            "time to Do Agric & transform lives!"),
         'start'
     ));
 
