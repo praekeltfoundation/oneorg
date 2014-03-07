@@ -84,10 +84,10 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'support_menu',
-        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:[^]" +
+        response: "^Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:[^]" +
             "1. Ringback tone[^]" +
             "2. MP3[^]" +
-            "3. Take survey[^]" +
+            "3. Take the survey[^]" +
             "4. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
@@ -414,11 +414,10 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'support_menu',
-        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. " +
-            "Download the FREE track:[^]" +
+        response: "^Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:[^]" +
             "1. Ringback tone[^]" +
             "2. MP3[^]" +
-            "3. Take survey[^]" +
+            "3. Take the survey[^]" +
             "4. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
