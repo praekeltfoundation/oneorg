@@ -103,7 +103,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'about',
-        response: "^ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org[^]" +
+        response: "^ONE is a campaigning and advocacy organization taking action " +
+            "to end extreme poverty and preventable disease. Find out more at www.one.org[^]" +
             "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
@@ -433,9 +434,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'about',
-        response: "^ONE is a campaigning & advocacy organisation of 3.5m people " +
-            "taking action to end extreme poverty & preventable disease. Find out more " +
-            "at www.one.org[^]" +
+        response: "^ONE is a campaigning and advocacy organization taking action to end " +
+            "extreme poverty and preventable disease. Find out more at www.one.org[^]" +
             "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);

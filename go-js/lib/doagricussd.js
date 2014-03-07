@@ -271,8 +271,8 @@ function DoAgricUSSD() {
         function(choice) {
             return choice.value;
         },
-        _.gettext("ONE is a campaigning & advocacy organisation of 3.5m people taking action to end " +
-                  "extreme poverty & preventable disease. Find out more at www.one.org"),
+        _.gettext("ONE is a campaigning and advocacy organization taking action to end " +
+            "extreme poverty and preventable disease. Find out more at www.one.org"),
         [
            new Choice('main_menu', _.gettext("Main Menu"))
         ]
