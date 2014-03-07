@@ -208,11 +208,11 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:"),
+            _.gettext("Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:"),
             [
                 new Choice('ringback', _.gettext("Ringback tone")),
                 new Choice('mp3', _.gettext("MP3")),
-                new Choice('survey_start', _.gettext("Take survey")),
+                new Choice('survey_start', _.gettext("Take the survey")),
                 new Choice('main_menu', _.gettext("Main Menu")),
             ],
             null,
