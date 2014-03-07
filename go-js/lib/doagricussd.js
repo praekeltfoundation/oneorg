@@ -190,10 +190,10 @@ function DoAgricUSSD() {
             function(choice) {
                 return choice.value;
             },
-            _.gettext("Investing in agriculture can lift millions of ppl out of poverty." +
-                      "Add ur support & get FREE track feat D'banj"),
+            _.gettext("Investing in agriculture can lift millions out of poverty." +
+                    " Add your support & get a FREE track feat D'banj"),
             [
-                new Choice('support_menu', _.gettext("Support & FREE track")),
+                new Choice('support_menu', _.gettext("I support!")),
                 new Choice('survey_start', _.gettext("Take survey")),
                 new Choice('about', _.gettext("About ONE"))
             ]

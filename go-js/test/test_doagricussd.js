@@ -64,8 +64,8 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -121,8 +121,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
@@ -393,9 +393,9 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
-            "Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. " +
+            "Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -454,9 +454,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
-            "Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. " +
+            "Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
