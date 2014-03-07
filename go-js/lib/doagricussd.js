@@ -234,8 +234,9 @@ function DoAgricUSSD() {
                 var p = new Promise();
                 p.add_callback(function(){
                     return self.send_sms(im, _.gettext(
-                        "Find your sound file at XXXXXX. " +
-                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                        "Thank you for adding your voice and supporting smallholder " +
+                        "farmers across Africa. Download our free ringtone here: " +
+                        "http://www.shorturl.com/8unm"));
                 });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
                 p.callback();
@@ -255,8 +256,9 @@ function DoAgricUSSD() {
                 var p = new Promise();
                 p.add_callback(function(){
                     return self.send_sms(im, _.gettext(
-                        "Find your sound file at XXXXXX. " +
-                        "Thanks again for adding your voice & supporting smallholder farmers across Africa!"));
+                        "Thank you for adding your voice and supporting smallholder farmers " +
+                        "across Africa. Download our song for free track here: " +
+                        "http://www.shorturl.com/8unm"));
                 });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
                 p.callback();

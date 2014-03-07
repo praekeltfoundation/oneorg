@@ -144,7 +144,8 @@ describe('DoAgricUSSD', function () {
         next_state: 'ringback',
         response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our free ringtone here: http://www.shorturl.com/8unm"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
@@ -167,7 +168,8 @@ describe('DoAgricUSSD', function () {
         next_state: 'mp3',
         response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our song for free track here: http://www.shorturl.com/8unm"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
@@ -481,8 +483,8 @@ describe('DoAgricUSSD', function () {
         response: "^A download link has been sent to you via SMS. Thanks again for adding " +
             "your voice & supporting smallholder farmers across Africa!$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
-                "smallholder farmers across Africa!"
+                "Thank you for adding your voice and supporting smallholder farmers across " +
+                "Africa. Download our free ringtone here: http://www.shorturl.com/8unm"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
@@ -506,8 +508,8 @@ describe('DoAgricUSSD', function () {
         response: "^A download link has been sent to you via SMS. Thanks again for adding " +
             "your voice & supporting smallholder farmers across Africa!$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
-                "smallholder farmers across Africa!"
+                "Thank you for adding your voice and supporting smallholder farmers across " +
+                "Africa. Download our song for free track here: http://www.shorturl.com/8unm"
             ),
         continue_session: false  // we expect the session to end here
       }).then(function() {
