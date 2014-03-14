@@ -5,7 +5,7 @@
 //     * metric_store:
 //         Name of the metric store to use. If omitted, metrics are sent
 //         to the metric store named 'default'.
-//     * metric_prefix: 
+//     * metric_prefix:
 //         String to append before metrics. E.g. global.twitter.
 //
 // Metrics produced:
@@ -45,6 +45,17 @@ function SilentEndState(name, text, next, handlers) {
     EndState.call(self, name, text, next, handlers);
 }
 
+
+function DoAgricTwitterError(msg) {
+    var self = this;
+    self.msg = msg;
+
+    self.toString = function() {
+        return "<DoAgricTwitterError: " + self.msg + ">";
+    };
+}
+
+
 function DoAgricTwitter() {
     var self = this;
     var _ = new jed({});
@@ -54,64 +65,71 @@ function DoAgricTwitter() {
     // Session metrics helper
 
     self.incr_metric = function(im, metric) {
-        var p = new Promise();
-        p.add_callback(function (value) {
-            im.metrics.fire_max(metric, value);
+        var p = im.api_request('kv.incr', {
+            key: 'metrics.' + metric,
+            amount: 1
         });
-        im.api.request(
-            "kv.incr", {key: "metrics." + metric, amount: 1},
-            function(reply) {
-                if (reply.success) {
-                    p.callback(reply.value);
-                }
-                else {
-                    im.log("Failed to increment metric " + metric + ": " +
-                           reply.reason);
-                    p.callback(0);
-                }
-            });
+        p.add_callback(function (result) {
+            if(!result.success) {
+                // fail very fast
+                throw new DoAgricTwitterError(result.reason);
+            }
+            return result.value;
+        });
+        p.add_callback(function (value) {
+            return im.metrics.fire_max(metric, value);
+        });
+
         return p;
     };
 
     // Contact stuff
 
     self.get_contact = function(im){
-         var p = im.api_request('contacts.get_or_create', {
+        var p = im.api_request('contacts.get_or_create', {
             delivery_class: 'twitter',
             addr: im.user_addr
+        });
+        p.add_callback(function (result) {
+            if(!result.success) {
+                // fail very fast
+                throw new DoAgricTwitterError(result.reason);
+            }
+            return result.contact;
         });
         return p;
     };
 
-    self.save_new_supporter = function(im){
-        var p_c = self.get_contact(im);
-        p_c.add_callback(function(result) {
-            var contact = result.contact;
-            var p_extra = im.api_request('contacts.update_extras', {
-                    key: contact.key,
-                    fields: {
-                        "oneorg_supporter": "1"
-                    }
-                });
-            p_extra.add_callback(function(result){
-                if (result.success === true) {
-                    return true;
-                } else {
-                    return im.log(result);
-                }
-            });
-            return p_extra;
+    self.save_contact_extras = function(im, contact, fields) {
+        var p = im.api_request('contacts.update_extras', {
+            key: contact.key,
+            fields: fields
         });
-        return p_c;
+        p.add_callback(function (result) {
+            if (!result.success) {
+                // fail very fast
+                throw new DoAgricTwitterError(result.reason);
+            }
+            return result.contact;
+        });
     };
 
+    self.save_new_supporter = function(im){
+        var p = self.get_contact(im);
+        p.add_callback(function (contact) {
+            return self.save_contact_extras(im, contact, {
+                oneorg_supporter: "1"
+            });
+        });
+        return p;
+    };
 
     // States
 
     self.add_creator('initial_state', function(state_name, im) {
         var p = self.get_contact(im);
-        p.add_callback(function(result) {
-            if (result.contact["extras-oneorg_supporter"] === undefined) {
+        p.add_callback(function(contact) {
+            if (contact["extras-oneorg_supporter"] === undefined) {
                 return new FreeText(
                     state_name,
                     'new_supporter',
@@ -129,25 +147,26 @@ function DoAgricTwitter() {
     self.add_creator('old_supporter', function(state_name, im) {
         return new SilentEndState(
             state_name,
-            'None',
+            'this should never be sent',
             'initial_state');
     });
 
     self.add_creator('new_supporter', function(state_name, im) {
         return new SilentEndState(
             state_name,
-            'None',
+            'this should never be sent',
             'initial_state',
-                {
-                    on_enter: function(){
-                        var p = new Promise();
-                        p.add_callback(self.incr_metric(im, im.config.metric_prefix + "supporter"));
-                        p.add_callback(self.save_new_supporter(im));
-                        p.callback;
-                        return p;
-                    }
+            {
+                on_enter: function(){
+                    var p = self.incr_metric(
+                        im, im.config.metric_prefix + 'supporter');
+                    p.add_callback(function (result) {
+                        return self.save_new_supporter(im);
+                    });
+                    return p;
                 }
-            );
+            }
+        );
     });
 
 }
