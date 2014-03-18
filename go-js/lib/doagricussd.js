@@ -224,11 +224,17 @@ function DoAgricUSSD() {
         );
     });
 
-    self.add_state(new EndState(
+    self.add_state(new ChoiceState(
         'ringback',
-        _.gettext("A download link has been sent to you via SMS. " +
-                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
-        'start',
+        function(choice) {
+            return choice.value;
+        },
+        _.gettext("ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease."),
+        [
+            new Choice('survey_start', _.gettext("Take the survey")),
+            new Choice('generic_end', _.gettext("Finish")),
+        ],
+        null,
         {
             on_enter: function() {
                 var p = new Promise();
@@ -243,7 +249,6 @@ function DoAgricUSSD() {
                 return p;
             }
         }
-
     ));
 
     self.add_state(new EndState(
@@ -386,6 +391,14 @@ function DoAgricUSSD() {
 
     self.add_state(new EndState(
         'survey_end',
+        _.gettext("Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing *120*646#. It's " +
+            "time to Do Agric & transform lives!"),
+        'start'
+    ));
+
+    self.add_state(new EndState(
+        'generic_end',
         _.gettext("Thanks for adding your voice & supporting African farmers. " +
             "Ask your friends & family to join you by dialing *120*646#. It's " +
             "time to Do Agric & transform lives!"),
