@@ -178,6 +178,26 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
+    it('should go to the survey start from ringback thanks', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '1',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
     it('should go to the MP3 page, send SMS and give option to survey or exit', function (done) {
       tester.check_state({
         user: {
@@ -557,6 +577,26 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("za.ussd.state_exited.ringback"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.generic_end"), 1);
           assert.equal(get_metric_value("za.ussd.session_closed_in.generic_end"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey start from ringback thanks', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '1',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_start"), 1);
       }).then(done, done);
     });
 
