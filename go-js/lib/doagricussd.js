@@ -42,6 +42,14 @@ var StateCreator = vumigo.state_machine.StateCreator;
 var HttpApi = vumigo.http_api.HttpApi;
 var Promise = vumigo.promise.Promise;
 
+function DoAgricUSSDError(msg) {
+     var self = this;
+     self.msg = msg;
+ 
+     self.toString = function() {
+         return "<DoAgricUSSDError: " + self.msg + ">";
+     };
+ }
 
 function DoAgricUSSD() {
     var self = this;
@@ -52,22 +60,21 @@ function DoAgricUSSD() {
     // Session metrics helper
 
     self.incr_metric = function(im, metric) {
-        var p = new Promise();
-        p.add_callback(function (value) {
-            im.metrics.fire_max(metric, value);
+        var p = im.api_request('kv.incr', {
+            key: 'metrics.' + metric,
+            amount: 1
         });
-        im.api.request(
-            "kv.incr", {key: "metrics." + metric, amount: 1},
-            function(reply) {
-                if (reply.success) {
-                    p.callback(reply.value);
-                }
-                else {
-                    im.log("Failed to increment metric " + metric + ": " +
-                           reply.reason);
-                    p.callback(0);
-                }
-            });
+        p.add_callback(function (result) {
+            if(!result.success) {
+                // fail very fast
+                throw new DoAgricUSSDError(result.reason);
+            }
+            return result.value;
+        });
+        p.add_callback(function (value) {
+            return im.metrics.fire_max(metric, value);
+        });
+
         return p;
     };
 
@@ -152,31 +159,40 @@ function DoAgricUSSD() {
     // Contact stuff
 
     self.get_contact = function(im){
-         var p = im.api_request('contacts.get_or_create', {
+        var p = im.api_request('contacts.get_or_create', {
             delivery_class: 'ussd',
             addr: im.user_addr
+        });
+        p.add_callback(function (result) {
+            if(!result.success) {
+                // fail very fast
+                throw new DoAgricUSSDError(result.reason);
+            }
+            return result.contact;
         });
         return p;
     };
 
+    self.save_contact_extras = function(im, contact, fields) {
+        var p = im.api_request('contacts.update_extras', {
+            key: contact.key,
+            fields: fields
+        });
+        p.add_callback(function (result) {
+            if (!result.success) {
+                // fail very fast
+                throw new DoAgricUSSDError(result.reason);
+            }
+            return result.contact;
+        });
+    };
+
     self.save_survey_results = function(im, answer_state, extra_key){
         var p_c = self.get_contact(im);
-        p_c.add_callback(function(result) {
-            var contact = result.contact;
+        p_c.add_callback(function(contact) {
             var to_save = {};
             to_save[extra_key] = im.get_user_answer(answer_state);
-            var p_extra = im.api_request('contacts.update_extras', {
-                    key: contact.key,
-                    fields: to_save
-                });
-            p_extra.add_callback(function(result){
-                if (result.success === true) {
-                    return true;
-                } else {
-                    return im.log(result);
-                }
-            });
-            return p_extra;
+            return self.save_contact_extras(im, contact, to_save);
         });
         return p_c;
     };
@@ -251,18 +267,24 @@ function DoAgricUSSD() {
         }
     ));
 
-    self.add_state(new EndState(
+    self.add_state(new ChoiceState(
         'mp3',
-        _.gettext("A download link has been sent to you via SMS. " +
-                  "Thanks again for adding your voice & supporting smallholder farmers across Africa!"),
-        'start',
+        function(choice) {
+            return choice.value;
+        },
+        _.gettext("ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease."),
+        [
+            new Choice('survey_start', _.gettext("Take the survey")),
+            new Choice('generic_end', _.gettext("Finish")),
+        ],
+        null,
         {
             on_enter: function() {
                 var p = new Promise();
                 p.add_callback(function(){
                     return self.send_sms(im, _.gettext(
-                        "Thank you for adding your voice and supporting smallholder farmers " +
-                        "across Africa. Download our song for free track here: " +
+                        "Thank you for adding your voice and supporting smallholder " +
+                        "farmers across Africa. Download our song for free track here: " +
                         "http://www.shorturl.com/8unm"));
                 });
                 p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
@@ -270,7 +292,6 @@ function DoAgricUSSD() {
                 return p;
             }
         }
-
     ));
 
     self.add_state(new ChoiceState(
