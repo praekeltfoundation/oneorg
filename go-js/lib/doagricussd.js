@@ -253,15 +253,14 @@ function DoAgricUSSD() {
         null,
         {
             on_enter: function() {
-                var p = new Promise();
-                p.add_callback(function(){
+                var p = self.incr_metric(
+                    im, im.config.metric_prefix + 'request.ringback');
+                p.add_callback(function (result) {
                     return self.send_sms(im, _.gettext(
                         "Thank you for adding your voice and supporting smallholder " +
                         "farmers across Africa. Download our free ringtone here: " +
-                        "http://www.shorturl.com/8unm"));
+                        im.config.download_ringback));
                 });
-                p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.ringback");});
-                p.callback();
                 return p;
             }
         }
@@ -280,15 +279,14 @@ function DoAgricUSSD() {
         null,
         {
             on_enter: function() {
-                var p = new Promise();
-                p.add_callback(function(){
+                var p = self.incr_metric(
+                    im, im.config.metric_prefix + 'request.mp3');
+                p.add_callback(function (result) {
                     return self.send_sms(im, _.gettext(
                         "Thank you for adding your voice and supporting smallholder " +
                         "farmers across Africa. Download our song for free track here: " +
-                        "http://www.shorturl.com/8unm"));
+                        im.config.download_mp3));
                 });
-                p.add_callback(function(){ return self.incr_metric(im, im.config.metric_prefix + "request.mp3");});
-                p.callback();
                 return p;
             }
         }
@@ -410,22 +408,25 @@ function DoAgricUSSD() {
         }
     ));
 
-    self.add_state(new EndState(
-        'survey_end',
-        _.gettext("Thanks for adding your voice & supporting African farmers. " +
-            "Ask your friends & family to join you by dialing *120*646#. It's " +
-            "time to Do Agric & transform lives!"),
-        'start'
-    ));
+    self.add_creator("survey_end", function(state_name, im) {
+        return new EndState(
+            state_name,
+            _.gettext("Thanks for adding your voice & supporting African farmers. " +
+                "Ask your friends & family to join you by dialing " + im.config.from_addr + ". It's " +
+                "time to Do Agric & transform lives!"),
+            'start'
+        );
+    });
 
-    self.add_state(new EndState(
-        'generic_end',
-        _.gettext("Thanks for adding your voice & supporting African farmers. " +
-            "Ask your friends & family to join you by dialing *120*646#. It's " +
-            "time to Do Agric & transform lives!"),
-        'start'
-    ));
-
+    self.add_creator("generic_end", function(state_name, im) {
+        return new EndState(
+            state_name,
+            _.gettext("Thanks for adding your voice & supporting African farmers. " +
+                "Ask your friends & family to join you by dialing " + im.config.from_addr + ". It's " +
+                "time to Do Agric & transform lives!"),
+            'start'
+        );
+    });
 }
 
 // launch app

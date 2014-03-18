@@ -3,5 +3,8 @@
     "metric_store": "oneorg_ussd_prd",
     "default_lang": "en_za",
     "sms_tag": ["oneorg", "prdzasms"],
-    "metric_prefix": "za.ussd."
+    "metric_prefix": "za.ussd.",
+    "download_mp3": "http://www.shorturl.com/8unm",
+    "download_ringback": "http://www.shorturl.com/8unm",
+    "from_addr": "*120*646#"
 }
