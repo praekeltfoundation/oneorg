@@ -156,31 +156,27 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
-    // it('choosing to exit should thank and exit', function (done) {
-    //   tester.check_state({
-    //     user: {
-    //       current_state: 'support_menu',
-    //       answers: {
-    //           main_menu: 'support_menu'
-    //       }
-    //     },
-    //     content: '1',
-    //     next_state: 'ringback',
-    //     response: "ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease.[^]" +
-    //         "1. Take the survey[^]" +
-    //         "2. Finish$",
-    //     teardown: assert_single_sms(
-    //             "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
-    //             "Download our free ringtone here: http://www.shorturl.com/8unm"
-    //         ),
-    //     continue_session: false  // we expect the session to end here
-    //   }).then(function() {
-    //       assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
-    //       assert.equal(get_metric_value("test.ussd.state_entered.ringback"), 1);
-    //       assert.equal(get_metric_value("test.ussd.session_closed_in.ringback"), 1);
-    //       assert.equal(get_metric_value("test.ussd.request.ringback"), 1);
-    //   }).then(done, done);
-    // });
+    it('choosing to exit from ringback should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.generic_end"), 1);
+      }).then(done, done);
+    });
 
     it('should go to the MP3 page, send SMS and end session', function (done) {
       tester.check_state({
@@ -517,6 +513,28 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.ringback"), 1);
           assert.equal(get_metric_value("za.ussd.request.ringback"), 1);
+      }).then(done, done);
+    });
+
+    it('choosing to exit from ringback should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.generic_end"), 1);
       }).then(done, done);
     });
 
