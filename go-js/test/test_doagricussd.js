@@ -64,8 +64,8 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -84,10 +84,10 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'support_menu',
-        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. Download the FREE track:[^]" +
+        response: "^Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:[^]" +
             "1. Ringback tone[^]" +
             "2. MP3[^]" +
-            "3. Take survey[^]" +
+            "3. Take the survey[^]" +
             "4. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
@@ -103,7 +103,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'about',
-        response: "^ONE is a campaigning & advocacy organisation of 3.5m people taking action to end extreme poverty & preventable disease. Find out more at www.one.org[^]" +
+        response: "^ONE is a campaigning and advocacy organization taking action " +
+            "to end extreme poverty and preventable disease. Find out more at www.one.org[^]" +
             "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
@@ -121,8 +122,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty.Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
@@ -131,7 +132,7 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
-    it('should go to the ringback tone page, send SMS and end session', function (done) {
+    it('should go to the ringback tone page, send SMS and give option to survey or exit', function (done) {
       tester.check_state({
         user: {
           current_state: 'support_menu',
@@ -141,20 +142,63 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'ringback',
-        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
+        response: "ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease.[^]" +
+            "1. Take the survey[^]" +
+            "2. Finish$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
-            ),
-        continue_session: false  // we expect the session to end here
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our free ringtone here: http://www.shorturl.com/8unm"
+            )
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.ringback"), 1);
-          assert.equal(get_metric_value("test.ussd.session_closed_in.ringback"), 1);
           assert.equal(get_metric_value("test.ussd.request.ringback"), 1);
       }).then(done, done);
     });
 
-    it('should go to the MP3 page, send SMS and end session', function (done) {
+    it('choosing to exit from ringback should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.generic_end"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey start from ringback thanks', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '1',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the MP3 page, send SMS and give option to survey or exit', function (done) {
       tester.check_state({
         user: {
           current_state: 'support_menu',
@@ -164,16 +208,39 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'mp3',
-        response: /A download link has been sent to you via SMS. Thanks again for adding your voice & supporting smallholder farmers across Africa!/,
+        response: "ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease.[^]" +
+            "1. Take the survey[^]" +
+            "2. Finish$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting smallholder farmers across Africa!"
-            ),
-        continue_session: false  // we expect the session to end here
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our song for free track here: http://www.shorturl.com/8unm"
+            )
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.mp3"), 1);
-          assert.equal(get_metric_value("test.ussd.session_closed_in.mp3"), 1);
           assert.equal(get_metric_value("test.ussd.request.mp3"), 1);
+      }).then(done, done);
+    });
+
+    it('choosing to exit from mp3 should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'mp3',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'mp3'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("test.ussd.state_exited.mp3"), 1);
+          assert.equal(get_metric_value("test.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("test.ussd.session_closed_in.generic_end"), 1);
       }).then(done, done);
     });
 
@@ -335,7 +402,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
@@ -360,7 +429,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: /Thanks for adding your voice & supporting farmers across Africa. Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric & transform lives./,
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("test.ussd.state_exited.survey_6"), 1);
@@ -393,9 +464,9 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
-            "Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. " +
+            "Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -414,11 +485,10 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'support_menu',
-        response: "^Thanks for adding your voice & supporting smallholder farmers across Africa. " +
-            "Download the FREE track:[^]" +
+        response: "^Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:[^]" +
             "1. Ringback tone[^]" +
             "2. MP3[^]" +
-            "3. Take survey[^]" +
+            "3. Take the survey[^]" +
             "4. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
@@ -434,9 +504,8 @@ describe('DoAgricUSSD', function () {
         },
         content: '3',
         next_state: 'about',
-        response: "^ONE is a campaigning & advocacy organisation of 3.5m people " +
-            "taking action to end extreme poverty & preventable disease. Find out more " +
-            "at www.one.org[^]" +
+        response: "^ONE is a campaigning and advocacy organization taking action to end " +
+            "extreme poverty and preventable disease. Find out more at www.one.org[^]" +
             "1. Main Menu$"
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
@@ -454,9 +523,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions of ppl out of poverty." +
-            "Add ur support & get FREE track feat D'banj[^]" +
-            "1. Support & FREE track[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. " +
+            "Add your support & get a FREE track feat D'banj[^]" +
+            "1. I support![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
@@ -465,7 +534,7 @@ describe('DoAgricUSSD', function () {
       }).then(done, done);
     });
 
-    it('should go to the ringback tone page, send SMS and end session', function (done) {
+    it('should go to the ringback tone page, send SMS and give option to survey or exit', function (done) {
       tester.check_state({
         user: {
           current_state: 'support_menu',
@@ -475,22 +544,63 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'ringback',
-        response: "^A download link has been sent to you via SMS. Thanks again for adding " +
-            "your voice & supporting smallholder farmers across Africa!$",
+        response: "ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease.[^]" +
+            "1. Take the survey[^]" +
+            "2. Finish$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
-                "smallholder farmers across Africa!"
-            ),
-        continue_session: false  // we expect the session to end here
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our free ringtone here: http://www.shorturl.com/8unm"
+            )
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.ringback"), 1);
-          assert.equal(get_metric_value("za.ussd.session_closed_in.ringback"), 1);
           assert.equal(get_metric_value("za.ussd.request.ringback"), 1);
       }).then(done, done);
     });
 
-    it('should go to the MP3 page, send SMS and end session', function (done) {
+    it('choosing to exit from ringback should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.generic_end"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the survey start from ringback thanks', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'ringback',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'ringback'
+          }
+        },
+        content: '1',
+        next_state: 'survey_start',
+        response: "^Are you a farmer\\?[^]" +
+            "1. Yes[^]" +
+            "2. No$"
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.ringback"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.survey_start"), 1);
+      }).then(done, done);
+    });
+
+    it('should go to the MP3 page, send SMS and give option to survey or exit', function (done) {
       tester.check_state({
         user: {
           current_state: 'support_menu',
@@ -500,18 +610,39 @@ describe('DoAgricUSSD', function () {
         },
         content: '2',
         next_state: 'mp3',
-        response: "^A download link has been sent to you via SMS. Thanks again for adding " +
-            "your voice & supporting smallholder farmers across Africa!$",
+        response: "ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease.[^]" +
+            "1. Take the survey[^]" +
+            "2. Finish$",
         teardown: assert_single_sms(
-                "Find your sound file at XXXXXX. Thanks again for adding your voice & supporting " +
-                "smallholder farmers across Africa!"
-            ),
-        continue_session: false  // we expect the session to end here
+                "Thank you for adding your voice and supporting smallholder farmers across Africa. " +
+                "Download our song for free track here: http://www.shorturl.com/8unm"
+            )
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.mp3"), 1);
-          assert.equal(get_metric_value("za.ussd.session_closed_in.mp3"), 1);
           assert.equal(get_metric_value("za.ussd.request.mp3"), 1);
+      }).then(done, done);
+    });
+
+    it('choosing to exit from mp3 should thank and exit', function (done) {
+      tester.check_state({
+        user: {
+          current_state: 'mp3',
+          answers: {
+              main_menu: 'support_menu',
+              support_menu: 'mp3'
+          }
+        },
+        content: '2',
+        next_state: 'generic_end',
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
+        continue_session: false  // we expect the session to end here
+      }).then(function() {
+          assert.equal(get_metric_value("za.ussd.state_exited.mp3"), 1);
+          assert.equal(get_metric_value("za.ussd.state_entered.generic_end"), 1);
+          assert.equal(get_metric_value("za.ussd.session_closed_in.generic_end"), 1);
       }).then(done, done);
     });
 
@@ -664,9 +795,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
-            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
-            "& transform lives.$",
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);
@@ -690,9 +821,9 @@ describe('DoAgricUSSD', function () {
         },
         content: '1',
         next_state: 'survey_end',
-        response: "^Thanks for adding your voice & supporting farmers across Africa. " +
-            "Ask ur friends & family to join u by dialing XXXXX. It's time to Do Agric " +
-            "& transform lives.$",
+        response: "^Thanks for adding your voice & supporting African farmers. " +
+            "Ask your friends & family to join you by dialing \\*120\\*646\\#. It's " +
+            "time to Do Agric & transform lives!$",
         continue_session: false  // we expect the session to end here
       }).then(function() {
           assert.equal(get_metric_value("za.ussd.state_exited.survey_6"), 1);

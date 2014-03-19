@@ -2,5 +2,8 @@
     "metric_store": "oneorg_ussd_dev",
     "default_lang": "en",
     "sms_tag": ["apool", "atag"],
-    "metric_prefix": "test.ussd."
+    "metric_prefix": "test.ussd.",
+    "download_mp3": "http://www.shorturl.com/8unm",
+    "download_ringback": "http://www.shorturl.com/8unm",
+    "from_addr": "*120*646#"
 }
