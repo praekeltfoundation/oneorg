@@ -1,4 +1,6 @@
 #/bin/bash
-eval cd go-js && npm install . && npm test
+eval python manage.py test
 r1=$?
-exit $(($r1))
+eval cd go-js && npm install . && npm test
+r2=$?
+exit $(($r1 + $r2))
