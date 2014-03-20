@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('source_timestamp', self.gf('django.db.models.fields.DateTimeField')()),
-            ('channel', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('channel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['metrics_manager.Channel'])),
             ('channel_uid', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('msisdn', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('email', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
@@ -41,6 +41,13 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'metrics_manager', ['IncomingData'])
 
+        # Adding model 'Channel'
+        db.create_table(u'metrics_manager_channel', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=10)),
+        ))
+        db.send_create_signal(u'metrics_manager', ['Channel'])
+
 
     def backwards(self, orm):
         # Deleting model 'MetricSummary'
@@ -49,15 +56,23 @@ class Migration(SchemaMigration):
         # Deleting model 'IncomingData'
         db.delete_table(u'metrics_manager_incomingdata')
 
+        # Deleting model 'Channel'
+        db.delete_table(u'metrics_manager_channel')
+
 
     models = {
+        u'metrics_manager.channel': {
+            'Meta': {'object_name': 'Channel'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '10'})
+        },
         u'metrics_manager.incomingdata': {
             'Meta': {'object_name': 'IncomingData'},
             'age': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True', 'blank': 'True'}),
             'budget_enough': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'budget_should': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True', 'blank': 'True'}),
             'budget_think': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True', 'blank': 'True'}),
-            'channel': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'channel': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['metrics_manager.Channel']"}),
             'channel_uid': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'country_code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),

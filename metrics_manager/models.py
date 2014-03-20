@@ -17,7 +17,8 @@ class MetricSummary(models.Model):
 class IncomingData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     source_timestamp = models.DateTimeField()
-    channel = models.CharField(max_length=10)
+    channel = models.ForeignKey('Channel',
+                             verbose_name=u'Channel')
     channel_uid = models.CharField(max_length=255)
     msisdn = models.CharField(max_length=100,null=True, blank=True)
     email = models.CharField(max_length=255,null=True, blank=True)
@@ -39,3 +40,12 @@ class IncomingData(models.Model):
     class Meta:
         verbose_name = "Incoming Data"
         verbose_name_plural = "Incoming Data"
+
+class Channel(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Channel"
