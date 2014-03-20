@@ -1,2 +1,0 @@
-# one.org doagric project
- 
