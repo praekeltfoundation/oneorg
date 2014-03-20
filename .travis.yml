@@ -1,3 +1,11 @@
+language: python
+python:
+  - 2.6
+  - 2.7
+install:
+    - pip install -r requirements.pip --use-wheel
+before_script:
+  - psql -c 'create database oneorg;' -U postgres
 language: node_js
 node_js:
   - 0.10
