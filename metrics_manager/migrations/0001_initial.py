@@ -48,6 +48,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'metrics_manager', ['Channel'])
 
+        from django.core.management import call_command
+        call_command('loaddata', 'channel.json')
+
 
     def backwards(self, orm):
         # Deleting model 'MetricSummary'
