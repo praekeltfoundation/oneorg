@@ -20,4 +20,9 @@ def ingest_csv(csv_data, channel):
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line[1]
                 incoming_data.email = line[3]
+                incoming_data.name = line[4]
+                incoming_data.msisdn = line[5]
+                # Country in header but not sample data we have
+                if len(line) == 8 and line[7] != "":
+                    incoming_data.country_code = line[7]
                 incoming_data.save()
