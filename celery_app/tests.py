@@ -19,6 +19,14 @@ class TestUploadCSV(TestCase):
                     "\"Malefa tshabalala\",0700000002,user2@mxit.com\r\n")
     M_LINE_DIRTY_1 = ("\"2014-02-04 12:35:34\",m00000000004\r\n")
 
+    E_HEADER = ("Date,\"First name:\",\"Second name:\",Email:,\"Mobile number:\""
+                    ",age,city,gender\r\n")
+    E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,user1@eskimi.com,"
+                    "2311111111111,21,Okene,male\r\n")
+    E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,user2@eskimi.com,"
+                    "2322222222222,27,Ibadan,male\r\n")
+    E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade,user3@eskimi.com\r\n")
+
     fixtures = ["channel.json"]
     def setUp(self):
         self.admin = User.objects.create_superuser('test', 'test@example.com', "pass123")
@@ -48,3 +56,19 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         self.assertRaises(IncomingData.DoesNotExist, 
             lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
+
+    def test_upload_eskimi_clean(self):
+        channel = Channel.objects.get(name="eskimi")
+        clean_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + self.E_LINE_CLEAN_2
+        uploaded = StringIO(clean_sample)
+        ingest_csv(uploaded, channel)
+        imported = IncomingData.objects.get(channel_uid="2311111111111")
+        self.assertEquals(imported.email, "user1@eskimi.com")
+
+    def test_upload_eskimi_dirty(self):
+        channel = Channel.objects.get(name="eskimi")
+        dirty_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + self.E_LINE_DIRTY_1
+        uploaded = StringIO(dirty_sample)
+        ingest_csv(uploaded, channel)
+        self.assertRaises(IncomingData.DoesNotExist,
+            lambda:  IncomingData.objects.get(channel_uid="233333333333"))
