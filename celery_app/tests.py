@@ -1,16 +1,19 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
+# Django imports
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+class TestUploadCSV(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser('test', 'test@example.com', "pass123")
+
+    def test_upload_view_not_logged_in_blocked(self):
+        response = self.client.post(reverse("csv_uploader"))
+        self.assertEqual(response.template_name, "admin/login.html")
+
+    def test_upload_view_logged_in(self):
+        self.client.login(username="test", password="pass123")
+
+        response = self.client.post(reverse("csv_uploader"))
+        self.assertIn("Upload CSV", response.content)

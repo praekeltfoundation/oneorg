@@ -10,7 +10,7 @@ from forms import CSVUploader
 
 
 @staff_member_required
-def uploader(request):
+def uploader(request, page_name):
     if request.method == "POST":
         form = CSVUploader(request.POST, request.FILES)
         if form.is_valid():
