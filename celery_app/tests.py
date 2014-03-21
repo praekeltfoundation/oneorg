@@ -27,6 +27,20 @@ class TestUploadCSV(TestCase):
                     "2322222222222,27,Ibadan,male\r\n")
     E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade,user3@eskimi.com\r\n")
 
+    B_HEADER = ("Date,Country,City,SurveyUserId,\"I agree that AIDS, TB and malaria "
+                "are all preventable and treatable  yet together they still kill more "
+                "than 2 million Africans each year. I agree that spending promises through "
+                "clear and open health budgets need to be upheld so these deaths can be avoided.\","
+                "Please enter your full name.,Account ID,User Name,Age,Sex,Relationship Status,"
+                "Education Level,Employment Status,Num Children\r\n")
+
+    B_LINE_CLEAN_1 = ("2013-07-28,UG,Kampala,111111,Yes,User One,1111111,User01,"
+                        "24,M,Single,College,Student,0\r\n")
+    B_LINE_CLEAN_2 = ("2013-07-28,ZW,Bindura,111112,Yes,User Two,2222222,User02,"
+                        "23,F,Engaged,College,Self-employed,0\r\n")
+    B_LINE_DIRTY_1 = ("2013-07-28,ZW,Bindura,111113,Yes,User Three\r\n")
+
+
     fixtures = ["channel.json"]
     def setUp(self):
         self.admin = User.objects.create_superuser('test', 'test@example.com', "pass123")
@@ -72,3 +86,19 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         self.assertRaises(IncomingData.DoesNotExist,
             lambda:  IncomingData.objects.get(channel_uid="233333333333"))
+
+    def test_upload_binu_clean(self):
+        channel = Channel.objects.get(name="binu")
+        clean_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + self.B_LINE_CLEAN_2
+        uploaded = StringIO(clean_sample)
+        ingest_csv(uploaded, channel)
+        imported = IncomingData.objects.get(channel_uid="1111111")
+        self.assertEquals(imported.name, "User One")
+
+    def test_upload_binu_dirty(self):
+        channel = Channel.objects.get(name="binu")
+        dirty_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + self.B_LINE_DIRTY_1
+        uploaded = StringIO(dirty_sample)
+        ingest_csv(uploaded, channel)
+        self.assertRaises(IncomingData.DoesNotExist,
+            lambda:  IncomingData.objects.get(channel_uid="3333333"))
