@@ -17,6 +17,7 @@ class TestUploadCSV(TestCase):
                     "Joyclere,\"Hy guyz\",0700000001\r\n")
     M_LINE_CLEAN_2 = ("\"2014-02-04 12:35:34\",m00000000002,User2,user2@mxit.im,"
                     "\"Malefa tshabalala\",0700000002,user2@mxit.com\r\n")
+    M_LINE_DIRTY_1 = ("\"2014-02-04 12:35:34\",m00000000004\r\n")
 
     fixtures = ["channel.json"]
     def setUp(self):
@@ -39,3 +40,11 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="m00000000002")
         self.assertEquals(imported.email, "user2@mxit.im")
+
+    def test_upload_mxit_dirty(self):
+        channel = Channel.objects.get(name="mxit")
+        dirty_sample =  self.M_SEP + self.M_HEADER + self.M_LINE_CLEAN_1 + self.M_LINE_DIRTY_1
+        uploaded = StringIO(dirty_sample)
+        ingest_csv(uploaded, channel)
+        self.assertRaises(IncomingData.DoesNotExist, 
+            lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
