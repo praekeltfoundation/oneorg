@@ -46,8 +46,7 @@ def ingest_csv(csv_data, channel):
             except IntegrityError as e:
                 incoming_data = None
                 # crappy CSV data
-                # logger.error(e.message)
-                pass
+                logger.error(e)
     elif channel.name == "eskimi":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -69,8 +68,7 @@ def ingest_csv(csv_data, channel):
             except IntegrityError as e:
                 incoming_data = None
                 # crappy CSV data
-                # logger.error(e.message)
-                pass
+                logger.error(e)
     elif channel.name == "binu":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -92,5 +90,4 @@ def ingest_csv(csv_data, channel):
             except IntegrityError as e:
                 incoming_data = None
                 # crappy CSV data
-                # logger.error(e.message)
-                pass
+                logger.error(e)
