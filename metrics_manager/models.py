@@ -18,10 +18,10 @@ class IncomingData(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     source_timestamp = models.DateTimeField()
     channel = models.ForeignKey('Channel',
-                             verbose_name=u'Channel')
+                                verbose_name=u'Channel')
     channel_uid = models.CharField(max_length=255)
-    msisdn = models.CharField(max_length=100,null=True, blank=True)
-    email = models.CharField(max_length=255,null=True, blank=True)
+    msisdn = models.CharField(max_length=100, null=True, blank=True)
+    email = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     farmer = models.NullBooleanField(null=True, blank=True)
     budget_enough = models.NullBooleanField(null=True, blank=True)
@@ -40,6 +40,7 @@ class IncomingData(models.Model):
     class Meta:
         verbose_name = "Incoming Data"
         verbose_name_plural = "Incoming Data"
+
 
 class Channel(models.Model):
     name = models.CharField(max_length=10)

@@ -6,6 +6,7 @@ class MetricSummaryAdmin(admin.ModelAdmin):
 
 
 class IncomingDataAdmin(admin.ModelAdmin):
+
     list_display = ["created_at", "source_timestamp", "channel", "channel_uid",
         "msisdn", "email", "name", "farmer", "budget_enough", "budget_think",
         "budget_should", "sex", "age", "country_code", "location", "download_mp3",

@@ -16,9 +16,9 @@ def uploader(request, page_name):
         if form.is_valid():
             form.save()
             messages.success(request,
-                "CSV has been uploaded for processing",
-                    extra_tags="success")
-            context = {"form": form}     
+                             "CSV has been uploaded for processing",
+                             extra_tags="success")
+            context = {"form": form}
         else:
             for errors_key, error_value in form.errors.iteritems():
                 messages.error(request,
@@ -28,9 +28,9 @@ def uploader(request, page_name):
         context.update(csrf(request))
 
         return render_to_response("custom_admin/upload.html", context,
-                context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request))
     else:
         form = CSVUploader()
         context = {"form": form}
         return render_to_response("custom_admin/upload.html", context,
-        context_instance=RequestContext(request)) 
+                                  context_instance=RequestContext(request))

@@ -7,6 +7,7 @@ from StringIO import StringIO
 from celery_app.tasks import ingest_csv
 from metrics_manager.models import Channel, IncomingData
 
+
 class TestUploadCSV(TestCase):
 
     M_SEP = ("sep=,\r\n")
@@ -14,17 +15,17 @@ class TestUploadCSV(TestCase):
                 "\"Optional. email address - (Dont have an email address? "
                 "Use your mxit address (mxitid@mxit.im)\",Country\r\n")
     M_LINE_CLEAN_1 = ("\"2014-02-02 15:34:13\",m00000000001,User1,user1@mxit.im,"
-                    "Joyclere,\"Hy guyz\",0700000001\r\n")
+                      "Joyclere,\"Hy guyz\",0700000001\r\n")
     M_LINE_CLEAN_2 = ("\"2014-02-04 12:35:34\",m00000000002,User2,user2@mxit.im,"
-                    "\"Malefa tshabalala\",0700000002,user2@mxit.com\r\n")
+                      "\"Malefa tshabalala\",0700000002,user2@mxit.com\r\n")
     M_LINE_DIRTY_1 = ("\"2014-02-04 12:35:34\",m00000000004\r\n")
 
     E_HEADER = ("Date,\"First name:\",\"Second name:\",Email:,\"Mobile number:\""
-                    ",age,city,gender\r\n")
+                ",age,city,gender\r\n")
     E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,user1@eskimi.com,"
-                    "2311111111111,21,Okene,male\r\n")
+                      "2311111111111,21,Okene,male\r\n")
     E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,user2@eskimi.com,"
-                    "2322222222222,27,Ibadan,male\r\n")
+                      "2322222222222,27,Ibadan,male\r\n")
     E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade,user3@eskimi.com\r\n")
 
     B_HEADER = ("Date,Country,City,SurveyUserId,\"I agree that AIDS, TB and malaria "
@@ -35,15 +36,16 @@ class TestUploadCSV(TestCase):
                 "Education Level,Employment Status,Num Children\r\n")
 
     B_LINE_CLEAN_1 = ("2013-07-28,UG,Kampala,111111,Yes,User One,1111111,User01,"
-                        "24,M,Single,College,Student,0\r\n")
+                      "24,M,Single,College,Student,0\r\n")
     B_LINE_CLEAN_2 = ("2013-07-28,ZW,Bindura,111112,Yes,User Two,2222222,User02,"
-                        "23,F,Engaged,College,Self-employed,0\r\n")
+                      "23,F,Engaged,College,Self-employed,0\r\n")
     B_LINE_DIRTY_1 = ("2013-07-28,ZW,Bindura,111113,Yes,User Three\r\n")
 
-
     fixtures = ["channel.json"]
+
     def setUp(self):
-        self.admin = User.objects.create_superuser('test', 'test@example.com', "pass123")
+        self.admin = User.objects.create_superuser(
+            'test', 'test@example.com', "pass123")
 
     def test_upload_view_not_logged_in_blocked(self):
         response = self.client.post(reverse("csv_uploader"))
@@ -57,7 +59,8 @@ class TestUploadCSV(TestCase):
 
     def test_upload_mxit_clean(self):
         channel = Channel.objects.get(name="mxit")
-        clean_sample =  self.M_SEP + self.M_HEADER + self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
+        clean_sample =  self.M_SEP + self.M_HEADER + \
+            self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="m00000000002")
@@ -65,15 +68,17 @@ class TestUploadCSV(TestCase):
 
     def test_upload_mxit_dirty(self):
         channel = Channel.objects.get(name="mxit")
-        dirty_sample =  self.M_SEP + self.M_HEADER + self.M_LINE_CLEAN_1 + self.M_LINE_DIRTY_1
+        dirty_sample =  self.M_SEP + self.M_HEADER + \
+            self.M_LINE_CLEAN_1 + self.M_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
         ingest_csv(uploaded, channel)
-        self.assertRaises(IncomingData.DoesNotExist, 
-            lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
+        self.assertRaises(IncomingData.DoesNotExist,
+                          lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
 
     def test_upload_eskimi_clean(self):
         channel = Channel.objects.get(name="eskimi")
-        clean_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + self.E_LINE_CLEAN_2
+        clean_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
+            self.E_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="2311111111111")
@@ -81,15 +86,17 @@ class TestUploadCSV(TestCase):
 
     def test_upload_eskimi_dirty(self):
         channel = Channel.objects.get(name="eskimi")
-        dirty_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + self.E_LINE_DIRTY_1
+        dirty_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
+            self.E_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
         ingest_csv(uploaded, channel)
         self.assertRaises(IncomingData.DoesNotExist,
-            lambda:  IncomingData.objects.get(channel_uid="233333333333"))
+                          lambda:  IncomingData.objects.get(channel_uid="233333333333"))
 
     def test_upload_binu_clean(self):
         channel = Channel.objects.get(name="binu")
-        clean_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + self.B_LINE_CLEAN_2
+        clean_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
+            self.B_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="1111111")
@@ -97,8 +104,9 @@ class TestUploadCSV(TestCase):
 
     def test_upload_binu_dirty(self):
         channel = Channel.objects.get(name="binu")
-        dirty_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + self.B_LINE_DIRTY_1
+        dirty_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
+            self.B_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
         ingest_csv(uploaded, channel)
         self.assertRaises(IncomingData.DoesNotExist,
-            lambda:  IncomingData.objects.get(channel_uid="3333333"))
+                          lambda:  IncomingData.objects.get(channel_uid="3333333"))
