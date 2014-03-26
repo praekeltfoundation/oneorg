@@ -13,11 +13,17 @@ describe('DoAgricTwitter', function () {
   var tester;
   var fixtures = [];
   var config_global = 'test/fixtures/config_twitter.global.dev.json';
+  var SENTINAL = "__SENTINAL__";
 
   var get_metric_value = function (metric){
     var config = JSON.parse(tester.api.config_store.config);
-    var metricobj = tester.api.metrics[config.metric_store][metric];
-    return metricobj.values;
+    if (tester.api.metrics[config.metric_store] !== undefined){
+      var metricobj = tester.api.metrics[config.metric_store][metric];
+      return metricobj.values;
+    } else {
+      return 0;
+    }
+    
   };
 
   var get_contact_value = function (key){
@@ -37,6 +43,7 @@ describe('DoAgricTwitter', function () {
           var config = JSON.parse(fs.readFileSync(config_global));
           api.config_store.config = JSON.stringify(config);
 
+          api.request_calls.push({content:SENTINAL, continue_session: true});
           fixtures.forEach(function (f) {
             api.load_http_fixture(f);
           });
@@ -50,9 +57,8 @@ describe('DoAgricTwitter', function () {
         from_addr: "@testuser",
         user: null,
         content: 'I support #doagric',
-        next_state: 'initial_state',
-        response: null,
-        continue_session: false  // we expect the session to end here
+        next_state: 'new_supporter',
+        response: SENTINAL
       }).then(function() {
          assert.equal(get_metric_value("test.twitter.supporter"), 1);
          assert.equal(get_contact_value("extras-oneorg_supporter"), "1");
@@ -67,6 +73,7 @@ describe('DoAgricTwitter', function () {
         custom_setup: function (api) {
           var config = JSON.parse(fs.readFileSync(config_global));
           api.config_store.config = JSON.stringify(config);
+          api.request_calls.push({content:SENTINAL, continue_session: true});
 
           var dummy_contact = {
               key: "f953710a2472447591bd59e906dc2c26",
@@ -102,11 +109,10 @@ describe('DoAgricTwitter', function () {
         from_addr: "@testuser",
         user: null,
         content: 'I support #doagric again',
-        next_state: 'initial_state',
-        response: null,
-        continue_session: false  // we expect the session to end here
+        next_state: 'old_supporter',
+        response: SENTINAL
       }).then(function() {
-         assert.equal(get_metric_value("test.twitter.supporter"), null);
+         assert.equal(get_metric_value("test.twitter.supporter"), 0);
          assert.equal(get_contact_value("extras-oneorg_supporter"), "1");
       }).then(done, done);
     });

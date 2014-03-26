@@ -33,16 +33,10 @@ function SilentEndState(name, text, next, handlers) {
     // We need to do this because SMS/Twitter doesn't have the Session capabities
     // that provide us this functionality when using USSD.
     var self = this;
-    handlers = handlers || {};
-    if(handlers.on_enter === undefined) {
-        handlers.on_enter = function() {
-            self.input_event('', function() {});
-        };
-    }
+    EndState.call(self, name, text, next, handlers);
     self.send_reply = function(){
         return false;
     };
-    EndState.call(self, name, text, next, handlers);
 }
 
 
