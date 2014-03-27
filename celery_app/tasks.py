@@ -1,7 +1,7 @@
 from celery import task
 import csv
 from metrics_manager.models import IncomingData
-from dateutil import parser
+import iso8601
 from django.db import IntegrityError, transaction
 import logging
 logger = logging.getLogger(__name__)
@@ -32,8 +32,7 @@ def ingest_csv(csv_data, channel):
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = parser.parse(
-                    line["Date"] + " UTC")
+                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["UserID"]
                 incoming_data.email = line["Mxit Email"]
@@ -52,8 +51,7 @@ def ingest_csv(csv_data, channel):
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = parser.parse(
-                    line["Date"] + " 00:00:00 UTC")
+                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["Mobile number:"]
                 incoming_data.email = line["Email:"]
@@ -74,8 +72,7 @@ def ingest_csv(csv_data, channel):
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = parser.parse(
-                    line["Date"] + " 00:00:00 UTC")
+                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["Account ID"]
                 incoming_data.name = line["Please enter your full name."]
