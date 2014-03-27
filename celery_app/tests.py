@@ -1,8 +1,10 @@
 # Django imports
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import utc
 from django.test import TestCase
 from StringIO import StringIO
+from datetime import datetime
 
 from celery_app.tasks import ingest_csv
 from metrics_manager.models import Channel, IncomingData
@@ -65,7 +67,11 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="m00000000002")
         self.assertEquals(imported.email, "user2@mxit.im")
-
+        self.assertEquals(imported.source_timestamp, datetime(2014, 2, 4, 12, 35, 34, tzinfo=utc))
+        self.assertEquals(imported.name, "Malefa tshabalala")
+        self.assertEquals(imported.channel_uid, "m00000000002")
+        self.assertEquals(imported.msisdn, "0700000002")
+        
     def test_upload_mxit_dirty(self):
         channel = Channel.objects.get(name="mxit")
         dirty_sample =  self.M_SEP + self.M_HEADER + \
@@ -83,6 +89,10 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="2311111111111")
         self.assertEquals(imported.email, "user1@eskimi.com")
+        self.assertEquals(imported.source_timestamp, datetime(2014, 2, 17, tzinfo=utc))
+        self.assertEquals(imported.name, "Idris Ibrahim")
+        self.assertEquals(imported.channel_uid, "2311111111111")
+        self.assertEquals(imported.msisdn, "2311111111111")
 
     def test_upload_eskimi_dirty(self):
         channel = Channel.objects.get(name="eskimi")
@@ -101,6 +111,9 @@ class TestUploadCSV(TestCase):
         ingest_csv(uploaded, channel)
         imported = IncomingData.objects.get(channel_uid="1111111")
         self.assertEquals(imported.name, "User One")
+        self.assertEquals(imported.source_timestamp, datetime(2013, 7, 28, tzinfo=utc))
+        self.assertEquals(imported.channel_uid, "1111111")
+        self.assertEquals(imported.age, "24")
 
     def test_upload_binu_dirty(self):
         channel = Channel.objects.get(name="binu")
