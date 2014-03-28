@@ -1,0 +1,37 @@
+[
+    {
+        "pk": 1,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "mxit"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "facebook"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "2go"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "binu"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "eskimi"
+        }
+    }
+]
