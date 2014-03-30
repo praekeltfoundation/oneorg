@@ -64,7 +64,7 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.M_SEP + self.M_HEADER + \
             self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="m00000000002")
         self.assertEquals(imported.email, "user2@mxit.im")
         self.assertEquals(imported.source_timestamp, datetime(2014, 2, 4, 12, 35, 34, tzinfo=utc))
@@ -77,7 +77,7 @@ class TestUploadCSV(TestCase):
         dirty_sample =  self.M_SEP + self.M_HEADER + \
             self.M_LINE_CLEAN_1 + self.M_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
 
@@ -86,7 +86,7 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
             self.E_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="2311111111111")
         self.assertEquals(imported.email, "user1@eskimi.com")
         self.assertEquals(imported.source_timestamp, datetime(2014, 2, 17, tzinfo=utc))
@@ -99,7 +99,7 @@ class TestUploadCSV(TestCase):
         dirty_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
             self.E_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="233333333333"))
 
@@ -108,7 +108,7 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
             self.B_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="1111111")
         self.assertEquals(imported.name, "User One")
         self.assertEquals(imported.source_timestamp, datetime(2013, 7, 28, tzinfo=utc))
@@ -120,6 +120,6 @@ class TestUploadCSV(TestCase):
         dirty_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
             self.B_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="3333333"))
