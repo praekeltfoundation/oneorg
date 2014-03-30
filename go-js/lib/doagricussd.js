@@ -13,6 +13,9 @@
 //
 // Metrics produced:
 //
+// * supporter
+// * <countrycode>.supporter
+// * <countrycode>.ussd.supporter
 // * <countrycode>.ussd.sessions
 // * <countrycode>.ussd.unique_users
 // * <countrycode>.ussd.session_new_in.<state-name>
@@ -20,7 +23,6 @@
 // * <countrycode>.ussd.possible_timeout_in.<state-name>
 // * <countrycode>.ussd.state_entered.<state-name>
 // * <countrycode>.ussd.state_exited.<state-name>
-// * <countrycode>.ussd.supporter
 // * <countrycode>.ussd.request.ringback
 // * <countrycode>.ussd.request.mp3
 
@@ -234,7 +236,14 @@ function DoAgricUSSD() {
             null,
             {
                 on_enter: function() {
-                    return self.incr_metric(im, im.config.metric_prefix + "supporter");
+                    var p = self.incr_metric(im, "supporter");
+                    p.add_callback(function(result){
+                        return self.incr_metric(im, im.config.country + ".supporter");
+                    });
+                    p.add_callback(function(result){
+                        return self.incr_metric(im, im.config.metric_prefix + "supporter");
+                    });
+                    return p;
                 }
             }
         );

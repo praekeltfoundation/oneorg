@@ -93,6 +93,8 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("test.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.supporter"), 1);
+          assert.equal(get_metric_value("test.supporter"), 1);
+          assert.equal(get_metric_value("supporter"), 1);
       }).then(done, done);
     });
 
@@ -494,6 +496,8 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("za.ussd.state_exited.main_menu"), 1);
           assert.equal(get_metric_value("za.ussd.state_entered.support_menu"), 1);
           assert.equal(get_metric_value("za.ussd.supporter"), 1);
+          assert.equal(get_metric_value("za.supporter"), 1);
+          assert.equal(get_metric_value("supporter"), 1);
       }).then(done, done);
     });
 
