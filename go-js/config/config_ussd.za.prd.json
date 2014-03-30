@@ -1,6 +1,6 @@
 {
-    "user_store": "oneorg_ussd_prd",
-    "metric_store": "oneorg_ussd_prd",
+    "user_store": "oneorg_prd",
+    "metric_store": "oneorg_prd",
     "default_lang": "en_za",
     "sms_tag": ["oneorg", "prdzasms"],
     "metric_prefix": "za.ussd.",

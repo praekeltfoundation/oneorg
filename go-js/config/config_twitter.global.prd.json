@@ -1,0 +1,5 @@
+{
+    "user_store": "oneorg_prd",
+    "metric_store": "oneorg_prd",
+    "metric_prefix": "global.twitter."
+}

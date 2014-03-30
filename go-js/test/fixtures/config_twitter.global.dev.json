@@ -1,0 +1,4 @@
+{
+    "metric_store": "oneorg_twitter_dev",
+    "metric_prefix": "test.twitter."
+}
