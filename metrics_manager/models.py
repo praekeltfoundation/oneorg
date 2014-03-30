@@ -5,7 +5,8 @@ from django.db import models
 
 class MetricSummary(models.Model):
     country_code = models.CharField(max_length=2)
-    channel = models.CharField(max_length=10)
+    channel = models.ForeignKey('Channel',
+                                verbose_name=u'Channel')
     metric = models.CharField(max_length=50)
     total = models.IntegerField()
 
