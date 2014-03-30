@@ -52,6 +52,7 @@ class VumiGoSender(MetricSender):
                 agg
             ]
         ]
+        print payload
         response = requests.put(self._api_url(), auth=(self.account_id, self.conversation_token), headers=headers, data=json.dumps(payload))
 
         if response.status_code != requests.codes.ok:
@@ -64,6 +65,7 @@ class VumiGoSender(MetricSender):
             raise MetricSendingError("Bad response received from Vumi Go"
                                   " HTTP API. Excepted JSON, received:"
                                   " %r" % (response.content,))
+        print reply
         return reply
 
 
@@ -73,6 +75,7 @@ class LoggingSender(MetricSender):
         self._level = level
 
     def fire(self, metric, value, agg):
+        print "Metric %r: %r (%r)" % (metric, value, agg)
         self._logger.log(self._level, "Metric %r: %r (%r)" % (metric, value, agg))
 
 
@@ -97,5 +100,5 @@ def create_sender(metric_config):
                             " are: %s" % (sender_type, senders.keys()))
     return sender_cls(**metric_config)
 
-# default_sender = create_sender(getattr(settings, 'METRIC_SETTINGS', None))
-# fire = default_sender.fire
+default_sender = create_sender(getattr(settings, 'METRIC_SETTINGS', None))
+fire = default_sender.fire

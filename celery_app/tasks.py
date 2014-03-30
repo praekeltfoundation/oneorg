@@ -1,6 +1,7 @@
 from celery import task
 import csv
-from metrics_manager.models import IncomingData
+from metrics_manager.models import IncomingData, MetricSummary
+from celery_app.metric_sender import fire
 import iso8601
 from django.db import IntegrityError, transaction
 import logging
@@ -32,7 +33,8 @@ def ingest_csv(csv_data, channel):
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
+                incoming_data.source_timestamp = iso8601.parse_date(
+                    line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["UserID"]
                 incoming_data.email = line["Mxit Email"]
@@ -46,12 +48,14 @@ def ingest_csv(csv_data, channel):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
+        sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
         records = csv.DictReader(csv_data)
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
+                incoming_data.source_timestamp = iso8601.parse_date(
+                    line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["Mobile number:"]
                 incoming_data.email = line["Email:"]
@@ -67,12 +71,14 @@ def ingest_csv(csv_data, channel):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
+        sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "binu":
         records = csv.DictReader(csv_data)
         for line in records:
             try:
                 incoming_data = IncomingData()
-                incoming_data.source_timestamp = iso8601.parse_date(line["Date"])
+                incoming_data.source_timestamp = iso8601.parse_date(
+                    line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["Account ID"]
                 incoming_data.name = line["Please enter your full name."]
@@ -88,3 +94,23 @@ def ingest_csv(csv_data, channel):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
+        sum_and_fire.delay(channel)  # send metrics
+
+
+@task()
+def sum_and_fire(channel):
+    """ When a channel is updated a metric needs sending to Vumi """
+    metrics = MetricSummary.objects.filter(channel=channel).all()
+    extras = {
+        "supporter": 0,
+        "za.supporter": 0,
+        "ng.supporter": 0
+    }
+    for metric in metrics:
+        total = IncomingData.objects.filter(channel=channel).filter(
+            country_code=metric.country_code).count()
+        extras["supporter"] += total
+        extras[metric.country_code + ".supporter"] += total
+        fire(metric.metric, total, "MAX")
+    for extra, value in extras.iteritems():
+        fire(extra, value, "MAX")

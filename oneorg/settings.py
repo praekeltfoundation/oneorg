@@ -227,6 +227,10 @@ RAVEN_CONFIG = {
     # 'dsn': 'http://public:secret@example.com/1',
 }
 
+METRIC_SETTINGS = {
+    "sender_type": "logging",
+}
+
 try:
     from production_settings import *
 except ImportError:
