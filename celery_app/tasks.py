@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 @task()
 @transaction.atomic
-def ingest_csv(csv_data, channel):
+def ingest_csv(csv_data, channel, default_country_code):
     """ Expecting data in the following format:
     headers = {
         "mxit": ["Date", "UserID", "Nick", "Mxit Email", "Name & Surname", "Mobile",
@@ -41,8 +41,10 @@ def ingest_csv(csv_data, channel):
                 incoming_data.name = line["Name & Surname"]
                 incoming_data.msisdn = line["Mobile"]
                 # Country in header but not sample data we have
-                if "Country" in line:
+                if "Country" in line and line["Country"] is not None:
                     incoming_data.country_code = line["Country"]
+                else:
+                    incoming_data.country_code = default_country_code
                 incoming_data.save()
             except IntegrityError as e:
                 incoming_data = None
@@ -64,6 +66,7 @@ def ingest_csv(csv_data, channel):
                 incoming_data.msisdn = line["Mobile number:"]
                 if line["age"] != "yimi":
                     incoming_data.age = line["age"]
+                incoming_data.country_code = default_country_code
                 incoming_data.location = line["city"]
                 incoming_data.gender = line["gender"]
                 incoming_data.save()
@@ -83,7 +86,10 @@ def ingest_csv(csv_data, channel):
                 incoming_data.channel_uid = line["Account ID"]
                 incoming_data.name = line["Please enter your full name."]
                 incoming_data.age = line["Age"]
-                incoming_data.country_code = line["Country"]
+                if "Country" in line and line["Country"] is not None:
+                    incoming_data.country_code = line["Country"]
+                else:
+                    incoming_data.country_code = default_country_code
                 incoming_data.location = line["City"]
                 if line["Sex"] == "M":
                     incoming_data.gender = "male"
@@ -99,18 +105,23 @@ def ingest_csv(csv_data, channel):
 
 @task()
 def sum_and_fire(channel):
-    """ When a channel is updated a metric needs sending to Vumi """
+    """ When a channel is updated a number of metrics needs sending to Vumi """
     metrics = MetricSummary.objects.filter(channel=channel).all()
     extras = {
         "supporter": 0,
         "za.supporter": 0,
-        "ng.supporter": 0
+        "ng.supporter": 0,
+        "tz.supporter": 0
     }
     for metric in metrics:
         total = IncomingData.objects.filter(channel=channel).filter(
             country_code=metric.country_code).count()
         extras["supporter"] += total
         extras[metric.country_code + ".supporter"] += total
-        fire(metric.metric, total, "MAX")
+        metric_name = "%s.%s.%s" % (
+            str(metric.country_code), str(metric.channel.name), str(metric.metric))
+        fire(metric_name, total, "MAX")
+        metric.total = total
+        metric.save()
     for extra, value in extras.iteritems():
         fire(extra, value, "MAX")

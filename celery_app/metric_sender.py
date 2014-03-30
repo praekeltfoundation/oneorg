@@ -52,7 +52,6 @@ class VumiGoSender(MetricSender):
                 agg
             ]
         ]
-        print payload
         response = requests.put(self._api_url(), auth=(self.account_id, self.conversation_token), headers=headers, data=json.dumps(payload))
 
         if response.status_code != requests.codes.ok:
@@ -65,7 +64,6 @@ class VumiGoSender(MetricSender):
             raise MetricSendingError("Bad response received from Vumi Go"
                                   " HTTP API. Excepted JSON, received:"
                                   " %r" % (response.content,))
-        print reply
         return reply
 
 
