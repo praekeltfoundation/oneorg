@@ -1,9 +1,10 @@
 from celery import task
 import csv
-from metrics_manager.models import IncomingData, MetricSummary
+from metrics_manager.models import IncomingData, MetricSummary, Channel
 from celery_app.metric_sender import fire
 import iso8601
 from django.db import IntegrityError, transaction
+from django.db.models import Sum
 import logging
 logger = logging.getLogger(__name__)
 
@@ -101,6 +102,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 # crappy CSV data
                 logger.error(e)
         sum_and_fire.delay(channel)  # send metrics
+    sum_and_fire_facebook.delay() # hook this on the end
 
 
 @task()
@@ -109,6 +111,7 @@ def sum_and_fire(channel):
     metrics = MetricSummary.objects.filter(channel=channel).all()
     extras = {
         "supporter": 0,
+        "global.supporter": 0,
         "za.supporter": 0,
         "ng.supporter": 0,
         "tz.supporter": 0
@@ -120,8 +123,20 @@ def sum_and_fire(channel):
         extras[metric.country_code + ".supporter"] += total
         metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
-        fire(metric_name, total, "MAX")
+        if total is not 0:
+            fire(metric_name, total, "MAX")
         metric.total = total
         metric.save()
     for extra, value in extras.iteritems():
-        fire(extra, value, "MAX")
+        if value is not 0:
+            fire(extra, value, "MAX")
+
+@task()
+def sum_and_fire_facebook():
+    channel = Channel.objects.filter(name="facebook")[0]
+    metric = MetricSummary.objects.filter(channel=channel)[0]
+    metric_name = "%s.%s.%s" % (
+            str(metric.country_code), str(metric.channel.name), str(metric.metric))
+    fire(metric_name, metric.total, "MAX")  # send metrics
+    total_supporters = MetricSummary.objects.aggregate(total=Sum('total'))
+    fire("supporter", total_supporters["total"], "MAX")  # send metrics
