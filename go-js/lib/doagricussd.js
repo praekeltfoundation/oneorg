@@ -267,8 +267,8 @@ function DoAgricUSSD() {
                 p.add_callback(function (result) {
                     return self.send_sms(im, _.gettext(
                         "Thank you for adding your voice and supporting smallholder " +
-                        "farmers across Africa. Download our free ringtone here: " +
-                        im.config.download_ringback));
+                        "farmers across Africa. Download our free ringtone here: ") +
+                        im.config.download_ringback);
                 });
                 return p;
             }
@@ -293,8 +293,8 @@ function DoAgricUSSD() {
                 p.add_callback(function (result) {
                     return self.send_sms(im, _.gettext(
                         "Thank you for adding your voice and supporting smallholder " +
-                        "farmers across Africa. Download our song for free track here: " +
-                        im.config.download_mp3));
+                        "farmers across Africa. Download our song for free track here: ") +
+                        im.config.download_mp3);
                 });
                 return p;
             }
@@ -421,7 +421,7 @@ function DoAgricUSSD() {
         return new EndState(
             state_name,
             _.gettext("Thanks for adding your voice & supporting African farmers. " +
-                "Ask your friends & family to join you by dialing " + im.config.from_addr + ". It's " +
+                "Ask your friends & family to join you by dialing *120*646#. It's " +
                 "time to Do Agric & transform lives!"),
             'start'
         );
@@ -431,7 +431,7 @@ function DoAgricUSSD() {
         return new EndState(
             state_name,
             _.gettext("Thanks for adding your voice & supporting African farmers. " +
-                "Ask your friends & family to join you by dialing " + im.config.from_addr + ". It's " +
+                "Ask your friends & family to join you by dialing *120*646#. It's " +
                 "time to Do Agric & transform lives!"),
             'start'
         );
