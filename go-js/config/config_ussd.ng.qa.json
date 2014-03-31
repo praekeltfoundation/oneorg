@@ -1,10 +1,11 @@
 {
+    "country": "ng",
     "user_store": "oneorg_qa",
     "metric_store": "oneorg_qa",
     "default_lang": "en_ng",
     "sms_tag": ["oneorg", "qangsms"],
     "metric_prefix": "ng.ussd.",
-    "download_mp3": "http://www.shorturl.com/8unm",
-    "download_ringback": "http://www.shorturl.com/8unm",
+    "download_mp3": "http://bit.ly/oneorgsong",
+    "download_ringback": "http://bit.ly/oneorgringback",
     "from_addr": "*120*646#"
 }
