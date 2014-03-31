@@ -195,7 +195,7 @@ CELERYBEAT_SCHEDULE = {
 
 # Uncomment if you're running in DEBUG mode and you want to skip the broker
 # and execute tasks immediate instead of deferring them to the queue / workers.
-# CELERY_ALWAYS_EAGER = DEBUG
+CELERY_ALWAYS_EAGER = DEBUG
 
 # Tell Celery where to find the tasks
 CELERY_IMPORTS = ('celery_app.tasks',)
