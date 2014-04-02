@@ -73,7 +73,6 @@ class LoggingSender(MetricSender):
         self._level = level
 
     def fire(self, metric, value, agg):
-        print "Metric %r: %r (%r)" % (metric, value, agg)
         self._logger.log(self._level, "Metric %r: %r (%r)" % (metric, value, agg))
 
 
