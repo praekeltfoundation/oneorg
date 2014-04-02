@@ -1,153 +1,170 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-03-03 02:35:+0200\n"
-"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2014-03-28 12:00:+0200\n"
+"Project-Id-Version: OneOrg\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: en_ZA\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-03-28 12:03+0200\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.6.4\n"
 
-#: doagricussd.js:193
+#: go-js/lib/doagricussd.js:209
 msgid ""
-"Investing in agriculture can lift millions of ppl out of poverty.Add ur "
-"support & get FREE track feat D'banj"
+"Investing in agriculture can lift millions out of poverty. Add your support "
+"& get a FREE track feat D'banj"
 msgstr ""
 
-#: doagricussd.js:195
-msgid "Support & FREE track"
+#: go-js/lib/doagricussd.js:212
+msgid "I support!"
 msgstr ""
 
-#: doagricussd.js:196 doagricussd.js:214
+#: go-js/lib/doagricussd.js:213
 msgid "Take survey"
 msgstr ""
 
-#: doagricussd.js:197
+#: go-js/lib/doagricussd.js:214
 msgid "About ONE"
 msgstr ""
 
-#: doagricussd.js:210
+#: go-js/lib/doagricussd.js:227
 msgid ""
-"Thanks for adding your voice & supporting smallholder farmers across "
-"Africa. Download the FREE track:"
+"Thank you very much for supporting smallholder farmers across Africa. "
+"Download your FREE track here:"
 msgstr ""
 
-#: doagricussd.js:212
+#: go-js/lib/doagricussd.js:229
 msgid "Ringback tone"
 msgstr ""
 
-#: doagricussd.js:213
+#: go-js/lib/doagricussd.js:230
 msgid "MP3"
 msgstr ""
 
-#: doagricussd.js:215 doagricussd.js:265
+#: go-js/lib/doagricussd.js:231 go-js/lib/doagricussd.js:250
+#: go-js/lib/doagricussd.js:276
+msgid "Take the survey"
+msgstr ""
+
+#: go-js/lib/doagricussd.js:232 go-js/lib/doagricussd.js:303
 msgid "Main Menu"
 msgstr ""
 
-#: doagricussd.js:228 doagricussd.js:244
+#: go-js/lib/doagricussd.js:248 go-js/lib/doagricussd.js:274
 msgid ""
-"A download link has been sent to you via SMS. Thanks again for adding your "
-"voice & supporting smallholder farmers across Africa!"
+"ONE is a campaigning and advocacy organization taking action to end extreme "
+"poverty and preventable disease."
 msgstr ""
 
-#: doagricussd.js:233 doagricussd.js:249
-msgid ""
-"Find your sound file at XXXXXX. Thanks again for adding your voice & "
-"supporting smallholder farmers across Africa!"
+#: go-js/lib/doagricussd.js:251 go-js/lib/doagricussd.js:277
+msgid "Finish"
 msgstr ""
 
-#: doagricussd.js:263
+#: go-js/lib/doagricussd.js:259
 msgid ""
-"ONE is a campaigning & advocacy organisation of 3.5m people taking action "
-"to end extreme poverty & preventable disease. Find out more at www.one.org"
+"Thank you for adding your voice and supporting smallholder farmers across "
+"Africa. Download our free ringtone here: "
 msgstr ""
 
-#: doagricussd.js:272
+#: go-js/lib/doagricussd.js:285
+msgid ""
+"Thank you for adding your voice and supporting smallholder farmers across "
+"Africa. Download our song for free track here: "
+msgstr ""
+
+#: go-js/lib/doagricussd.js:300
+msgid ""
+"ONE is a campaigning and advocacy organization taking action to end extreme "
+"poverty and preventable disease. Find out more at www.one.org"
+msgstr ""
+
+#: go-js/lib/doagricussd.js:310
 msgid "Are you a farmer?"
 msgstr ""
 
-#: doagricussd.js:274 doagricussd.js:290
+#: go-js/lib/doagricussd.js:312 go-js/lib/doagricussd.js:328
 msgid "Yes"
 msgstr ""
 
-#: doagricussd.js:275 doagricussd.js:291
+#: go-js/lib/doagricussd.js:313 go-js/lib/doagricussd.js:329
 msgid "No"
 msgstr ""
 
-#: doagricussd.js:288
+#: go-js/lib/doagricussd.js:326
 msgid "Do you think your government invests enough in agriculture?"
 msgstr ""
 
-#: doagricussd.js:304
+#: go-js/lib/doagricussd.js:342
 msgid ""
 "How much of the national budget do you think your government spends on "
 "agriculture?"
 msgstr ""
 
-#: doagricussd.js:306 doagricussd.js:324
+#: go-js/lib/doagricussd.js:344 go-js/lib/doagricussd.js:362
 msgid "1-5%"
 msgstr ""
 
-#: doagricussd.js:307 doagricussd.js:325
+#: go-js/lib/doagricussd.js:345 go-js/lib/doagricussd.js:363
 msgid "5-10%"
 msgstr ""
 
-#: doagricussd.js:308 doagricussd.js:326
+#: go-js/lib/doagricussd.js:346 go-js/lib/doagricussd.js:364
 msgid "10-20%"
 msgstr ""
 
-#: doagricussd.js:309 doagricussd.js:327
+#: go-js/lib/doagricussd.js:347 go-js/lib/doagricussd.js:365
 msgid "More than 20%"
 msgstr ""
 
-#: doagricussd.js:322
+#: go-js/lib/doagricussd.js:360
 msgid "How much do you think your government should spend?"
 msgstr ""
 
-#: doagricussd.js:340
+#: go-js/lib/doagricussd.js:378
 msgid "Are you male or female?"
 msgstr ""
 
-#: doagricussd.js:342
+#: go-js/lib/doagricussd.js:380
 msgid "Male"
 msgstr ""
 
-#: doagricussd.js:343
+#: go-js/lib/doagricussd.js:381
 msgid "Female"
 msgstr ""
 
-#: doagricussd.js:356
+#: go-js/lib/doagricussd.js:394
 msgid "How old are you?"
 msgstr ""
 
-#: doagricussd.js:358
+#: go-js/lib/doagricussd.js:396
 msgid "0-15 years"
 msgstr ""
 
-#: doagricussd.js:359
+#: go-js/lib/doagricussd.js:397
 msgid "16-20 years"
 msgstr ""
 
-#: doagricussd.js:360
+#: go-js/lib/doagricussd.js:398
 msgid "21-30 years"
 msgstr ""
 
-#: doagricussd.js:361
+#: go-js/lib/doagricussd.js:399
 msgid "31-40 years"
 msgstr ""
 
-#: doagricussd.js:362
+#: go-js/lib/doagricussd.js:400
 msgid "41-50 years"
 msgstr ""
 
-#: doagricussd.js:363
+#: go-js/lib/doagricussd.js:401
 msgid "Older than 50 years"
 msgstr ""
 
-#: doagricussd.js:375
+#: go-js/lib/doagricussd.js:414 go-js/lib/doagricussd.js:424
 msgid ""
-"Thanks for adding your voice & supporting farmers across Africa. Ask ur "
-"friends & family to join u by dialing XXXXX. It's time to Do Agric & "
-"transform lives."
+"Thanks for adding your voice & supporting African farmers. Ask your friends "
+"& family to join you by dialing *120*646#. It's time to Do Agric & transform "
+"lives!"
 msgstr ""
