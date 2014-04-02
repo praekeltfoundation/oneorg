@@ -62,7 +62,7 @@ class VumiGoSender(MetricSender):
             reply = response.json()
         except ValueError:
             raise MetricSendingError("Bad response received from Vumi Go"
-                                  " HTTP API. Excepted JSON, received:"
+                                  " HTTP API. Expected JSON, received:"
                                   " %r" % (response.content,))
         return reply
 
