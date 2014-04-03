@@ -63,15 +63,11 @@ def ingest_csv(csv_data, channel, default_country_code):
                     line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["Mobile number:"]
-                incoming_data.email = line["Email:"]
+                incoming_data.email = line["u_email"]
                 incoming_data.name = line["First name:"] + \
                     " " + line["Second name:"]
                 incoming_data.msisdn = line["Mobile number:"]
-                if line["age"] != "yimi":
-                    incoming_data.age = line["age"]
                 incoming_data.country_code = default_country_code
-                incoming_data.location = line["city"]
-                incoming_data.gender = line["gender"]
                 incoming_data.save()
             except IntegrityError as e:
                 incoming_data = None

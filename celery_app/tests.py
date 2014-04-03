@@ -33,13 +33,11 @@ class TestUploadCSV(TestCase):
         "just arrest it,what i mean is that poverty must end becouse it separate "
         "our family and it makes our loved one to kill thermself\",nick2@mxit.im\r\n")
 
-    E_HEADER = ("Date,\"First name:\",\"Second name:\",Email:,\"Mobile number:\""
-                ",age,city,gender\r\n")
-    E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,user1@eskimi.com,"
-                      "2311111111111,21,Okene,male\r\n")
-    E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,user2@eskimi.com,"
-                      "2322222222222,27,Ibadan,male\r\n")
-    E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade,user3@eskimi.com\r\n")
+    E_HEADER = ("Date,\"First name:\",\"Second name:\",\"Mobile number:\""
+                ",u_email\r\n")
+    E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,2311111111111,user1@eskimi.com\r\n")
+    E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,2322222222222,user2@eskimi.com\r\n")
+    E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade\r\n")
 
     B_HEADER = ("Date,Country,City,SurveyUserId,\"I agree that AIDS, TB and malaria "
                 "are all preventable and treatable  yet together they still kill more "
