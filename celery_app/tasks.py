@@ -37,19 +37,19 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data.source_timestamp = iso8601.parse_date(
                     line["Date"])
                 incoming_data.channel = channel
-                incoming_data.channel_uid = line["UserID"]
-                incoming_data.email = line["Mxit Email"]
-                incoming_data.name = line["Name & Surname"]
-                incoming_data.msisdn = line["Mobile"]
-                # Country in header but not sample data we have
-                if "Country" in line and line["Country"] is not None:
-                    incoming_data.country_code = line["Country"]
+                incoming_data.channel_uid = line["UserID"][:254]
+                if line["Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"] is None:
+                    incoming_data.email = line["Mxit Email"][:254]
                 else:
-                    incoming_data.country_code = default_country_code
+                    incoming_data.email = line["Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"][:254]
+                incoming_data.name = line["Enter your name"][:254]
+                incoming_data.msisdn = line["Enter your mobile number"][:99]
+                incoming_data.country_code = default_country_code
                 incoming_data.save()
             except IntegrityError as e:
                 incoming_data = None
                 # crappy CSV data
+                print 
                 logger.error(e)
         sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
