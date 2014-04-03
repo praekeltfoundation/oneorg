@@ -183,22 +183,24 @@ LOGGING = {
 # Celery configuration options
 BROKER_URL = "amqp://guest:guest@localhost:5672/"
 
+# Uncomment if you're running in DEBUG mode and you want to skip the broker
+# and execute tasks immediate instead of deferring them to the queue / workers.
+CELERY_ALWAYS_EAGER = DEBUG
+
+# Tell Celery where to find the tasks
+CELERY_IMPORTS = ('celery_app.tasks',)
+
 CELERY_RESULT_BACKEND = "database"
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 CELERYBEAT_SCHEDULE = {
-    # 'run-stats-push-every-60-minutes': {
-    #     'task': 'celery_app.tasks.stats_sync',
-    #     'schedule': timedelta(minutes=60),
-    # },
+    'run-facebook-stats-push-every-30-minutes': {
+        'task': 'celery_app.tasks.sum_and_fire_facebook',
+        'schedule': timedelta(minutes=30),
+    },
 }
 
-# Uncomment if you're running in DEBUG mode and you want to skip the broker
-# and execute tasks immediate instead of deferring them to the queue / workers.
-# CELERY_ALWAYS_EAGER = DEBUG
 
-# Tell Celery where to find the tasks
-CELERY_IMPORTS = ('celery_app.tasks',)
 
 # Defer email sending to Celery, except if we're in debug mode,
 # then just print the emails to stdout for debugging.
@@ -225,6 +227,10 @@ SOUTH_TESTS_MIGRATE = False  # Do not run the migrations for our tests.
 RAVEN_CONFIG = {
     # DevOps will supply you with this.
     # 'dsn': 'http://public:secret@example.com/1',
+}
+
+METRIC_SETTINGS = {
+    "sender_type": "logging",
 }
 
 try:

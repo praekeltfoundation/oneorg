@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 from django.test import TestCase
+from django.test.utils import override_settings
 from StringIO import StringIO
 from datetime import datetime
 
-from celery_app.tasks import ingest_csv
-from metrics_manager.models import Channel, IncomingData
+from celery_app.tasks import ingest_csv, sum_and_fire_facebook
+from metrics_manager.models import Channel, IncomingData, MetricSummary
 
 
 class TestUploadCSV(TestCase):
@@ -64,20 +65,21 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.M_SEP + self.M_HEADER + \
             self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="m00000000002")
         self.assertEquals(imported.email, "user2@mxit.im")
-        self.assertEquals(imported.source_timestamp, datetime(2014, 2, 4, 12, 35, 34, tzinfo=utc))
+        self.assertEquals(imported.source_timestamp,
+                          datetime(2014, 2, 4, 12, 35, 34, tzinfo=utc))
         self.assertEquals(imported.name, "Malefa tshabalala")
         self.assertEquals(imported.channel_uid, "m00000000002")
         self.assertEquals(imported.msisdn, "0700000002")
-        
+
     def test_upload_mxit_dirty(self):
         channel = Channel.objects.get(name="mxit")
         dirty_sample =  self.M_SEP + self.M_HEADER + \
             self.M_LINE_CLEAN_1 + self.M_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="m00000000003"))
 
@@ -86,10 +88,11 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
             self.E_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="2311111111111")
         self.assertEquals(imported.email, "user1@eskimi.com")
-        self.assertEquals(imported.source_timestamp, datetime(2014, 2, 17, tzinfo=utc))
+        self.assertEquals(imported.source_timestamp,
+                          datetime(2014, 2, 17, tzinfo=utc))
         self.assertEquals(imported.name, "Idris Ibrahim")
         self.assertEquals(imported.channel_uid, "2311111111111")
         self.assertEquals(imported.msisdn, "2311111111111")
@@ -99,7 +102,7 @@ class TestUploadCSV(TestCase):
         dirty_sample =  self.E_HEADER + self.E_LINE_CLEAN_1 + \
             self.E_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="233333333333"))
 
@@ -108,10 +111,11 @@ class TestUploadCSV(TestCase):
         clean_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
             self.B_LINE_CLEAN_2
         uploaded = StringIO(clean_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         imported = IncomingData.objects.get(channel_uid="1111111")
         self.assertEquals(imported.name, "User One")
-        self.assertEquals(imported.source_timestamp, datetime(2013, 7, 28, tzinfo=utc))
+        self.assertEquals(imported.source_timestamp,
+                          datetime(2013, 7, 28, tzinfo=utc))
         self.assertEquals(imported.channel_uid, "1111111")
         self.assertEquals(imported.age, "24")
 
@@ -120,6 +124,30 @@ class TestUploadCSV(TestCase):
         dirty_sample =  self.B_HEADER + self.B_LINE_CLEAN_1 + \
             self.B_LINE_DIRTY_1
         uploaded = StringIO(dirty_sample)
-        ingest_csv(uploaded, channel)
+        ingest_csv(uploaded, channel, "za")
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="3333333"))
+
+    def test_metric_fires(self):
+        channel = Channel.objects.get(name="facebook")
+        metric = MetricSummary.objects.filter(channel=channel)[0]
+        metric.total = 100
+        metric.save()
+        result = sum_and_fire_facebook.delay()
+        self.assertTrue(result.successful())
+        self.assertEquals(result.get()["global.facebook.supporter"],
+                          "Metric 'global.facebook.supporter': 100 ('MAX')")
+        self.assertEquals(result.get()["supporter"],
+                          "Metric 'supporter': 100 ('MAX')")
+
+    def test_mxit_metric_fires(self):
+        channel = Channel.objects.get(name="mxit")
+        clean_sample =  self.M_SEP + self.M_HEADER + \
+            self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
+        uploaded = StringIO(clean_sample)
+        result = ingest_csv(uploaded, channel, "za")
+        self.assertTrue(result.successful())
+        self.assertEquals(result.get()["za.mxit.supporter"],
+                          "Metric 'za.mxit.supporter': 2 ('MAX')")
+        self.assertEquals(result.get()["supporter"],
+                          "Metric 'supporter': 2 ('MAX')")

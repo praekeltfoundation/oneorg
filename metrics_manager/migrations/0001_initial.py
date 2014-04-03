@@ -11,8 +11,8 @@ class Migration(SchemaMigration):
         # Adding model 'MetricSummary'
         db.create_table(u'metrics_manager_metricsummary', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('country_code', self.gf('django.db.models.fields.CharField')(max_length=2)),
-            ('channel', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('country_code', self.gf('django.db.models.fields.CharField')(max_length=6)),
+            ('channel', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['metrics_manager.Channel'])),
             ('metric', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('total', self.gf('django.db.models.fields.IntegerField')()),
         ))
@@ -34,7 +34,7 @@ class Migration(SchemaMigration):
             ('budget_should', self.gf('django.db.models.fields.CharField')(max_length=5, null=True, blank=True)),
             ('sex', self.gf('django.db.models.fields.CharField')(max_length=6, null=True, blank=True)),
             ('age', self.gf('django.db.models.fields.CharField')(max_length=5, null=True, blank=True)),
-            ('country_code', self.gf('django.db.models.fields.CharField')(max_length=2, null=True, blank=True)),
+            ('country_code', self.gf('django.db.models.fields.CharField')(max_length=6, null=True, blank=True)),
             ('location', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('download_mp3', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
             ('download_ringback', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
@@ -47,9 +47,6 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=10)),
         ))
         db.send_create_signal(u'metrics_manager', ['Channel'])
-
-        from django.core.management import call_command
-        call_command('loaddata', 'channel.json')
 
 
     def backwards(self, orm):
@@ -77,7 +74,7 @@ class Migration(SchemaMigration):
             'budget_think': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True', 'blank': 'True'}),
             'channel': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['metrics_manager.Channel']"}),
             'channel_uid': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'country_code': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
+            'country_code': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'download_mp3': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'download_ringback': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
@@ -92,8 +89,8 @@ class Migration(SchemaMigration):
         },
         u'metrics_manager.metricsummary': {
             'Meta': {'object_name': 'MetricSummary'},
-            'channel': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'country_code': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
+            'channel': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['metrics_manager.Channel']"}),
+            'country_code': ('django.db.models.fields.CharField', [], {'max_length': '6'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'metric': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'total': ('django.db.models.fields.IntegerField', [], {})
