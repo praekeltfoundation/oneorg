@@ -27,6 +27,11 @@ class TestUploadCSV(TestCase):
     M_LINE_DIRTY_1 = (
         "53085354426da1ba36000086,\"2014-02-22 09:35:48\",m0000000003,NICK3,"
         "nick3@mxit.im\r\n")
+    M_LINE_LONG_1 = (
+        "530794f8426da1fe0c000040,\"2014-02-21 20:03:36\",m0000000002,NICK2,"
+        "nick2@mxit.im,\"Second Name\",,,\"Poverty is a crime the government must "
+        "just arrest it,what i mean is that poverty must end becouse it separate "
+        "our family and it makes our loved one to kill thermself\",nick2@mxit.im\r\n")
 
     E_HEADER = ("Date,\"First name:\",\"Second name:\",Email:,\"Mobile number:\""
                 ",age,city,gender\r\n")
@@ -78,6 +83,20 @@ class TestUploadCSV(TestCase):
         self.assertEquals(imported.name, "Second Name")
         self.assertEquals(imported.channel_uid, "m0000000002")
         self.assertEquals(imported.msisdn, "0845000002")
+
+    def test_upload_mxit_long(self):
+        channel = Channel.objects.get(name="mxit")
+        clean_sample =  self.M_SEP + self.M_HEADER + \
+            self.M_LINE_CLEAN_1 + self.M_LINE_LONG_1
+        uploaded = StringIO(clean_sample)
+        ingest_csv(uploaded, channel, "za")
+        imported = IncomingData.objects.get(channel_uid="m0000000002")
+        self.assertEquals(imported.email, "nick2@mxit.im")
+        self.assertEquals(imported.source_timestamp,
+                          datetime(2014, 2, 21, 20, 3, 36, tzinfo=utc))
+        self.assertEquals(imported.name, "Second Name")
+        self.assertEquals(imported.channel_uid, "m0000000002")
+        self.assertEquals(imported.msisdn, "Poverty is a crime the government must just arrest it,what i mean is that poverty must end becouse ")
 
     def test_upload_mxit_dirty(self):
         channel = Channel.objects.get(name="mxit")
