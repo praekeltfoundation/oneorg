@@ -74,6 +74,7 @@ class LoggingSender(MetricSender):
 
     def fire(self, metric, value, agg):
         self._logger.log(self._level, "Metric %r: %r (%r)" % (metric, value, agg))
+        return "Metric %r: %r (%r)" % (metric, value, agg)
 
 
 def create_sender(metric_config):

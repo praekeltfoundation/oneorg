@@ -133,10 +133,12 @@ def sum_and_fire(channel):
 
 @task()
 def sum_and_fire_facebook():
+    response = {}
     channel = Channel.objects.filter(name="facebook")[0]
     metric = MetricSummary.objects.filter(channel=channel)[0]
     metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
-    fire(metric_name, metric.total, "MAX")  # send metrics
+    response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
     total_supporters = MetricSummary.objects.aggregate(total=Sum('total'))
-    fire("supporter", total_supporters["total"], "MAX")  # send metrics
+    response["supporter"] = fire("supporter", total_supporters["total"], "MAX")  # send metrics
+    return response
