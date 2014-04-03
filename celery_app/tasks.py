@@ -51,7 +51,6 @@ def ingest_csv(csv_data, channel, default_country_code):
             except IntegrityError as e:
                 incoming_data = None
                 # crappy CSV data
-                print 
                 logger.error(e)
         return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
