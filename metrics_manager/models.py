@@ -4,8 +4,9 @@ from django.db import models
 # Create your models here.
 
 class MetricSummary(models.Model):
-    country_code = models.CharField(max_length=2)
-    channel = models.CharField(max_length=10)
+    country_code = models.CharField(max_length=6)
+    channel = models.ForeignKey('Channel',
+                                verbose_name=u'Channel')
     metric = models.CharField(max_length=50)
     total = models.IntegerField()
 
@@ -29,7 +30,7 @@ class IncomingData(models.Model):
     budget_should = models.CharField(max_length=5, null=True, blank=True)
     sex = models.CharField(max_length=6, null=True, blank=True)
     age = models.CharField(max_length=5, null=True, blank=True)
-    country_code = models.CharField(max_length=2, null=True, blank=True)
+    country_code = models.CharField(max_length=6, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)
     download_mp3 = models.NullBooleanField(null=True, blank=True)
     download_ringback = models.NullBooleanField(null=True, blank=True)

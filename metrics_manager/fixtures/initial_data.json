@@ -1,0 +1,167 @@
+[
+    {
+        "pk": 1,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "mxit"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "facebook"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "2go"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "binu"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "eskimi"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 1,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 2,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 1,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 3,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "tz",
+            "channel": 1,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 4,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 2,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 5,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 3,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 6,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 3,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 7,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "tz",
+            "channel": 3,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 8,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 4,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 9,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 4,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 10,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "tz",
+            "channel": 4,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 11,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 5,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 12,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 5,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 13,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "tz",
+            "channel": 5,
+            "metric": "supporter",
+            "total": 0
+        }
+    }
+]
