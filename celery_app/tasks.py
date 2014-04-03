@@ -31,21 +31,23 @@ def ingest_csv(csv_data, channel, default_country_code):
         csv_data.seek(0)
         next(csv_data)
         records = csv.DictReader(csv_data)
+        mxit_opt_email = "Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"
         for line in records:
             try:
                 incoming_data = IncomingData()
                 incoming_data.source_timestamp = iso8601.parse_date(
                     line["Date"])
                 incoming_data.channel = channel
-                incoming_data.channel_uid = line["UserID"]
-                incoming_data.email = line["Mxit Email"]
-                incoming_data.name = line["Name & Surname"]
-                incoming_data.msisdn = line["Mobile"]
-                # Country in header but not sample data we have
-                if "Country" in line and line["Country"] is not None:
-                    incoming_data.country_code = line["Country"]
+                incoming_data.channel_uid = line["UserID"][:254]
+                if line[mxit_opt_email] is None:
+                    incoming_data.email = line["Mxit Email"][:254]
                 else:
-                    incoming_data.country_code = default_country_code
+                    incoming_data.email = line[mxit_opt_email][:254]
+                if line["Enter your name"] is not None:
+                    incoming_data.name = line["Enter your name"][:254]
+                if line["Enter your mobile number"] is not None:
+                    incoming_data.msisdn = line["Enter your mobile number"][:99]
+                incoming_data.country_code = default_country_code
                 incoming_data.save()
             except IntegrityError as e:
                 incoming_data = None
