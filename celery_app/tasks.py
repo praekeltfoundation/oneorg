@@ -31,6 +31,7 @@ def ingest_csv(csv_data, channel, default_country_code):
         csv_data.seek(0)
         next(csv_data)
         records = csv.DictReader(csv_data)
+        mxit_opt_email = "Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"
         for line in records:
             try:
                 incoming_data = IncomingData()
@@ -38,10 +39,10 @@ def ingest_csv(csv_data, channel, default_country_code):
                     line["Date"])
                 incoming_data.channel = channel
                 incoming_data.channel_uid = line["UserID"][:254]
-                if line["Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"] is None:
+                if line[mxit_opt_email] is None:
                     incoming_data.email = line["Mxit Email"][:254]
                 else:
-                    incoming_data.email = line["Enter your email address (optional). Don't have an email address? Use your mxit address (mxitid@mxit.im)"][:254]
+                    incoming_data.email = line[mxit_opt_email][:254]
                 if line["Enter your name"] is not None:
                     incoming_data.name = line["Enter your name"][:254]
                 if line["Enter your mobile number"] is not None:
