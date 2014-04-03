@@ -144,3 +144,15 @@ class TestUploadCSV(TestCase):
                           "Metric 'global.facebook.supporter': 100 ('MAX')")
         self.assertEquals(result.get()["supporter"],
                           "Metric 'supporter': 100 ('MAX')")
+
+    def test_mxit_metric_fires(self):
+        channel = Channel.objects.get(name="mxit")
+        clean_sample =  self.M_SEP + self.M_HEADER + \
+            self.M_LINE_CLEAN_1 + self.M_LINE_CLEAN_2
+        uploaded = StringIO(clean_sample)
+        result = ingest_csv(uploaded, channel, "za")
+        self.assertTrue(result.successful())
+        self.assertEquals(result.get()["za.mxit.supporter"],
+                          "Metric 'za.mxit.supporter': 2 ('MAX')")
+        self.assertEquals(result.get()["supporter"],
+                          "Metric 'supporter': 2 ('MAX')")
