@@ -51,7 +51,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        sum_and_fire.delay(channel)  # send metrics
+        return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -75,7 +75,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        sum_and_fire.delay(channel)  # send metrics
+        return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "binu":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -101,13 +101,13 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        sum_and_fire.delay(channel)  # send metrics
-    sum_and_fire_facebook.delay() # hook this on the end
+        return sum_and_fire.delay(channel)  # send metrics
 
 
 @task()
 def sum_and_fire(channel):
     """ When a channel is updated a number of metrics needs sending to Vumi """
+    response = {}
     metrics = MetricSummary.objects.filter(channel=channel).all()
     extras = {
         "supporter": 0,
@@ -124,12 +124,13 @@ def sum_and_fire(channel):
         metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
         if total is not 0:
-            fire(metric_name, total, "MAX")
+            response[metric_name] = fire(metric_name, total, "MAX")
         metric.total = total
         metric.save()
     for extra, value in extras.iteritems():
         if value is not 0:
-            fire(extra, value, "MAX")
+            response[extra] = fire(extra, value, "MAX")
+    return response
 
 @task()
 def sum_and_fire_facebook():
