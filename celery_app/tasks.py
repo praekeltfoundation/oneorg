@@ -32,8 +32,6 @@ def ingest_csv(csv_data, channel, default_country_code):
         next(csv_data)
         records = csv.DictReader(csv_data)
         for line in records:
-            print line.keys()
-            print line
             try:
                 incoming_data = IncomingData()
                 incoming_data.source_timestamp = iso8601.parse_date(
