@@ -67,7 +67,10 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data.name = line["First name:"] + \
                     " " + line["Second name:"]
                 incoming_data.msisdn = line["Mobile number:"]
-                incoming_data.country_code = default_country_code
+                if "country" in line and line["country"] is not None:
+                    incoming_data.country_code = line["country"]
+                else:
+                    incoming_data.country_code = default_country_code
                 incoming_data.save()
             except IntegrityError as e:
                 incoming_data = None

@@ -34,9 +34,9 @@ class TestUploadCSV(TestCase):
         "our family and it makes our loved one to kill thermself\",nick2@mxit.im\r\n")
 
     E_HEADER = ("Date,\"First name:\",\"Second name:\",\"Mobile number:\""
-                ",u_email\r\n")
-    E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,2311111111111,user1@eskimi.com\r\n")
-    E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,2322222222222,user2@eskimi.com\r\n")
+                ",country,u_email\r\n")
+    E_LINE_CLEAN_1 = ("2014-02-17,Idris,Ibrahim,2311111111111,ng,user1@eskimi.com\r\n")
+    E_LINE_CLEAN_2 = ("2014-02-17,yemi,ade,2322222222222,ng,user2@eskimi.com\r\n")
     E_LINE_DIRTY_1 = ("2014-02-17,yemi,ade\r\n")
 
     B_HEADER = ("Date,Country,City,SurveyUserId,\"I agree that AIDS, TB and malaria "
@@ -118,6 +118,7 @@ class TestUploadCSV(TestCase):
         self.assertEquals(imported.name, "Idris Ibrahim")
         self.assertEquals(imported.channel_uid, "2311111111111")
         self.assertEquals(imported.msisdn, "2311111111111")
+        self.assertEquals(imported.country_code, "ng")
 
     def test_upload_eskimi_dirty(self):
         channel = Channel.objects.get(name="eskimi")
