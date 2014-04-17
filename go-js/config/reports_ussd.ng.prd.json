@@ -58,7 +58,7 @@
     },{
         "type": "diamondash.widgets.lvalue.LValueWidget",
         "time_range": "7d",
-        "name": "GN Actions",
+        "name": "NG Actions",
         "target": {
             "metric_type": "account",
             "store": "oneorg_prd",
