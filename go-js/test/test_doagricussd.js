@@ -64,7 +64,7 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE D'banj track[^]" +
             "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
@@ -124,7 +124,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE D'banj track[^]" +
             "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
@@ -466,8 +466,7 @@ describe('DoAgricUSSD', function () {
         user: null,
         content: null,
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions out of poverty. " +
-            "Add your support & get a FREE track feat D'banj[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE D'banj track[^]" +
             "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
@@ -527,8 +526,7 @@ describe('DoAgricUSSD', function () {
         },
         content: '4',
         next_state: 'main_menu',
-        response: "^Investing in agriculture can lift millions out of poverty. " +
-            "Add your support & get a FREE track feat D'banj[^]" +
+        response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE D'banj track[^]" +
             "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
