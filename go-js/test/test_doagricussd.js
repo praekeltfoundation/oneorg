@@ -65,7 +65,7 @@ describe('DoAgricUSSD', function () {
         content: null,
         next_state: 'main_menu',
         response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
-            "1. I support![^]" +
+            "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -125,7 +125,7 @@ describe('DoAgricUSSD', function () {
         content: '4',
         next_state: 'main_menu',
         response: "^Investing in agriculture can lift millions out of poverty. Add your support & get a FREE track feat D'banj[^]" +
-            "1. I support![^]" +
+            "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
@@ -468,7 +468,7 @@ describe('DoAgricUSSD', function () {
         next_state: 'main_menu',
         response: "^Investing in agriculture can lift millions out of poverty. " +
             "Add your support & get a FREE track feat D'banj[^]" +
-            "1. I support![^]" +
+            "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$",
         session_event: 'new'
@@ -529,7 +529,7 @@ describe('DoAgricUSSD', function () {
         next_state: 'main_menu',
         response: "^Investing in agriculture can lift millions out of poverty. " +
             "Add your support & get a FREE track feat D'banj[^]" +
-            "1. I support![^]" +
+            "1. Say YES & get the track![^]" +
             "2. Take survey[^]" +
             "3. About ONE$"
       }).then(function() {
