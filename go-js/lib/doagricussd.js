@@ -211,9 +211,7 @@ function DoAgricUSSD() {
             _.gettext("Investing in agriculture can lift millions out of poverty." +
                     " Add your support & get a FREE D'banj track"),
             [
-                new Choice('support_menu', _.gettext("Say YES & get the track!")),
-                new Choice('survey_start', _.gettext("Take survey")),
-                new Choice('about', _.gettext("About ONE"))
+                new Choice('support_menu', _.gettext("Say YES & get the track!"))
             ]
         );
     });
@@ -229,9 +227,7 @@ function DoAgricUSSD() {
             _.gettext("Thank you very much for supporting smallholder farmers across Africa. Download your FREE track here:"),
             [
                 new Choice('ringback', _.gettext("Ringback tone")),
-                new Choice('mp3', _.gettext("MP3")),
-                new Choice('survey_start', _.gettext("Take the survey")),
-                new Choice('main_menu', _.gettext("Main Menu")),
+                new Choice('mp3', _.gettext("MP3"))
             ],
             null,
             {
@@ -256,7 +252,6 @@ function DoAgricUSSD() {
         },
         _.gettext("ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease."),
         [
-            new Choice('survey_start', _.gettext("Take the survey")),
             new Choice('generic_end', _.gettext("Finish")),
         ],
         null,
@@ -282,7 +277,6 @@ function DoAgricUSSD() {
         },
         _.gettext("ONE is a campaigning and advocacy organization taking action to end extreme poverty and preventable disease."),
         [
-            new Choice('survey_start', _.gettext("Take the survey")),
             new Choice('generic_end', _.gettext("Finish")),
         ],
         null,
@@ -300,132 +294,6 @@ function DoAgricUSSD() {
             }
         }
     ));
-
-    self.add_state(new ChoiceState(
-        'about',
-        function(choice) {
-            return choice.value;
-        },
-        _.gettext("ONE is a campaigning and advocacy organization taking action to end " +
-            "extreme poverty and preventable disease. Find out more at www.one.org"),
-        [
-           new Choice('main_menu', _.gettext("Main Menu"))
-        ]
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_start',
-        'survey_2',
-        _.gettext("Are you a farmer?"),
-        [
-            new Choice('1', _.gettext("Yes")),
-            new Choice('0', _.gettext("No")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_start", "farmer");
-            }
-        }
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_2',
-        'survey_3',
-        _.gettext("Do you think your government invests enough in agriculture?"),
-        [
-            new Choice('1', _.gettext("Yes")),
-            new Choice('0', _.gettext("No")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_2", "budget_enough");
-            }
-        }
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_3',
-        'survey_4',
-        _.gettext("How much of the national budget do you think your government spends on agriculture?"),
-        [
-            new Choice('1-5', _.gettext("1-5%")),
-            new Choice('5-10', _.gettext("5-10%")),
-            new Choice('10-20', _.gettext("10-20%")),
-            new Choice('20+', _.gettext("More than 20%")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_3", "budget_think");
-            }
-        }
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_4',
-        'survey_5',
-        _.gettext("How much do you think your government should spend?"),
-        [
-            new Choice('1-5', _.gettext("1-5%")),
-            new Choice('5-10', _.gettext("5-10%")),
-            new Choice('10-20', _.gettext("10-20%")),
-            new Choice('20+', _.gettext("More than 20%")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_4", "budget_should");
-            }
-        }
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_5',
-        'survey_6',
-        _.gettext("Are you male or female?"),
-        [
-            new Choice('male', _.gettext("Male")),
-            new Choice('female', _.gettext("Female")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_5", "sex");
-            }
-        }
-    ));
-
-    self.add_state(new ChoiceState(
-        'survey_6',
-        'survey_end',
-        _.gettext("How old are you?"),
-        [
-            new Choice('0-15', _.gettext("0-15 years")),
-            new Choice('16-20', _.gettext("16-20 years")),
-            new Choice('21-30', _.gettext("21-30 years")),
-            new Choice('31-40', _.gettext("31-40 years")),
-            new Choice('41-50', _.gettext("41-50 years")),
-            new Choice('51+', _.gettext("Older than 50 years")),
-        ],
-        null,
-        {
-            on_exit: function() {
-                return self.save_survey_results(im, "survey_6", "age");
-            }
-        }
-    ));
-
-    self.add_creator("survey_end", function(state_name, im) {
-        return new EndState(
-            state_name,
-            _.gettext("Thanks for adding your voice & supporting African farmers. " +
-                "Ask your friends & family to join you by dialing *120*646#. It's " +
-                "time to Do Agric & transform lives!"),
-            'start'
-        );
-    });
 
     self.add_creator("generic_end", function(state_name, im) {
         return new EndState(
