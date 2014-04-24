@@ -199,6 +199,16 @@ function DoAgricUSSD() {
         return p_c;
     };
 
+    self.save_audio_request = function(im, audio_type){
+        var p_c = self.get_contact(im);
+        p_c.add_callback(function(contact) {
+            var to_save = {};
+            to_save['download'] = audio_type;
+            return self.save_contact_extras(im, contact, to_save);
+        });
+        return p_c;
+    };
+
     // States
 
     self.add_creator("main_menu", function(state_name, im) {
@@ -265,6 +275,9 @@ function DoAgricUSSD() {
                         "farmers across Africa. Download our free ringtone here: ") +
                         im.config.download_ringback);
                 });
+                p.add_callback(function() {
+                    return self.save_survey_results(im, "support_menu", "download");
+                });
                 return p;
             }
         }
@@ -289,6 +302,9 @@ function DoAgricUSSD() {
                         "Thank you for adding your voice and supporting smallholder " +
                         "farmers across Africa. Download our song for free track here: ") +
                         im.config.download_mp3);
+                });
+                p.add_callback(function() {
+                    return self.save_survey_results(im, "support_menu", "download");
                 });
                 return p;
             }

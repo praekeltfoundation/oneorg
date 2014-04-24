@@ -114,6 +114,8 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.ringback"), 1);
           assert.equal(get_metric_value("test.ussd.request.ringback"), 1);
+      }).then(function() {
+          assert.equal(get_contact_value("extras-download"), "ringback");
       }).then(done, done);
     });
 
@@ -159,6 +161,8 @@ describe('DoAgricUSSD', function () {
           assert.equal(get_metric_value("test.ussd.state_exited.support_menu"), 1);
           assert.equal(get_metric_value("test.ussd.state_entered.mp3"), 1);
           assert.equal(get_metric_value("test.ussd.request.mp3"), 1);
+      }).then(function() {
+          assert.equal(get_contact_value("extras-download"), "mp3");
       }).then(done, done);
     });
 
