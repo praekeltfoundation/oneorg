@@ -199,16 +199,6 @@ function DoAgricUSSD() {
         return p_c;
     };
 
-    self.save_audio_request = function(im, audio_type){
-        var p_c = self.get_contact(im);
-        p_c.add_callback(function(contact) {
-            var to_save = {};
-            to_save['download'] = audio_type;
-            return self.save_contact_extras(im, contact, to_save);
-        });
-        return p_c;
-    };
-
     // States
 
     self.add_creator("main_menu", function(state_name, im) {
