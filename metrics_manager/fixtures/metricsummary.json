@@ -128,5 +128,55 @@
             "metric": "supporter",
             "total": 0
         }
+    },
+    {
+        "pk": 14,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 6,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 15,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 7,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 16,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 8,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 17,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 9,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 18,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 10,
+            "metric": "supporter",
+            "total": 0
+        }
     }
 ]

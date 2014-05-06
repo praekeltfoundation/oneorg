@@ -35,6 +35,41 @@
         }
     },
     {
+        "pk": 6,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "twitter"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "website"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "brandtone"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "offline"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "ussd"
+        }
+    },
+    {
         "pk": 1,
         "model": "metrics_manager.metricsummary",
         "fields": {
@@ -160,6 +195,56 @@
         "fields": {
             "country_code": "tz",
             "channel": 5,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 14,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 6,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 15,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 7,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 16,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 8,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 17,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 9,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 18,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 10,
             "metric": "supporter",
             "total": 0
         }
