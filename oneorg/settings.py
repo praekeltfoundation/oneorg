@@ -194,9 +194,13 @@ CELERY_RESULT_BACKEND = "database"
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 CELERYBEAT_SCHEDULE = {
-    'run-facebook-stats-push-every-30-minutes': {
-        'task': 'celery_app.tasks.sum_and_fire_facebook',
-        'schedule': timedelta(minutes=30),
+    'run-global-stats-push-every-10-minutes': {
+        'task': 'celery_app.tasks.extract_and_fire_all',
+        'schedule': timedelta(minutes=10),
+    },
+    'run-summary-stats-push-every-10-minutes': {
+        'task': 'celery_app.tasks.sum_and_fire_totals',
+        'schedule': timedelta(minutes=10),
     },
 }
 
