@@ -248,5 +248,25 @@
             "metric": "supporter",
             "total": 0
         }
+    },
+    {
+        "pk": 19,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 10,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 20,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 10,
+            "metric": "supporter",
+            "total": 0
+        }
     }
 ]
