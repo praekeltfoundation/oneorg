@@ -7,7 +7,7 @@ from django.test.utils import override_settings
 from StringIO import StringIO
 from datetime import datetime
 
-from celery_app.tasks import ingest_csv, sum_and_fire_facebook
+from celery_app.tasks import ingest_csv, extract_and_fire_all, sum_and_fire_totals
 from metrics_manager.models import Channel, IncomingData, MetricSummary
 
 
@@ -52,7 +52,7 @@ class TestUploadCSV(TestCase):
                       "23,F,Engaged,College,Self-employed,0\r\n")
     B_LINE_DIRTY_1 = ("2013-07-28,ZW,Bindura,111113,Yes,User Three\r\n")
 
-    fixtures = ["channel.json"]
+    fixtures = ["channel.json", "metricsummary.json"]
 
     def setUp(self):
         self.admin = User.objects.create_superuser(
@@ -151,16 +151,6 @@ class TestUploadCSV(TestCase):
         self.assertRaises(IncomingData.DoesNotExist,
                           lambda:  IncomingData.objects.get(channel_uid="3333333"))
 
-    def test_metric_fires(self):
-        channel = Channel.objects.get(name="facebook")
-        metric = MetricSummary.objects.filter(channel=channel)[0]
-        metric.total = 100
-        metric.save()
-        result = sum_and_fire_facebook.delay()
-        self.assertTrue(result.successful())
-        self.assertEquals(result.get()["global.facebook.supporter"],
-                          "Metric 'global.facebook.supporter': 100 ('MAX')")
-
     def test_mxit_metric_fires(self):
         channel = Channel.objects.get(name="mxit")
         clean_sample =  self.M_SEP + self.M_HEADER + \
@@ -170,4 +160,32 @@ class TestUploadCSV(TestCase):
         self.assertTrue(result.successful())
         self.assertEquals(result.get()["za.mxit.supporter"],
                           "Metric 'za.mxit.supporter': 2 ('MAX')")
+
+    def test_global_metric_fires(self):
+        result = extract_and_fire_all.delay()
+        self.assertTrue(result.successful())
+        self.assertEquals(result.get()["facebook"].get()["global.facebook.supporter"],
+                          "Metric 'global.facebook.supporter': 106 ('MAX')")
+        self.assertEquals(result.get()["twitter"].get()["global.twitter.supporter"],
+                          "Metric 'global.twitter.supporter': 104 ('MAX')")
+        self.assertEquals(result.get()["ussd"].get()["global.ussd.supporter"],
+                          "Metric 'global.ussd.supporter': 200 ('MAX')")
+        self.assertEquals(result.get()["brandtone"].get()["global.brandtone.supporter"],
+                          "Metric 'global.brandtone.supporter': 102 ('MAX')")
+        self.assertEquals(result.get()["offline"].get()["global.offline.supporter"],
+                          "Metric 'global.offline.supporter': 101 ('MAX')")
+        self.assertEquals(result.get()["website"].get()["global.website.supporter"],
+                          "Metric 'global.website.supporter': 103 ('MAX')")
+
+    def test_summary_metric_fires(self):
+        result = sum_and_fire_totals.delay()
+        self.assertTrue(result.successful())
+        self.assertEquals(result.get()["za"],
+                          "Metric 'za.supporter': 200 ('MAX')")
+        self.assertEquals(result.get()["ng"],
+                          "Metric 'ng.supporter': 220 ('MAX')")
+        self.assertEquals(result.get()["tz"],
+                          "Metric 'tz.supporter': 100 ('MAX')")
+        self.assertEquals(result.get()["supporter"],
+                          "Metric 'supporter': 716 ('MAX')")
 

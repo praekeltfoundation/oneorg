@@ -6,7 +6,7 @@
             "country_code": "za",
             "channel": 1,
             "metric": "supporter",
-            "total": 0
+            "total": 40
         }
     },
     {
@@ -16,7 +16,7 @@
             "country_code": "ng",
             "channel": 1,
             "metric": "supporter",
-            "total": 0
+            "total": 40
         }
     },
     {
@@ -26,7 +26,7 @@
             "country_code": "tz",
             "channel": 1,
             "metric": "supporter",
-            "total": 0
+            "total": 40
         }
     },
     {
@@ -36,7 +36,7 @@
             "country_code": "global",
             "channel": 2,
             "metric": "supporter",
-            "total": 0
+            "total": 106
         }
     },
     {
@@ -46,7 +46,7 @@
             "country_code": "za",
             "channel": 3,
             "metric": "supporter",
-            "total": 0
+            "total": 30
         }
     },
     {
@@ -56,7 +56,7 @@
             "country_code": "ng",
             "channel": 3,
             "metric": "supporter",
-            "total": 0
+            "total": 30
         }
     },
     {
@@ -66,7 +66,7 @@
             "country_code": "tz",
             "channel": 3,
             "metric": "supporter",
-            "total": 0
+            "total": 30
         }
     },
     {
@@ -76,7 +76,7 @@
             "country_code": "za",
             "channel": 4,
             "metric": "supporter",
-            "total": 0
+            "total": 20
         }
     },
     {
@@ -86,7 +86,7 @@
             "country_code": "ng",
             "channel": 4,
             "metric": "supporter",
-            "total": 0
+            "total": 30
         }
     },
     {
@@ -96,7 +96,7 @@
             "country_code": "tz",
             "channel": 4,
             "metric": "supporter",
-            "total": 0
+            "total": 20
         }
     },
     {
@@ -106,7 +106,7 @@
             "country_code": "za",
             "channel": 5,
             "metric": "supporter",
-            "total": 0
+            "total": 10
         }
     },
     {
@@ -116,7 +116,7 @@
             "country_code": "ng",
             "channel": 5,
             "metric": "supporter",
-            "total": 0
+            "total": 20
         }
     },
     {
@@ -126,7 +126,7 @@
             "country_code": "tz",
             "channel": 5,
             "metric": "supporter",
-            "total": 0
+            "total": 10
         }
     },
     {
@@ -136,7 +136,7 @@
             "country_code": "global",
             "channel": 6,
             "metric": "supporter",
-            "total": 0
+            "total": 104
         }
     },
     {
@@ -146,7 +146,7 @@
             "country_code": "global",
             "channel": 7,
             "metric": "supporter",
-            "total": 0
+            "total": 103
         }
     },
     {
@@ -156,7 +156,7 @@
             "country_code": "global",
             "channel": 8,
             "metric": "supporter",
-            "total": 0
+            "total": 102
         }
     },
     {
@@ -166,7 +166,7 @@
             "country_code": "global",
             "channel": 9,
             "metric": "supporter",
-            "total": 0
+            "total": 101
         }
     },
     {
@@ -176,7 +176,27 @@
             "country_code": "global",
             "channel": 10,
             "metric": "supporter",
-            "total": 0
+            "total": 200
+        }
+    },
+    {
+        "pk": 19,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "za",
+            "channel": 10,
+            "metric": "supporter",
+            "total": 100
+        }
+    },
+    {
+        "pk": 20,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "ng",
+            "channel": 10,
+            "metric": "supporter",
+            "total": 100
         }
     }
 ]
