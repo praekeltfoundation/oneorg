@@ -268,5 +268,45 @@
             "metric": "supporter",
             "total": 0
         }
+    },
+    {
+        "pk": 21,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 1,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 22,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 3,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 23,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 4,
+            "metric": "supporter",
+            "total": 0
+        }
+    },
+    {
+        "pk": 24,
+        "model": "metrics_manager.metricsummary",
+        "fields": {
+            "country_code": "global",
+            "channel": 5,
+            "metric": "supporter",
+            "total": 0
+        }
     }
 ]
