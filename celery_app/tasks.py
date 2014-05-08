@@ -110,37 +110,47 @@ def sum_and_fire(channel):
     """ When a channel is updated a number of metrics needs sending to Vumi """
     response = {}
     metrics = MetricSummary.objects.filter(channel=channel).all()
-    extras = {
-        "supporter": 0,
-        "global.supporter": 0,
-        "za.supporter": 0,
-        "ng.supporter": 0,
-        "tz.supporter": 0
-    }
     for metric in metrics:
         total = IncomingData.objects.filter(channel=channel).filter(
             country_code=metric.country_code).count()
-        extras["supporter"] += total
-        extras[metric.country_code + ".supporter"] += total
         metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
         if total is not 0:
             response[metric_name] = fire(metric_name, total, "MAX")
         metric.total = total
         metric.save()
-    for extra, value in extras.iteritems():
-        if value is not 0:
-            response[extra] = fire(extra, value, "MAX")
+    
     return response
 
+
 @task()
-def sum_and_fire_facebook():
+def extract_and_fire(channel):
     response = {}
-    channel = Channel.objects.filter(name="facebook")[0]
-    metric = MetricSummary.objects.filter(channel=channel)[0]
+    metric = MetricSummary.objects.filter(channel=channel).get(country_code='global')
     metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
     response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
-    total_supporters = MetricSummary.objects.aggregate(total=Sum('total'))
-    response["supporter"] = fire("supporter", total_supporters["total"], "MAX")  # send metrics
     return response
+
+@task()
+def extract_and_fire_all():
+    response = {}
+    channels = Channel.objects.all()
+    for channel in channels:
+        response[channel.name] = extract_and_fire.delay(channel)
+    return response
+
+@task()
+def sum_and_fire_totals():
+    response = {}
+    total_za_supporters = MetricSummary.objects.filter(country_code='za').aggregate(total=Sum('total'))
+    response["za"] = fire("za.supporter", total_za_supporters["total"], "MAX")  # send metrics
+    total_ng_supporters = MetricSummary.objects.filter(country_code='ng').aggregate(total=Sum('total'))
+    response["ng"] = fire("ng.supporter", total_ng_supporters["total"], "MAX")  # send metrics
+    total_tz_supporters = MetricSummary.objects.filter(country_code='tz').aggregate(total=Sum('total'))
+    response["tz"] = fire("tz.supporter", total_tz_supporters["total"], "MAX")  # send metrics
+    total_global_supporters = MetricSummary.objects.filter(country_code='global').aggregate(total=Sum('total'))
+    response["supporter"] = fire("supporter", total_global_supporters["total"], "MAX")  # send metrics
+    return response
+
+

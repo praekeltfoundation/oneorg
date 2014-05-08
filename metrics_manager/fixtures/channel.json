@@ -33,5 +33,40 @@
         "fields": {
             "name": "eskimi"
         }
+    },
+    {
+        "pk": 6,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "twitter"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "website"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "brandtone"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "offline"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "metrics_manager.channel",
+        "fields": {
+            "name": "ussd"
+        }
     }
 ]

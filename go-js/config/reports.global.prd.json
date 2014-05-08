@@ -1,0 +1,170 @@
+{
+    "layout": [{
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Total Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "supporter",
+            "aggregator": "max"
+        }
+    },
+    "new_row",
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global USSD Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.twitter.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global Website Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.website.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global Brandtone Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.brandtone.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global Facebook Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.facebook.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global USSD Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.twitter.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "Global Offline Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "global.offline.supporter",
+            "aggregator": "max"
+        }
+    },
+    "new_row",
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "NG Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "ng.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "NG USSD Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "ng.ussd.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "120d",
+        "name": "NG USSD Sessions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "ng.ussd.sessions",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "7d",
+        "name": "NG Eskimi Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "ng.eskimi.supporter",
+            "aggregator": "max"
+        }
+    },
+    "new_row",
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "7d",
+        "name": "ZA Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "za.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "7d",
+        "name": "ZA USSD Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "za.ussd.supporter",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "7d",
+        "name": "ZA USSD Sessions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "za.ussd.sessions",
+            "aggregator": "max"
+        }
+    },
+    {
+        "type": "diamondash.widgets.lvalue.LValueWidget",
+        "time_range": "7d",
+        "name": "ZA Mxit Actions",
+        "target": {
+            "metric_type": "account",
+            "store": "oneorg_prd",
+            "name": "za.mxit.supporter",
+            "aggregator": "max"
+        }
+    }]
+}
