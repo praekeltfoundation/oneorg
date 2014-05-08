@@ -126,7 +126,7 @@ def sum_and_fire(channel):
 @task()
 def extract_and_fire(channel):
     response = {}
-    metric = MetricSummary.objects.filter(channel=channel).filter(country_code='global')[0]
+    metric = MetricSummary.objects.filter(channel=channel).get(country_code='global')
     metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
     response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
