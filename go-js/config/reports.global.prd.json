@@ -5,7 +5,7 @@
         "name": "Total Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "supporter",
             "aggregator": "max"
         }
@@ -17,7 +17,7 @@
         "name": "Global USSD Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.ussd.supporter",
             "aggregator": "max"
         }
@@ -28,7 +28,7 @@
         "name": "Global Website Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.website.supporter",
             "aggregator": "max"
         }
@@ -39,7 +39,7 @@
         "name": "Global Brandtone Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.brandtone.supporter",
             "aggregator": "max"
         }
@@ -50,7 +50,7 @@
         "name": "Global Facebook Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.facebook.supporter",
             "aggregator": "max"
         }
@@ -61,7 +61,7 @@
         "name": "Global Twitter Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.twitter.supporter",
             "aggregator": "max"
         }
@@ -72,7 +72,7 @@
         "name": "Global Offline Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "global.offline.supporter",
             "aggregator": "max"
         }
@@ -84,7 +84,7 @@
         "name": "NG Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "ng.supporter",
             "aggregator": "max"
         }
@@ -95,7 +95,7 @@
         "name": "NG USSD Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "ng.ussd.supporter",
             "aggregator": "max"
         }
@@ -117,7 +117,7 @@
         "name": "NG Eskimi Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "ng.eskimi.supporter",
             "aggregator": "max"
         }
@@ -129,7 +129,7 @@
         "name": "ZA Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "za.supporter",
             "aggregator": "max"
         }
@@ -140,7 +140,7 @@
         "name": "ZA USSD Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "za.ussd.supporter",
             "aggregator": "max"
         }
@@ -162,7 +162,7 @@
         "name": "ZA Mxit Actions",
         "target": {
             "metric_type": "account",
-            "store": "oneorg_prd",
+            "store": "oneorg_prd_manual",
             "name": "za.mxit.supporter",
             "aggregator": "max"
         }
