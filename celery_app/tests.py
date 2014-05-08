@@ -188,4 +188,8 @@ class TestUploadCSV(TestCase):
                           "Metric 'tz.supporter': 100 ('MAX')")
         self.assertEquals(result.get()["supporter"],
                           "Metric 'supporter': 716 ('MAX')")
+        self.assertEquals(result.get()["za.ussd"],
+                          "Metric 'za.ussd.supporter': 100 ('MAX')")
+        self.assertEquals(result.get()["ng.ussd"],
+                          "Metric 'ng.ussd.supporter': 100 ('MAX')")
 

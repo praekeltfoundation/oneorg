@@ -143,6 +143,11 @@ def extract_and_fire_all():
 @task()
 def sum_and_fire_totals():
     response = {}
+    ussd_channel = Channel.objects.filter(name='ussd').get()
+    total_za_ussd_supporters = MetricSummary.objects.filter(channel=ussd_channel).get(country_code='za')
+    response["za.ussd"] = fire("za.ussd.supporter", total_za_ussd_supporters.total, "MAX")  # send metrics
+    total_ng_ussd_supporters = MetricSummary.objects.filter(channel=ussd_channel).get(country_code='ng')
+    response["ng.ussd"] = fire("ng.ussd.supporter", total_ng_ussd_supporters.total, "MAX")  # send metrics
     total_za_supporters = MetricSummary.objects.filter(country_code='za').aggregate(total=Sum('total'))
     response["za"] = fire("za.supporter", total_za_supporters["total"], "MAX")  # send metrics
     total_ng_supporters = MetricSummary.objects.filter(country_code='ng').aggregate(total=Sum('total'))
