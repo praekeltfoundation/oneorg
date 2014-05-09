@@ -176,6 +176,43 @@ class TestUploadCSV(TestCase):
                           "Metric 'global.offline.supporter': 101 ('MAX')")
         self.assertEquals(result.get()["website"].get()["global.website.supporter"],
                           "Metric 'global.website.supporter': 103 ('MAX')")
+        self.assertEquals(result.get()["mxit"].get()["global.mxit.supporter"],
+                          "Metric 'global.mxit.supporter': 0 ('MAX')")
+        self.assertEquals(result.get()["eskimi"].get()["global.eskimi.supporter"],
+                          "Metric 'global.eskimi.supporter': 0 ('MAX')")
+        self.assertEquals(result.get()["binu"].get()["global.binu.supporter"],
+                          "Metric 'global.binu.supporter': 0 ('MAX')")
+        self.assertEquals(result.get()["2go"].get()["global.2go.supporter"],
+                          "Metric 'global.2go.supporter': 0 ('MAX')")
+        self.assertEquals(result.get()["ussd"].get()["za.ussd.supporter"],
+                          "Metric 'za.ussd.supporter': 100 ('MAX')")
+        self.assertEquals(result.get()["ussd"].get()["ng.ussd.supporter"],
+                          "Metric 'ng.ussd.supporter': 100 ('MAX')")
+        self.assertEquals(result.get()["mxit"].get()["za.mxit.supporter"],
+                          "Metric 'za.mxit.supporter': 40 ('MAX')")
+        self.assertEquals(result.get()["mxit"].get()["ng.mxit.supporter"],
+                          "Metric 'ng.mxit.supporter': 40 ('MAX')")
+        self.assertEquals(result.get()["mxit"].get()["tz.mxit.supporter"],
+                          "Metric 'tz.mxit.supporter': 40 ('MAX')")
+        self.assertEquals(result.get()["2go"].get()["za.2go.supporter"],
+                          "Metric 'za.2go.supporter': 30 ('MAX')")
+        self.assertEquals(result.get()["2go"].get()["ng.2go.supporter"],
+                          "Metric 'ng.2go.supporter': 30 ('MAX')")
+        self.assertEquals(result.get()["2go"].get()["tz.2go.supporter"],
+                          "Metric 'tz.2go.supporter': 30 ('MAX')") 
+        self.assertEquals(result.get()["binu"].get()["za.binu.supporter"],
+                          "Metric 'za.binu.supporter': 20 ('MAX')")
+        self.assertEquals(result.get()["binu"].get()["ng.binu.supporter"],
+                          "Metric 'ng.binu.supporter': 30 ('MAX')")
+        self.assertEquals(result.get()["binu"].get()["tz.binu.supporter"],
+                          "Metric 'tz.binu.supporter': 20 ('MAX')")       
+        self.assertEquals(result.get()["eskimi"].get()["za.eskimi.supporter"],
+                          "Metric 'za.eskimi.supporter': 10 ('MAX')")
+        self.assertEquals(result.get()["eskimi"].get()["ng.eskimi.supporter"],
+                          "Metric 'ng.eskimi.supporter': 20 ('MAX')")
+        self.assertEquals(result.get()["eskimi"].get()["tz.eskimi.supporter"],
+                          "Metric 'tz.eskimi.supporter': 10 ('MAX')")
+
 
     def test_summary_metric_fires(self):
         result = sum_and_fire_totals.delay()
@@ -188,8 +225,5 @@ class TestUploadCSV(TestCase):
                           "Metric 'tz.supporter': 100 ('MAX')")
         self.assertEquals(result.get()["supporter"],
                           "Metric 'supporter': 716 ('MAX')")
-        self.assertEquals(result.get()["za.ussd"],
-                          "Metric 'za.ussd.supporter': 100 ('MAX')")
-        self.assertEquals(result.get()["ng.ussd"],
-                          "Metric 'ng.ussd.supporter': 100 ('MAX')")
+        
 
