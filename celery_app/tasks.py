@@ -53,7 +53,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -76,7 +76,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "binu":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -102,7 +102,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
 
 
 @task()
@@ -126,10 +126,11 @@ def sum_and_fire(channel):
 @task()
 def extract_and_fire(channel):
     response = {}
-    metric = MetricSummary.objects.filter(channel=channel).get(country_code='global')
-    metric_name = "%s.%s.%s" % (
-            str(metric.country_code), str(metric.channel.name), str(metric.metric))
-    response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
+    metrics = MetricSummary.objects.filter(channel=channel)
+    for metric in metrics:
+        metric_name = "%s.%s.%s" % (
+                str(metric.country_code), str(metric.channel.name), str(metric.metric))
+        response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
     return response
 
 @task()
@@ -140,14 +141,10 @@ def extract_and_fire_all():
         response[channel.name] = extract_and_fire.delay(channel)
     return response
 
+
 @task()
 def sum_and_fire_totals():
     response = {}
-    ussd_channel = Channel.objects.filter(name='ussd').get()
-    total_za_ussd_supporters = MetricSummary.objects.filter(channel=ussd_channel).get(country_code='za')
-    response["za.ussd"] = fire("za.ussd.supporter", total_za_ussd_supporters.total, "MAX")  # send metrics
-    total_ng_ussd_supporters = MetricSummary.objects.filter(channel=ussd_channel).get(country_code='ng')
-    response["ng.ussd"] = fire("ng.ussd.supporter", total_ng_ussd_supporters.total, "MAX")  # send metrics
     total_za_supporters = MetricSummary.objects.filter(country_code='za').aggregate(total=Sum('total'))
     response["za"] = fire("za.supporter", total_za_supporters["total"], "MAX")  # send metrics
     total_ng_supporters = MetricSummary.objects.filter(country_code='ng').aggregate(total=Sum('total'))
