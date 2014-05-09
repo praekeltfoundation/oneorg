@@ -53,7 +53,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "eskimi":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -76,7 +76,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
     elif channel.name == "binu":
         records = csv.DictReader(csv_data)
         for line in records:
@@ -102,7 +102,7 @@ def ingest_csv(csv_data, channel, default_country_code):
                 incoming_data = None
                 # crappy CSV data
                 logger.error(e)
-        return sum_and_fire.delay(channel)  # send metrics
+        # return sum_and_fire.delay(channel)  # send metrics
 
 
 @task()
