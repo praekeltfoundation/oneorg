@@ -116,7 +116,7 @@ def sum_and_fire(channel):
         metric_name = "%s.%s.%s" % (
             str(metric.country_code), str(metric.channel.name), str(metric.metric))
         if total is not 0:
-            response[metric_name] = fire(metric_name, total, "MAX")
+            response[metric_name] = fire(metric_name, total, "LAST")
         metric.total = total
         metric.save()
     
@@ -130,7 +130,7 @@ def extract_and_fire(channel):
     for metric in metrics:
         metric_name = "%s.%s.%s" % (
                 str(metric.country_code), str(metric.channel.name), str(metric.metric))
-        response[metric_name] = fire(metric_name, metric.total, "MAX")  # send metrics
+        response[metric_name] = fire(metric_name, metric.total, "LAST")  # send metrics
     return response
 
 @task()
@@ -146,13 +146,13 @@ def extract_and_fire_all():
 def sum_and_fire_totals():
     response = {}
     total_za_supporters = MetricSummary.objects.filter(country_code='za').aggregate(total=Sum('total'))
-    response["za"] = fire("za.supporter", total_za_supporters["total"], "MAX")  # send metrics
+    response["za"] = fire("za.supporter", total_za_supporters["total"], "LAST")  # send metrics
     total_ng_supporters = MetricSummary.objects.filter(country_code='ng').aggregate(total=Sum('total'))
-    response["ng"] = fire("ng.supporter", total_ng_supporters["total"], "MAX")  # send metrics
+    response["ng"] = fire("ng.supporter", total_ng_supporters["total"], "LAST")  # send metrics
     total_tz_supporters = MetricSummary.objects.filter(country_code='tz').aggregate(total=Sum('total'))
-    response["tz"] = fire("tz.supporter", total_tz_supporters["total"], "MAX")  # send metrics
+    response["tz"] = fire("tz.supporter", total_tz_supporters["total"], "LAST")  # send metrics
     total_global_supporters = MetricSummary.objects.filter(country_code='global').aggregate(total=Sum('total'))
-    response["supporter"] = fire("supporter", total_global_supporters["total"], "MAX")  # send metrics
+    response["supporter"] = fire("supporter", total_global_supporters["total"], "LAST")  # send metrics
     return response
 
 

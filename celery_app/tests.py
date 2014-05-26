@@ -159,71 +159,71 @@ class TestUploadCSV(TestCase):
         result = ingest_csv(uploaded, channel, "za")
         # self.assertTrue(result.successful())
         # self.assertEquals(result.get()["za.mxit.supporter"],
-        #                   "Metric 'za.mxit.supporter': 2 ('MAX')")
+        #                   "Metric 'za.mxit.supporter': 2 ('LAST')")
 
     def test_global_metric_fires(self):
         result = extract_and_fire_all.delay()
         self.assertTrue(result.successful())
         self.assertEquals(result.get()["facebook"].get()["global.facebook.supporter"],
-                          "Metric 'global.facebook.supporter': 106 ('MAX')")
+                          "Metric 'global.facebook.supporter': 106 ('LAST')")
         self.assertEquals(result.get()["twitter"].get()["global.twitter.supporter"],
-                          "Metric 'global.twitter.supporter': 104 ('MAX')")
+                          "Metric 'global.twitter.supporter': 104 ('LAST')")
         self.assertEquals(result.get()["ussd"].get()["global.ussd.supporter"],
-                          "Metric 'global.ussd.supporter': 200 ('MAX')")
+                          "Metric 'global.ussd.supporter': 200 ('LAST')")
         self.assertEquals(result.get()["brandtone"].get()["global.brandtone.supporter"],
-                          "Metric 'global.brandtone.supporter': 102 ('MAX')")
+                          "Metric 'global.brandtone.supporter': 102 ('LAST')")
         self.assertEquals(result.get()["offline"].get()["global.offline.supporter"],
-                          "Metric 'global.offline.supporter': 101 ('MAX')")
+                          "Metric 'global.offline.supporter': 101 ('LAST')")
         self.assertEquals(result.get()["website"].get()["global.website.supporter"],
-                          "Metric 'global.website.supporter': 103 ('MAX')")
+                          "Metric 'global.website.supporter': 103 ('LAST')")
         self.assertEquals(result.get()["mxit"].get()["global.mxit.supporter"],
-                          "Metric 'global.mxit.supporter': 0 ('MAX')")
+                          "Metric 'global.mxit.supporter': 0 ('LAST')")
         self.assertEquals(result.get()["eskimi"].get()["global.eskimi.supporter"],
-                          "Metric 'global.eskimi.supporter': 0 ('MAX')")
+                          "Metric 'global.eskimi.supporter': 0 ('LAST')")
         self.assertEquals(result.get()["binu"].get()["global.binu.supporter"],
-                          "Metric 'global.binu.supporter': 0 ('MAX')")
+                          "Metric 'global.binu.supporter': 0 ('LAST')")
         self.assertEquals(result.get()["2go"].get()["global.2go.supporter"],
-                          "Metric 'global.2go.supporter': 0 ('MAX')")
+                          "Metric 'global.2go.supporter': 0 ('LAST')")
         self.assertEquals(result.get()["ussd"].get()["za.ussd.supporter"],
-                          "Metric 'za.ussd.supporter': 100 ('MAX')")
+                          "Metric 'za.ussd.supporter': 100 ('LAST')")
         self.assertEquals(result.get()["ussd"].get()["ng.ussd.supporter"],
-                          "Metric 'ng.ussd.supporter': 100 ('MAX')")
+                          "Metric 'ng.ussd.supporter': 100 ('LAST')")
         self.assertEquals(result.get()["mxit"].get()["za.mxit.supporter"],
-                          "Metric 'za.mxit.supporter': 40 ('MAX')")
+                          "Metric 'za.mxit.supporter': 40 ('LAST')")
         self.assertEquals(result.get()["mxit"].get()["ng.mxit.supporter"],
-                          "Metric 'ng.mxit.supporter': 40 ('MAX')")
+                          "Metric 'ng.mxit.supporter': 40 ('LAST')")
         self.assertEquals(result.get()["mxit"].get()["tz.mxit.supporter"],
-                          "Metric 'tz.mxit.supporter': 40 ('MAX')")
+                          "Metric 'tz.mxit.supporter': 40 ('LAST')")
         self.assertEquals(result.get()["2go"].get()["za.2go.supporter"],
-                          "Metric 'za.2go.supporter': 30 ('MAX')")
+                          "Metric 'za.2go.supporter': 30 ('LAST')")
         self.assertEquals(result.get()["2go"].get()["ng.2go.supporter"],
-                          "Metric 'ng.2go.supporter': 30 ('MAX')")
+                          "Metric 'ng.2go.supporter': 30 ('LAST')")
         self.assertEquals(result.get()["2go"].get()["tz.2go.supporter"],
-                          "Metric 'tz.2go.supporter': 30 ('MAX')") 
+                          "Metric 'tz.2go.supporter': 30 ('LAST')") 
         self.assertEquals(result.get()["binu"].get()["za.binu.supporter"],
-                          "Metric 'za.binu.supporter': 20 ('MAX')")
+                          "Metric 'za.binu.supporter': 20 ('LAST')")
         self.assertEquals(result.get()["binu"].get()["ng.binu.supporter"],
-                          "Metric 'ng.binu.supporter': 30 ('MAX')")
+                          "Metric 'ng.binu.supporter': 30 ('LAST')")
         self.assertEquals(result.get()["binu"].get()["tz.binu.supporter"],
-                          "Metric 'tz.binu.supporter': 20 ('MAX')")       
+                          "Metric 'tz.binu.supporter': 20 ('LAST')")
         self.assertEquals(result.get()["eskimi"].get()["za.eskimi.supporter"],
-                          "Metric 'za.eskimi.supporter': 10 ('MAX')")
+                          "Metric 'za.eskimi.supporter': 10 ('LAST')")
         self.assertEquals(result.get()["eskimi"].get()["ng.eskimi.supporter"],
-                          "Metric 'ng.eskimi.supporter': 20 ('MAX')")
+                          "Metric 'ng.eskimi.supporter': 20 ('LAST')")
         self.assertEquals(result.get()["eskimi"].get()["tz.eskimi.supporter"],
-                          "Metric 'tz.eskimi.supporter': 10 ('MAX')")
+                          "Metric 'tz.eskimi.supporter': 10 ('LAST')")
 
 
     def test_summary_metric_fires(self):
         result = sum_and_fire_totals.delay()
         self.assertTrue(result.successful())
         self.assertEquals(result.get()["za"],
-                          "Metric 'za.supporter': 200 ('MAX')")
+                          "Metric 'za.supporter': 200 ('LAST')")
         self.assertEquals(result.get()["ng"],
-                          "Metric 'ng.supporter': 220 ('MAX')")
+                          "Metric 'ng.supporter': 220 ('LAST')")
         self.assertEquals(result.get()["tz"],
-                          "Metric 'tz.supporter': 100 ('MAX')")
+                          "Metric 'tz.supporter': 100 ('LAST')")
         self.assertEquals(result.get()["supporter"],
-                          "Metric 'supporter': 716 ('MAX')")
+                          "Metric 'supporter': 716 ('LAST')")
         
 
